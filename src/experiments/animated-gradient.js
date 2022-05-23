@@ -1,24 +1,16 @@
-import { Texture, Triangle, Vec2 } from 'ogl'
+import { Triangle, Vec2 } from 'ogl'
 import * as React from 'react'
 import { useFrame, useOGL } from 'react-ogl'
 
-import { OGLCanvasLayout } from '../components/layout/ogl-canvas-layout'
-import { fragment, vertex } from '../shaders/animated-gradient'
-
-class TextureLoader extends Texture {
-  load(src) {
-    const img = new Image()
-    img.crossOrigin = 'anonymous'
-    img.onload = () => (this.image = img)
-    img.src = src
-    return this
-  }
-}
+import { OGLCanvasLayout } from '~/components/layout/ogl-canvas-layout'
+import useTextureLoader from '~/hooks/ogl/useTextureLoader'
+import { fragment, vertex } from '~/shaders/animated-gradient'
 
 const Gradient = () => {
   const meshRef = React.useRef()
   const { gl } = useOGL()
   const geometry = new Triangle(gl)
+  const texture = useTextureLoader('/images/gradient.jpg')
 
   useFrame((_, delta) => {
     if (meshRef.current) {
@@ -36,7 +28,7 @@ const Gradient = () => {
             value: 0
           },
           uGradient: {
-            value: new TextureLoader(gl).load('/images/gradient.jpg')
+            value: texture
           },
           uResolution: {
             value: new Vec2(window.innerWidth, window.innerHeight)
@@ -64,6 +56,6 @@ Gradient.getLayout = ({ Component, title, description, slug }) => {
 }
 
 Gradient.Title = 'Animated gradient'
-Gradient.Description = 'This is an animated gradient made with OGL & React-ogl'
+Gradient.Description = 'This is an animated gradient made with OGL & React-OGL'
 
 export default Gradient
