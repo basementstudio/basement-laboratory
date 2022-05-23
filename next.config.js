@@ -28,6 +28,9 @@ const config = {
 }
 
 module.exports = withPlugins(
-  [withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' }), withTM([])],
+  [
+    withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' }),
+    withTM(['ogl', 'react-ogl'])
+  ],
   config
 )

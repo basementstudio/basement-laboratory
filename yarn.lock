@@ -989,6 +989,11 @@ balanced-match@^2.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-2.0.0.tgz#dc70f920d78db8b858535795867bf48f820633d9"
   integrity sha512-1ugUSr8BHXRnK23KfuYS+gVMC3LB8QGH9W1iGtDPsNWoQbgtXSExkBu2aDR4epiGWZOjZsj6lDl/N/AqqTC3UA==
 
+base64-arraybuffer@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/base64-arraybuffer/-/base64-arraybuffer-1.0.2.tgz#1c37589a7c4b0746e34bd1feb951da2df01c1bdc"
+  integrity sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ==
+
 bidi-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/bidi-js/-/bidi-js-1.0.2.tgz#1a497a762c2ddea377429d2649c9ce0f8a91527f"
@@ -2860,6 +2865,11 @@ object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
+ogl@^0.0.93:
+  version "0.0.93"
+  resolved "https://registry.yarnpkg.com/ogl/-/ogl-0.0.93.tgz#9deb437ac292364d0c6dd97ee016c430dc3a1793"
+  integrity sha512-HmkC2s7Ew53kQc3DpGo69M1H0rJXiz/oOTE+gJUFBX68SQcujKO/5NzJdI680edAHOYSpBVQwW/6E/Dk2+nFRQ==
+
 once@^1.3.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
@@ -3188,6 +3198,26 @@ react-merge-refs@1.1.0, react-merge-refs@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-merge-refs/-/react-merge-refs-1.1.0.tgz#73d88b892c6c68cbb7a66e0800faa374f4c38b06"
   integrity sha512-alTKsjEL0dKH/ru1Iyn7vliS2QRcBp9zZPGoWxUOvRGWPUYgjo+V01is7p04It6KhgrzhJGnIj9GgX8W4bZoCQ==
 
+react-ogl@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/react-ogl/-/react-ogl-0.1.6.tgz#daac52f992b2e87aeaa13a77850229fceac5a96e"
+  integrity sha512-1+B+92jC2df6jirpVgfU86BRJ1xCQ5XjGDrZb11vPC7v7pbf7Ypt2TjGG9XTZ+exo+MYWuVZ3hTOLaG50GMeWw==
+  dependencies:
+    base64-arraybuffer "^1.0.1"
+    react-merge-refs "^1.1.0"
+    react-reconciler "^0.26.2"
+    react-use-measure "^2.1.1"
+    suspend-react "^0.0.8"
+
+react-reconciler@^0.26.2:
+  version "0.26.2"
+  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.26.2.tgz#bbad0e2d1309423f76cf3c3309ac6c96e05e9d91"
+  integrity sha512-nK6kgY28HwrMNwDnMui3dvm3rCFjZrcGiuwLc5COUipBK5hWHLOxMJhSnSomirqWwjPBJKV1QcbkI0VJr7Gl1Q==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    scheduler "^0.20.2"
+
 react-reconciler@^0.27.0:
   version "0.27.0"
   resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.27.0.tgz#360124fdf2d76447c7491ee5f0e04503ed9acf5b"
@@ -3340,6 +3370,14 @@ sass@1.49.9:
     chokidar ">=3.0.0 <4.0.0"
     immutable "^4.0.0"
     source-map-js ">=0.6.2 <2.0.0"
+
+scheduler@^0.20.2:
+  version "0.20.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.20.2.tgz#4baee39436e34aa93b4874bddcbf0fe8b8b50e91"
+  integrity sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
 
 scheduler@^0.21.0:
   version "0.21.0"
