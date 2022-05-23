@@ -44,6 +44,11 @@
   background: var(--color-gray-lighter);
 }
 
+.welcome ol {
+  list-style: decimal;
+  list-style-position: inside;
+}
+
 .welcome h3 {
   margin-top: 32px;
   font-weight: 600;

@@ -29,6 +29,13 @@ body {
   transition: opacity #{$duration / 3 + 's'} ease-in;
 }
 
+html,
+body,
+#__next {
+  height: 100%;
+  min-height: 100vh;
+}
+
 body.inspect * {
   outline: 1px solid var(--inspect-color) !important;
 }

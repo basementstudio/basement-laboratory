@@ -11,7 +11,16 @@ const config = {
   images: {
     formats: ['image/avif', 'image/webp']
   },
-  experimental: { images: { layoutRaw: true } }
+  experimental: { images: { layoutRaw: true }, esmExternals: 'loose' },
+  async redirects() {
+    return [
+      {
+        source: '/experiments',
+        destination: '/',
+        permanent: true
+      }
+    ]
+  }
 }
 
 module.exports = withPlugins(

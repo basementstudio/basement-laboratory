@@ -1,6 +1,16 @@
+import Link from 'next/link'
+import { FC } from 'react'
+
 import s from './welcome.module.css'
 
-const Welcome = () => (
+type WelcomeProps = {
+  experiments: {
+    title: string
+    href: string
+  }[]
+}
+
+const Welcome: FC<WelcomeProps> = ({ experiments }) => (
   <div className={s.welcome}>
     <div className={s.container}>
       <div className={s.logo}>
@@ -23,41 +33,18 @@ const Welcome = () => (
       </div>
 
       <div className={s.box}>
-        <p>
-          👋 Hi there. You are on the basement <code>next-typescript</code>{' '}
-          starter.
-        </p>
+        <p>👋 Hi there. You are on the basement experimental corner 🧪.</p>
       </div>
 
-      <h3>Links</h3>
+      <h3>Experiments</h3>
       <div className={s.box}>
-        <p>
-          📝 You can find some utils on our gists notion.&nbsp;
-          <a
-            target="_blank"
-            href="https://basementstudio.notion.site/09383099eb9d415b952af95d5e6a82cc?v=a5d4e739a25a4c3193d7f16e87bdf94e"
-            rel="noreferrer"
-          >
-            Check it out!
-          </a>
-        </p>
-      </div>
-
-      <h3>Utils</h3>
-      <div className={s.box}>
-        <p>
-          🔎 Try pressing <code>ctrl+i</code> or <code>alt+i</code> to inspect
-          boxes. Super useful for detecting overflows.
-        </p>
-      </div>
-
-      <h3>Notes</h3>
-      <div className={s.box}>
-        <p>
-          💣 Pssst... You should delete this welcome component, it's under
-          &nbsp;
-          <code>./src/components/common/welcome</code>.
-        </p>
+        <ol>
+          {experiments.map(({ title, href }) => (
+            <li key={href}>
+              <Link href={href}>{title}</Link>
+            </li>
+          ))}
+        </ol>
       </div>
     </div>
   </div>
