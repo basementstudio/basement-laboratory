@@ -35,11 +35,9 @@ export const NavigationLayout: FC<NavigationLayoutProps> = ({
           )}
         </div>
       </div>
-      <Link href={getExampleGithubUrl(slug)}>
-        <a>
-          <span className={s['source']}>{'<>'}</span>
-        </a>
-      </Link>
+      <a href={getExampleGithubUrl(slug)} title="source code">
+        <span className={s['source']}>{'<>'}</span>
+      </a>
       {children}
     </>
   )

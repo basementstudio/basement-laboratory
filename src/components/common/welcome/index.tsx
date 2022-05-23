@@ -33,7 +33,19 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
       </div>
 
       <div className={s.box}>
-        <p>👋 Hi there. You are on the basement experimental corner 🧪.</p>
+        <p>
+          👋 Hi there. You are on the basement experimental corner. Here you'll
+          find all kinds of 3d visuals, animations, shaders and creative
+          development related stuff.
+        </p>
+        <p>
+          Take a look at the examples below and don't forget to leave a ⭐️ on
+          the{' '}
+          <a href="https://github.com/basementstudio/experiments">
+            github repo
+          </a>
+          .
+        </p>
       </div>
 
       <h3>Useful Tools</h3>
