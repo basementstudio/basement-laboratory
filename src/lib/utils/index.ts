@@ -1,4 +1,4 @@
-import { isClient } from '~/lib/constants'
+import { githubUrl, isClient } from '~/lib/constants'
 
 export const formatError = (
   error: unknown
@@ -40,4 +40,15 @@ export const getSizes = (
   })
 
   return sizes.join(', ')
+}
+
+export const getExampleGithubUrl = (filename: string) =>
+  `${githubUrl}/blob/main/src/experiments/${filename}`
+
+export const getAllExperimentSlugs = async () => {
+  const fs = await import('fs')
+  const path = await import('path')
+  const experimentsDir = path.resolve(process.cwd(), 'src/experiments')
+
+  return fs.readdirSync(experimentsDir)
 }

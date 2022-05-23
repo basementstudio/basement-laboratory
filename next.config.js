@@ -8,6 +8,10 @@ const withTM = require('next-transpile-modules')
 const config = {
   reactStrictMode: false,
   swcMinify: true,
+  webpack: (config) => {
+    config.resolve.fallback = { ...config.resolve.fallback, fs: false }
+    return config
+  },
   images: {
     formats: ['image/avif', 'image/webp']
   },

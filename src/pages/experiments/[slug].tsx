@@ -1,9 +1,13 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
-import * as Experiments from '~/experiments'
+import { getAllExperimentSlugs } from '~/lib/utils'
+
+type Module<P> = {
+  default: P
+}
 
 type Component<P = Record<string, unknown>> = FC<P> & {
   Layout?: FC
@@ -16,9 +20,12 @@ type GetLayoutFn<P = Record<string, unknown>> = (props: {
   Component: Component<P>
   title?: string
   description?: string
+  slug: string
 }) => React.ReactNode
 
-const resolveLayout = (Component: Component): GetLayoutFn => {
+const resolveLayout = (Comp: Module<Component>): GetLayoutFn => {
+  const Component = Comp.default
+
   if (Component?.getLayout) {
     return Component.getLayout
   }
@@ -28,38 +35,51 @@ const resolveLayout = (Component: Component): GetLayoutFn => {
       Component?.Layout?.({ children: <Component />, ...rest })
   }
 
-  return ({ Component, ...rest }) => (
-    <R3FCanvasLayout {...rest}>
-      <Component />
-    </R3FCanvasLayout>
-  )
+  return ({ Component, ...rest }) => {
+    return (
+      <R3FCanvasLayout {...rest}>
+        <Component />
+      </R3FCanvasLayout>
+    )
+  }
 }
 
 const Experiment = ({
   slug
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const Component = (Experiments as Record<string, FC>)[slug] as Component
+  const [Component, setComponent] = useState<Module<Component>>()
+
+  useEffect(() => {
+    import(`~/experiments/${slug}`).then((Comp) => {
+      setComponent(Comp)
+    })
+  }, [slug])
+
+  if (!Component) {
+    return <div>Loading...</div>
+  }
 
   const getLayout = resolveLayout(Component)
 
   return (
     <>
       {getLayout({
-        Component,
-        title: Component.Title,
-        description: Component.Description
+        Component: Component.default,
+        title: Component.default.Title,
+        description: Component.default.Description,
+        slug
       })}
     </>
   )
 }
 
-export const getStaticPaths: GetStaticPaths = () => {
-  const paths = Object.entries(Experiments).map((exp) => {
-    const title = exp[0]
+export const getStaticPaths: GetStaticPaths = async () => {
+  const allSlugs = await getAllExperimentSlugs()
 
+  const paths = allSlugs.map((exp) => {
     return {
       params: {
-        slug: title
+        slug: exp
       }
     }
   })

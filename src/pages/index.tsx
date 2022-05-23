@@ -3,7 +3,7 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { Meta } from '~/components/common/meta'
 import Welcome from '~/components/common/welcome'
 import { PageLayout } from '~/components/layout/page'
-import * as Experiments from '~/experiments'
+import { getAllExperimentSlugs } from '~/lib/utils'
 
 const HomePage = ({
   experiments
@@ -17,9 +17,17 @@ const HomePage = ({
   )
 }
 
-export const getStaticProps: GetStaticProps = () => {
-  const experiments = Object.entries(Experiments).map((exp) => {
-    const title = (exp[1] as any).Title || exp[0]
+export const getStaticProps: GetStaticProps = async () => {
+  const allSlugs = await getAllExperimentSlugs()
+
+  const modules = await Promise.all(
+    allSlugs.map((slug) =>
+      import(`~/experiments/${slug}`).then((m) => [slug, m.default])
+    )
+  )
+
+  const experiments = modules.map((exp) => {
+    const title = exp[1].Title || exp[0]
 
     return {
       title,

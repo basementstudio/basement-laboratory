@@ -3,6 +3,12 @@
   z-index: 50;
   padding: 20px;
   max-width: 350px;
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  background-color: #0f0f0f50;
+  left: 10px;
+  top: 10px;
+  border: 1px solid #262626;
 
   .heading {
     margin-top: 20px;
@@ -16,4 +22,16 @@
       font-size: 16px;
     }
   }
+}
+
+.source {
+  position: fixed;
+  display: inline-block;
+  z-index: 50;
+  padding: 20px;
+  background-color: #0f0f0f50;
+  border: 1px solid #262626;
+  bottom: 10px;
+  left: 10px;
+  border-radius: 10px;
 }

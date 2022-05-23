@@ -36,6 +36,22 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
         <p>👋 Hi there. You are on the basement experimental corner 🧪.</p>
       </div>
 
+      <h3>Useful Tools</h3>
+      <div className={s.box}>
+        <ul>
+          <li>
+            <Link href="https://gltf.pmnd.rs/">
+              Three Fiber GLTF scaffoling (https://gltf.pmnd.rs/)
+            </Link>
+          </li>
+          <li>
+            <Link href="https://gltf.report/">
+              GLTF Report (https://gltf.report/)
+            </Link>
+          </li>
+        </ul>
+      </div>
+
       <h3>Experiments</h3>
       <div className={s.box}>
         <ol>

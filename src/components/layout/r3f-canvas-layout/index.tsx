@@ -9,10 +9,11 @@ export const R3FCanvasLayout: FC<NavigationLayoutProps> = ({
   children,
   title,
   description,
+  slug,
   ...rest
 }) => {
   return (
-    <NavigationLayout title={title} description={description}>
+    <NavigationLayout title={title} description={description} slug={slug}>
       <Canvas {...rest}>
         <Stats className={s['stats']} />
         {children}
