@@ -36,8 +36,8 @@ export const basementLog = `
 
 // TODO: update this data
 export const defaultMeta = {
-  title: 'next-typescript | basement.studio',
-  description: `A minimalist's boilerplate — Next.js with TypeScript.`,
+  title: 'Experiments | basement.studio',
+  description: `Basement's experimental corner.`,
   ogImage: `${siteOrigin}/og.png`,
   twitter: {
     handle: '@basementstudio',
