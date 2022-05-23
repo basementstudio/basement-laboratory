@@ -1,0 +1,60 @@
+.welcome {
+  --color-black: #000;
+  --color-gray: #0f0f0f;
+  --color-gray-lighter: #262626;
+  --rounded-lg: 8px;
+  --rounded-md: 4px;
+
+  min-height: 100vh;
+  color: white;
+  padding: 72px 0;
+  z-index: 1;
+  background: var(--color-black);
+}
+
+.container {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-left: 28px;
+  padding-right: 28px;
+  z-index: 1;
+}
+
+.logo {
+  display: block;
+  margin-bottom: 32px;
+  padding: 20px;
+  border: 1px solid var(--color-gray-lighter);
+  max-width: max-content;
+  border-radius: var(--rounded-lg);
+  background: black;
+}
+
+.box {
+  padding: 20px;
+  background: var(--color-gray);
+  border-radius: var(--rounded-lg);
+  border: 1px solid var(--color-gray-lighter);
+}
+
+.welcome code {
+  padding: 2px 6px;
+  border-radius: var(--rounded-md);
+  background: var(--color-gray-lighter);
+}
+
+.welcome h3 {
+  margin-top: 32px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.welcome p + p {
+  margin-top: 8px;
+}
+
+.welcome a {
+  text-decoration: underline;
+}
