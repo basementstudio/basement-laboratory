@@ -28,6 +28,6 @@ JustATest.getLayout = ({ Component, title, description, slug }) => {
   )
 }
 
-JustATest.Title = 'Just an HTML example'
+JustATest.Title = 'Just an HTML (example)'
 
 export default JustATest

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React, { FC } from 'react'
 
+import Formated from '~/components/common/formated'
 import { getExampleGithubUrl } from '~/lib/utils'
 
 import s from './navigation-layout.module.scss'
@@ -23,7 +24,15 @@ export const NavigationLayout: FC<NavigationLayoutProps> = ({
         <Link href="/">← Back to examples</Link>
         <div className={s['heading']}>
           {title && <h1 className={s['title']}>{title}</h1>}
-          {description && <p className={s['description']}>{description}</p>}
+          {description && (
+            <Formated className={s['description']}>
+              {typeof description === 'string' ? (
+                <p>{description}</p>
+              ) : (
+                description
+              )}
+            </Formated>
+          )}
         </div>
       </div>
       <Link href={getExampleGithubUrl(slug)}>

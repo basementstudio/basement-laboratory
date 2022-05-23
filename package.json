@@ -18,6 +18,7 @@
   "dependencies": {
     "@react-three/drei": "^9.11.2",
     "@react-three/fiber": "^8.0.19",
+    "@react-three/postprocessing": "^2.3.2",
     "clsx": "1.1.1",
     "gsap": "^3.10.4",
     "hls.js": "1.1.5",

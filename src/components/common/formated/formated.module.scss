@@ -1,0 +1,33 @@
+.formated {
+  --color-black: #000;
+  --color-gray: #0f0f0f;
+  --color-gray-lighter: #262626;
+  --rounded-lg: 8px;
+  --rounded-md: 4px;
+
+  code {
+    padding: 2px 6px;
+    border-radius: var(--rounded-md);
+    background: var(--color-gray-lighter);
+  }
+
+  ol {
+    list-style: decimal;
+    list-style-position: inside;
+  }
+
+  h3 {
+    margin-top: 32px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    font-size: 18px;
+  }
+
+  p + p {
+    margin-top: 8px;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}

@@ -20,7 +20,7 @@ const JustACube = () => {
 }
 
 JustACube.Layout = R3FCanvasLayout
-JustACube.Title = 'This is just a cube'
+JustACube.Title = 'This is just a cube (example)'
 JustACube.Description =
   'This is the simplest possible example of a React Three Fiber experiment.'
 
