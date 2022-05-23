@@ -8,4 +8,3 @@ This repo motivation is to be a centralized place to throw every experimental pi
 - ThreeJS
 - Three Fiber
 - Three Drei
-- Definitive Scroll
