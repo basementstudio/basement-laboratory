@@ -2,8 +2,8 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import { ParsedUrlQuery } from 'querystring'
 import { FC } from 'react'
 
-import * as Experiments from '~/components/experiments'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
+import * as Experiments from '~/experiments'
 
 type Component<P = Record<string, unknown>> = FC<P> & {
   Layout?: FC

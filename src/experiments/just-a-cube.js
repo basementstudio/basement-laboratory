@@ -2,7 +2,7 @@ import { Box } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useRef } from 'react'
 
-import { R3FCanvasLayout } from '../layout/r3f-canvas-layout'
+import { R3FCanvasLayout } from '../components/layout/r3f-canvas-layout'
 
 export const JustACube = () => {
   const boxRef = useRef()

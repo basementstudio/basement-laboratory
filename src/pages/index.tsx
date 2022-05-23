@@ -2,8 +2,8 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next'
 
 import { Meta } from '~/components/common/meta'
 import Welcome from '~/components/common/welcome'
-import * as Experiments from '~/components/experiments'
 import { PageLayout } from '~/components/layout/page'
+import * as Experiments from '~/experiments'
 
 const HomePage = ({
   experiments
