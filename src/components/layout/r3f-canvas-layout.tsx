@@ -1,15 +1,16 @@
 import { Canvas } from '@react-three/fiber'
+import { FC } from 'react'
 
-import NavigationLayout from './navigation-layout'
+import { NavigationLayout, NavigationLayoutProps } from './navigation-layout'
 
-export const R3FCanvasLayout = ({
+export const R3FCanvasLayout: FC<NavigationLayoutProps> = ({
   children,
+  title,
+  description,
   ...rest
-}: {
-  children?: React.ReactNode
 }) => {
   return (
-    <NavigationLayout>
+    <NavigationLayout title={title} description={description}>
       <Canvas {...rest}>{children}</Canvas>
     </NavigationLayout>
   )

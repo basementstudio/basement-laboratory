@@ -8,10 +8,14 @@ import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 type Component<P = Record<string, unknown>> = FC<P> & {
   Layout?: FC
   getLayout?: GetLayoutFn<P>
+  Title?: string
+  Description?: string
 }
 
 type GetLayoutFn<P = Record<string, unknown>> = (props: {
   Component: Component<P>
+  title?: string
+  description?: string
 }) => React.ReactNode
 
 const resolveLayout = (Component: Component): GetLayoutFn => {
@@ -20,11 +24,12 @@ const resolveLayout = (Component: Component): GetLayoutFn => {
   }
 
   if (Component?.Layout) {
-    return ({ Component }) => Component?.Layout?.({ children: <Component /> })
+    return ({ Component, ...rest }) =>
+      Component?.Layout?.({ children: <Component />, ...rest })
   }
 
-  return ({ Component }) => (
-    <R3FCanvasLayout>
+  return ({ Component, ...rest }) => (
+    <R3FCanvasLayout {...rest}>
       <Component />
     </R3FCanvasLayout>
   )
@@ -37,7 +42,15 @@ const Experiment = ({
 
   const getLayout = resolveLayout(Component)
 
-  return <>{getLayout({ Component })}</>
+  return (
+    <>
+      {getLayout({
+        Component,
+        title: Component.Title,
+        description: Component.Description
+      })}
+    </>
+  )
 }
 
 export const getStaticPaths: GetStaticPaths = () => {
