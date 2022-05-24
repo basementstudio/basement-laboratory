@@ -5,14 +5,14 @@ import { suspend } from 'suspend-react'
 export default function useTextureLoader(textureUrl: string) {
   const { gl } = useOGL()
 
-  const texture = suspend(
+  return suspend(
     async (url) => {
-      const image = await new Promise((resolve) => {
+      const image = (await new Promise((resolve) => {
         const img = new Image()
         img.crossOrigin = ''
         img.onload = () => resolve(img)
         img.src = url
-      })
+      })) as HTMLImageElement
 
       const texture = new Texture(gl, {
         image
@@ -22,6 +22,4 @@ export default function useTextureLoader(textureUrl: string) {
     },
     [textureUrl]
   )
-
-  return texture
 }
