@@ -3,14 +3,14 @@ import * as React from 'react'
 import { useFrame, useOGL } from 'react-ogl'
 
 import { OGLCanvasLayout } from '~/components/layout/ogl-canvas-layout'
-import useTextureLoader from '~/hooks/ogl/useTextureLoader'
+import { useImageTextureLoader } from '~/hooks/ogl/useImageTextureLoader'
 import { fragment, vertex } from '~/shaders/animated-gradient'
 
 const Gradient = () => {
   const meshRef = React.useRef()
   const { gl } = useOGL()
   const geometry = new Triangle(gl)
-  const texture = useTextureLoader('/images/gradient.jpg')
+  const texture = useImageTextureLoader('/images/gradient.jpg')
 
   useFrame((_, delta) => {
     if (meshRef.current) {

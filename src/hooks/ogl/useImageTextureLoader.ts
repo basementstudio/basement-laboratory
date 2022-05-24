@@ -1,8 +1,13 @@
-import { Texture } from 'ogl'
+import { Texture, TextureOptions } from 'ogl'
 import { useOGL } from 'react-ogl/web'
 import { suspend } from 'suspend-react'
 
-export default function useTextureLoader(textureUrl: string) {
+type ImageTextureOptions = Omit<TextureOptions, 'image'>
+
+export const useImageTextureLoader = (
+  textureUrl: string,
+  opts?: ImageTextureOptions
+) => {
   const { gl } = useOGL()
 
   return suspend(
@@ -15,7 +20,8 @@ export default function useTextureLoader(textureUrl: string) {
       })) as HTMLImageElement
 
       const texture = new Texture(gl, {
-        image
+        image,
+        ...opts
       })
 
       return texture

@@ -1,9 +1,10 @@
 declare module 'ogl' {
-  type OGLRenderingContext = {
+  export type OGLRenderingContext = {
     renderer: Renderer
     canvas: HTMLCanvasElement
   } & (WebGL2RenderingContext | WebGLRenderingContext)
-  interface TextureOptions {
+
+  export interface TextureOptions {
     image:
       | HTMLImageElement
       | HTMLVideoElement
