@@ -49,6 +49,32 @@ export const getAllExperimentSlugs = async () => {
   const fs = await import('fs')
   const path = await import('path')
   const experimentsDir = path.resolve(process.cwd(), 'src/experiments')
+  const files = fs.readdirSync(experimentsDir)
 
-  return fs.readdirSync(experimentsDir)
+  files.sort(function (a, b) {
+    return (
+      fs.statSync(experimentsDir + '/' + a).birthtime.getTime() -
+      fs.statSync(experimentsDir + '/' + b).birthtime.getTime()
+    )
+  })
+
+  return files
+}
+
+// Detects if the parameter is a react component and returns a boolean
+export const isReactComponent = (
+  param: unknown
+): param is React.ComponentType => {
+  const isFunctionComponent = (param: unknown) => {
+    return (
+      typeof param === 'function' &&
+      String(param).includes('return React.createElement')
+    )
+  }
+
+  const isClassComponent = (param: unknown) => {
+    return typeof param === 'function' && !!param.prototype.isReactComponent
+  }
+
+  return isFunctionComponent(param) || isClassComponent(param)
 }

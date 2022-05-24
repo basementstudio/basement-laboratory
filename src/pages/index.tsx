@@ -26,14 +26,27 @@ export const getStaticProps: GetStaticProps = async () => {
     )
   )
 
-  const experiments = modules.map((exp) => {
-    const title = exp[1].Title || exp[0]
+  const experiments = modules
+    .map((exp) => {
+      const title: string = exp[1].Title || exp[0]
 
-    return {
-      title,
-      href: `/experiments/${exp[0]}`
-    }
-  })
+      return {
+        title,
+        href: `/experiments/${exp[0]}`
+      }
+    })
+    .sort((a, b) => {
+      const aRes = a.title.includes('example')
+      const bRes = b.title.includes('example')
+
+      if (aRes && !bRes) {
+        return -1
+      } else if (!aRes && bRes) {
+        return 1
+      } else {
+        return 0
+      }
+    })
 
   return {
     props: {

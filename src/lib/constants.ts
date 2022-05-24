@@ -3,6 +3,7 @@ export const isProd = process.env.NODE_ENV === 'production'
 
 export const isClient = typeof document !== 'undefined'
 export const isServer = !isClient
+export const safeWindow = isClient ? window : ({} as any)
 
 if (typeof process.env.NEXT_PUBLIC_SITE_URL !== 'string') {
   throw new Error(
