@@ -31,22 +31,12 @@ export const getStaticProps: GetStaticProps = async () => {
       const title: string = exp[1].Title || exp[0]
 
       return {
+        filename: exp[0],
         title,
         href: `/experiments/${exp[0]}`
       }
     })
-    .sort((a, b) => {
-      const aRes = a.title.includes('example')
-      const bRes = b.title.includes('example')
-
-      if (aRes && !bRes) {
-        return -1
-      } else if (!aRes && bRes) {
-        return 1
-      } else {
-        return 0
-      }
-    })
+    .sort((a, b) => a.filename.localeCompare(b.filename))
 
   return {
     props: {
