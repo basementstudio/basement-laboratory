@@ -116,9 +116,7 @@ const createBox = (model) => {
   return new BoxHelper(model, 'green')
 }
 
-const createVertices = (box) => {
-  const DIVISION = 10
-
+const createVertices = (box, division) => {
   const posAttr = box.geometry.getAttribute('position')
 
   const getDivisionSegment = (a, b, division) => {
@@ -129,11 +127,11 @@ const createVertices = (box) => {
   }
 
   const fillSpaceBetweenPoints = (a, b, axis = 'x') => {
-    const segmentDif = getDivisionSegment(a, b, DIVISION)
+    const segmentDif = getDivisionSegment(a, b, division)
     const ordered = [a, b].sort((a, b) => a[axis] - b[axis])
     const points = [ordered[0]]
 
-    for (let i = 1; i < DIVISION; i++) {
+    for (let i = 1; i < division; i++) {
       const p = b.clone().add(segmentDif.clone().multiplyScalar(i))
       points.push(p)
     }
@@ -169,10 +167,10 @@ const createVertices = (box) => {
     const pd = getVectorFromBuffer(posAttr.array, i3d)
 
     const mix = []
-    const divisionSegment = getDivisionSegment(pa, pd, DIVISION)
+    const divisionSegment = getDivisionSegment(pa, pd, division)
     const multiplier = new THREE.Vector3(1, 1, 1)
 
-    for (let i = 0; i < DIVISION + 1; i++) {
+    for (let i = 0; i < division + 1; i++) {
       multiplier.y = -i
       const _pa = pa.clone().add(divisionSegment.clone().multiply(multiplier))
       const _pb = pb.clone().add(divisionSegment.clone().multiply(multiplier))
@@ -190,7 +188,7 @@ const createVertices = (box) => {
   return geometry
 }
 
-const ModelBox = (config) => {
+const ModelBox = (CONFIG) => {
   const canvas = document.querySelector('#webgl')
 
   const { scene, update, camera, destroy, renderer } = createWorld({
@@ -216,10 +214,10 @@ const ModelBox = (config) => {
   sphere.position.x = 0
   sphere.position.y = 0
   sphere.position.z = 0
-  sphere.scale.set(config.modelScale, config.modelScale, config.modelScale)
+  sphere.scale.set(CONFIG.modelScale, CONFIG.modelScale, CONFIG.modelScale)
 
   const boxHelper = createBox(sphere)
-  const geometry1 = createVertices(boxHelper)
+  const geometry1 = createVertices(boxHelper, CONFIG.division)
   const geometry2 = geometry1.clone()
   const geometry3 = geometry1.clone()
   geometry2.rotateY(Math.PI / 2)
@@ -228,27 +226,27 @@ const ModelBox = (config) => {
   /* Add a dummy buffer geometry (has no points) */
   const geometries = [new THREE.BufferGeometry().setFromPoints([])]
 
-  if (config.coordSet1) {
+  if (CONFIG.coordSet1) {
     geometries.push(geometry1)
   }
 
-  if (config.coordSet2) {
+  if (CONFIG.coordSet2) {
     geometries.push(geometry2)
   }
 
-  if (config.coordSet3) {
+  if (CONFIG.coordSet3) {
     geometries.push(geometry3)
   }
 
   const finalGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
   let mesh
 
-  if (config.draw === 'points') {
+  if (CONFIG.draw === 'points') {
     mesh = new THREE.Points(
       finalGeometry,
       new THREE.PointsMaterial({ color: 0x0000ff, size: 0.1 })
     )
-  } else if (config.draw === 'lines') {
+  } else if (CONFIG.draw === 'lines') {
     mesh = new THREE.LineSegments(
       finalGeometry,
       new THREE.LineBasicMaterial({ color: 0x0000ff })
@@ -264,7 +262,7 @@ const ModelBox = (config) => {
   // scene.add(gridHelper)
   // scene.add(axesHelper)
 
-  if (config.showBoxHelper) {
+  if (CONFIG.showBoxHelper) {
     scene.add(boxHelper)
   }
 
@@ -306,6 +304,12 @@ const Controls = ({ children }) => {
     draw: {
       options: ['lines', 'points'],
       value: 'lines'
+    },
+    division: {
+      min: 0,
+      step: 1,
+      value: 10,
+      max: 20
     }
   })
   return <>{children(config)}</>
