@@ -52,6 +52,7 @@ Gradient.getLayout = ({ Component, title, description, slug }) => {
   return (
     <>
       <OGLCanvasLayout
+        style={{ height: '100vh' }}
         renderer={{ alpha: true, premultipliedAlpha: false }}
         title={title}
         description={description}
