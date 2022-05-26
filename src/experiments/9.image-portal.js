@@ -1,27 +1,69 @@
 import { useGsapFrame } from '@basementstudio/definitive-scroll/hooks'
-import React, { useRef } from 'react'
-import useMeasure from 'react-use-measure'
+import React, { useEffect, useRef } from 'react'
 
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
 import { range } from '../lib/utils'
 
 const ImagePortal = () => {
-  const imageRef = useRef()
-  const [ref, bounds] = useMeasure()
+  const firstPickRef = useRef()
+  const secondPickRef = useRef()
+  const sectionRef = useRef()
+
+  useEffect(() => {
+    document.documentElement.classList.add('hide-scroll')
+
+    return () => {
+      document.documentElement.classList.remove('hide-scroll')
+    }
+  }, [])
 
   useGsapFrame(() => {
-    if (!imageRef.current) return
+    if (
+      !secondPickRef.current ||
+      !firstPickRef.current ||
+      !sectionRef.current
+    ) {
+      return
+    }
 
-    imageRef.current.style.transform = `translateY(${-window.scroller
-      .scrollPos}px)`
+    const divisor = sectionRef.current.clientHeight / window.innerHeight
+
+    firstPickRef.current.style.transform = `translateY(${
+      -window.scrollY / divisor
+    }px)`
+    secondPickRef.current.style.transform = `translateY(${
+      -window.scrollY / divisor
+    }px)`
   }, [])
 
   return (
-    <div style={{ position: 'relative', width: '100%', overflow: 'hidden' }} ref={ref}>
-      <img src="/images/misho-jb.jpg" />
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '200vw',
+        overflow: 'hidden'
+      }}
+      ref={sectionRef}
+    >
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          minHeight: '100vh'
+        }}
+      >
+        <img
+          style={{ position: 'relative' }}
+          src="/images/misho-jb.jpg"
+          ref={firstPickRef}
+        />
+      </div>
 
       <div style={{ position: 'absolute', inset: '0', zIndex: 1 }}>
-        {range(8).map((i) => (
+        {range(16).map((i) => (
           <h1 style={{ fontSize: '10vw', textAlign: 'center' }} key={i}>
             OMG! A PORTAL
           </h1>
@@ -53,8 +95,7 @@ const ImagePortal = () => {
               position: 'absolute',
               left: '-30vw',
               top: '-15vh',
-              width: bounds.width,
-              height: '100%',
+              width: '100vw',
               minHeight: '100vh',
               zIndex: 1,
               overflow: 'hidden'
@@ -63,10 +104,11 @@ const ImagePortal = () => {
             <img
               style={{
                 position: 'absolute',
-                inset: 0
+                inset: 0,
+                width: '100vw'
               }}
               src="/images/misho-jb.jpg"
-              ref={imageRef}
+              ref={secondPickRef}
             />
           </div>
         </div>
