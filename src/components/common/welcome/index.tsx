@@ -58,6 +58,11 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
             </Link>
           </li>
           <li>
+            <Link href="https://webgl-shaders.com/">
+              Amazing WebGL Shaders 🔥 (https://webgl-shaders.com/)
+            </Link>
+          </li>
+          <li>
             <Link href="https://gltf.pmnd.rs/">
               (tool) Three Fiber GLTF scaffoling (https://gltf.pmnd.rs/)
             </Link>
