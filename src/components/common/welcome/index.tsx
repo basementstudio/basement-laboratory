@@ -48,7 +48,7 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
         </p>
       </div>
 
-      <h3>Useful Tools</h3>
+      <h3>Useful Links</h3>
       <div className={s.box}>
         <ul>
           <li>
@@ -59,12 +59,12 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
           </li>
           <li>
             <Link href="https://gltf.pmnd.rs/">
-              Three Fiber GLTF scaffoling (https://gltf.pmnd.rs/)
+              (tool) Three Fiber GLTF scaffoling (https://gltf.pmnd.rs/)
             </Link>
           </li>
           <li>
             <Link href="https://gltf.report/">
-              GLTF Report (https://gltf.report/)
+              (tool) GLTF Report (https://gltf.report/)
             </Link>
           </li>
         </ul>
