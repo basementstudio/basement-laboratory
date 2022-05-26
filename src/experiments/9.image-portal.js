@@ -31,9 +31,11 @@ const ImagePortal = () => {
     firstPickRef.current.style.transform = `translateY(${
       -window.scrollY / divisor
     }px)`
+    firstPickRef.current.style.transformStyle = 'preserve-3d'
     secondPickRef.current.style.transform = `translateY(${
       -window.scrollY / divisor
     }px)`
+    secondPickRef.current.style.transformStyle = 'preserve-3d'
   }, [])
 
   return (
@@ -56,7 +58,7 @@ const ImagePortal = () => {
         }}
       >
         <img
-          style={{ position: 'relative' }}
+          style={{ position: 'relative', willChange: 'transform' }}
           src="/images/misho-jb.jpg"
           ref={firstPickRef}
         />
@@ -64,7 +66,15 @@ const ImagePortal = () => {
 
       <div style={{ position: 'absolute', inset: '0', zIndex: 1 }}>
         {range(16).map((i) => (
-          <h1 style={{ fontSize: '10vw', textAlign: 'center' }} key={i}>
+          <h1
+            style={{
+              fontSize: '6.5vw',
+              textAlign: 'center',
+              fontFamily: 'Basement Grotesque Display',
+              marginTop: '4.5vh'
+            }}
+            key={i}
+          >
             OMG! A PORTAL
           </h1>
         ))}
