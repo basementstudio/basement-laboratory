@@ -1,4 +1,4 @@
-export const vertex = `
+export const vertex = /* glsl */ `
   precision highp float;
 
   attribute vec2 position;
@@ -12,7 +12,7 @@ export const vertex = `
   }
 `
 
-export const fragment = `
+export const fragment = /* glsl */ `
   precision highp float;
 
   //	Simplex 3D Noise 
