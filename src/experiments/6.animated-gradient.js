@@ -52,6 +52,7 @@ Gradient.getLayout = ({ Component, title, description, slug }) => {
   return (
     <>
       <OGLCanvasLayout
+        style={{ height: '100vh' }}
         renderer={{ alpha: true, premultipliedAlpha: false }}
         title={title}
         description={description}
@@ -64,6 +65,6 @@ Gradient.getLayout = ({ Component, title, description, slug }) => {
 }
 
 Gradient.Title = 'Animated gradient'
-Gradient.Description = 'This is an animated gradient made with OGL & React-ogl'
+Gradient.Description = 'This is an animated gradient. Made with OGL & React-OGL'
 
 export default Gradient
