@@ -52,6 +52,12 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
       <div className={s.box}>
         <ul>
           <li>
+            <Link href="https://hofk.de/main/discourse.threejs/">
+              Incredible discourse.threejs examples 🤯
+              (https://hofk.de/main/discourse.threejs/)
+            </Link>
+          </li>
+          <li>
             <Link href="https://gltf.pmnd.rs/">
               Three Fiber GLTF scaffoling (https://gltf.pmnd.rs/)
             </Link>

@@ -1,7 +1,6 @@
 import { useControls } from 'leva'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils'
 
 import { Script } from '../components/common/script'
 import { PlainCanvasLayout } from '../components/layout/plain-canvas-layout.tsx'
@@ -175,7 +174,13 @@ const createVertices = (box, division) => {
       const _pa = pa.clone().add(divisionSegment.clone().multiply(multiplier))
       const _pb = pb.clone().add(divisionSegment.clone().multiply(multiplier))
 
-      mix.push(fillSpaceBetweenPoints(_pa, _pb))
+      const points = fillSpaceBetweenPoints(_pa, _pb)
+
+      if (i % 2 !== 0) {
+        points.reverse()
+      }
+
+      mix.push(points)
     }
 
     return mix.flat()
@@ -183,7 +188,16 @@ const createVertices = (box, division) => {
 
   const coords = alternateMixArray(...points)
 
-  const geometry = new THREE.BufferGeometry().setFromPoints(coords)
+  /* This adds the intermediate points */
+  let extra = []
+
+  for (let i = 0; i < coords.length / 2; i++) {
+    extra.push(...fillSpaceBetweenPoints(coords[i * 2 + 0], coords[i * 2 + 1]))
+  }
+
+  const geometry = new THREE.BufferGeometry().setFromPoints(
+    coords.concat(extra)
+  )
 
   return geometry
 }
@@ -217,37 +231,22 @@ const ModelBox = (CONFIG) => {
   sphere.scale.set(CONFIG.modelScale, CONFIG.modelScale, CONFIG.modelScale)
 
   const boxHelper = createBox(sphere)
-  const geometry1 = createVertices(boxHelper, CONFIG.division)
-  const geometry2 = geometry1.clone()
-  const geometry3 = geometry1.clone()
-  geometry2.rotateY(Math.PI / 2)
-  geometry3.rotateX(Math.PI / 2)
+  const finalGeometry = createVertices(boxHelper, CONFIG.division)
 
-  /* Add a dummy buffer geometry (has no points) */
-  const geometries = [new THREE.BufferGeometry().setFromPoints([])]
-
-  if (CONFIG.coordSet1) {
-    geometries.push(geometry1)
-  }
-
-  if (CONFIG.coordSet2) {
-    geometries.push(geometry2)
-  }
-
-  if (CONFIG.coordSet3) {
-    geometries.push(geometry3)
-  }
-
-  const finalGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
   let mesh
 
   if (CONFIG.draw === 'points') {
     mesh = new THREE.Points(
       finalGeometry,
-      new THREE.PointsMaterial({ color: 0x0000ff, size: 0.1 })
+      new THREE.PointsMaterial({ color: 0x0000ff, size: CONFIG.particleSize })
     )
   } else if (CONFIG.draw === 'lines') {
     mesh = new THREE.LineSegments(
+      finalGeometry,
+      new THREE.LineBasicMaterial({ color: 0x0000ff })
+    )
+  } else if (CONFIG.draw === 'line') {
+    mesh = new THREE.Line(
       finalGeometry,
       new THREE.LineBasicMaterial({ color: 0x0000ff })
     )
@@ -255,19 +254,16 @@ const ModelBox = (CONFIG) => {
     throw new Error('Unknown draw type')
   }
 
-  /* Helpers */
-  // const axesHelper = new THREE.AxesHelper(5)
-  // const gridHelper = new THREE.GridHelper(10, 10)
-
-  // scene.add(gridHelper)
-  // scene.add(axesHelper)
-
   if (CONFIG.showBoxHelper) {
     scene.add(boxHelper)
   }
 
   scene.add(mesh)
   scene.add(sphere)
+
+  console.log(`
+    PARTICLE COUNT: ${mesh.geometry.attributes.position.array.length}
+  `)
 
   update(() => {
     controls.update()
@@ -289,27 +285,24 @@ const Controls = ({ children }) => {
       value: 2,
       max: 10
     },
+    particleSize: {
+      min: 0.01,
+      step: 0.01,
+      value: 0.1,
+      max: 0.5
+    },
     showBoxHelper: {
       value: true
     },
-    coordSet1: {
-      value: true
-    },
-    coordSet2: {
-      value: true
-    },
-    coordSet3: {
-      value: true
-    },
     draw: {
-      options: ['lines', 'points'],
-      value: 'lines'
+      options: ['lines', 'points', 'line'],
+      value: 'points'
     },
     division: {
       min: 0,
       step: 1,
       value: 10,
-      max: 20
+      max: 100
     }
   })
   return <>{children(config)}</>
