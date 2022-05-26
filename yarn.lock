@@ -90,6 +90,16 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
+"@basementstudio/definitive-scroll@^0.1.4":
+  version "0.1.4"
+  resolved "https://npm.pkg.github.com/download/@basementstudio/definitive-scroll/0.1.4/56afa86dc0bd80cb22ea76814cf4beca3c8f388db553e7b119d40118fad969c8#89dc404f988f95219c06906de874abebab30df1c"
+  integrity sha512-4BK7Oq2D56isnutQXZ78sHZaGajTrWh7RMHYhzO7iCmUR39hNFO0u0u7udVTzN5ZSWPa7uu25C6Ndjb9d6UD+A==
+  dependencies:
+    "@juggle/resize-observer" "^3.3.1"
+    react-merge-refs "^1.1.0"
+    virtual-scroll "^2.2.1"
+    zustand "^3.7.1"
+
 "@chevrotain/cst-dts-gen@^10.1.2":
   version "10.1.2"
   resolved "https://registry.yarnpkg.com/@chevrotain/cst-dts-gen/-/cst-dts-gen-10.1.2.tgz#4ee6eff237bb47f4990cfb76c18ee2e71237929c"
@@ -150,6 +160,11 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.0.tgz#87de7af9c231826fdd68ac7258f77c429e0e5fcf"
   integrity sha512-wdppn25U8z/2yiaT6YGquE6X8sSv7hNMWSXYSSU1jGv/yd6XqjXgTDJ8KP4NgjTXfJ3GbRjeeb8RTV7a/VpM+w==
+
+"@juggle/resize-observer@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
+  integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
 "@next/bundle-analyzer@^12.1.2":
   version "12.1.2"
@@ -3848,6 +3863,11 @@ through@^2.3.8:
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
+tiny-emitter@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+  integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
+
 tiny-inflate@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tiny-inflate/-/tiny-inflate-1.0.3.tgz#122715494913a1805166aaf7c93467933eea26c4"
@@ -4023,6 +4043,13 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+virtual-scroll@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/virtual-scroll/-/virtual-scroll-2.2.1.tgz#447133c2f5d99dd78f6a1f78ca5c77b94759bfc3"
+  integrity sha512-RvjcLxluh7B/6GPzLgQ9d0NYG4yqEguTc3MU7AvxyPVltuo2Cq5RokTL9RKUaZCMJ64in2hus0d03gTtoHp55g==
+  dependencies:
+    tiny-emitter "^2.1.0"
 
 webgl-constants@^1.1.1:
   version "1.1.1"

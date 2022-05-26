@@ -30,7 +30,7 @@ const config = {
 module.exports = withPlugins(
   [
     withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' }),
-    withTM(['ogl', 'react-ogl'])
+    withTM(['ogl', 'react-ogl', '@basementstudio/definitive-scroll'])
   ],
   config
 )
