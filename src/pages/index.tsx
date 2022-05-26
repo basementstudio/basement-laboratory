@@ -36,7 +36,9 @@ export const getStaticProps: GetStaticProps = async () => {
         href: `/experiments/${exp[0]}`
       }
     })
-    .sort((a, b) => a.filename.localeCompare(b.filename))
+    .sort((a, b) =>
+      a.filename.localeCompare(b.filename, undefined, { numeric: true })
+    )
 
   return {
     props: {

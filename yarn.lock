@@ -2744,6 +2744,11 @@ next-compose-plugins@^2.2.1:
   resolved "https://registry.yarnpkg.com/next-compose-plugins/-/next-compose-plugins-2.2.1.tgz#020fc53f275a7e719d62521bef4300fbb6fde5ab"
   integrity sha512-OjJ+fV15FXO2uQXQagLD4C0abYErBjyjE0I0FHpOEIB8upw0hg1ldFP6cqHTJBH1cZqy96OeR3u1dJ+Ez2D4Bg==
 
+next-real-viewport@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/next-real-viewport/-/next-real-viewport-0.7.0.tgz#21354985f4b1009e543865209590b02846fc7092"
+  integrity sha512-Hs9+J+S4y1CaJ+t7v46/G54MuUYPdUyyctOrYUcGd299FFHSDjq4VCjhtc9vcY4LE+OpnY4BXZ/+ENUSJ/JFQg==
+
 next-sitemap@^2.5.14:
   version "2.5.14"
   resolved "https://registry.yarnpkg.com/next-sitemap/-/next-sitemap-2.5.14.tgz#f196c90d4aef8444c6eb7266875bf2179a515bb7"
