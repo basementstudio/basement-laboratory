@@ -101,12 +101,16 @@ const SculptureGallery = () => {
   const vector2 = new THREE.Vector3()
   const vector3 = new THREE.Vector3()
 
-  document.body.appendChild(VRButton.createButton(renderer))
-  renderer.xr.enabled = true
+  const supportsVR = 'getVRDisplays' in navigator
 
-  renderer.setAnimationLoop(function () {
-    renderer.render(scene, camera)
-  })
+  if (supportsVR) {
+    document.body.appendChild(VRButton.createButton(renderer))
+    renderer.xr.enabled = true
+
+    renderer.setAnimationLoop(function () {
+      renderer.render(scene, camera)
+    })
+  }
 
   document.addEventListener('keydown', (event) => {
     keyStates[event.code] = true
