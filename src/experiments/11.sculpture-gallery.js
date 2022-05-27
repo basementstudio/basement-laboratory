@@ -101,7 +101,7 @@ const SculptureGallery = () => {
   const vector2 = new THREE.Vector3()
   const vector3 = new THREE.Vector3()
 
-  const supportsVR = 'getVRDisplays' in navigator
+  const supportsVR = 'xr' in navigator
 
   if (supportsVR) {
     document.body.appendChild(VRButton.createButton(renderer))
