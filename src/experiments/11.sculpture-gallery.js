@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { Capsule } from 'three/examples/jsm/math/Capsule'
 import { Octree } from 'three/examples/jsm/math/Octree'
+import { VRButton } from 'three/examples/jsm/webxr/VRButton'
 
 import { Script } from '../components/common/script'
 import { PlainCanvasLayout } from '../components/layout/plain-canvas-layout.tsx'
@@ -95,6 +96,13 @@ const SculptureGallery = () => {
   const vector1 = new THREE.Vector3()
   const vector2 = new THREE.Vector3()
   const vector3 = new THREE.Vector3()
+
+  document.body.appendChild(VRButton.createButton(renderer))
+  renderer.xr.enabled = true
+
+  renderer.setAnimationLoop(function () {
+    renderer.render(scene, camera)
+  })
 
   document.addEventListener('keydown', (event) => {
     keyStates[event.code] = true
