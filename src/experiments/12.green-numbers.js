@@ -40,7 +40,7 @@ GreenNumbers.getLayout = ({ Component, title, description, slug }) => {
     <>
       <OGLCanvasLayout
         style={{ height: 'calc(var(--vh) * 100)' }}
-        dpr={0.8}
+        dpr={[0.6, 1]}
         title={title}
         description={description}
         slug={slug}
