@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@basementstudio/definitive-scroll": "^0.1.4",
-    "@react-three/drei": "^9.11.2",
+    "@react-three/drei": "^9.11.3",
     "@react-three/fiber": "^8.0.19",
     "@react-three/postprocessing": "^2.3.2",
     "clsx": "1.1.1",
@@ -35,7 +35,7 @@
     "react-ogl": "^0.1.6",
     "react-use-measure": "^2.1.1",
     "slugify": "^1.6.5",
-    "three": "^0.140.2",
+    "three": "^0.141.0",
     "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
