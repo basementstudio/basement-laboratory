@@ -226,6 +226,7 @@ export const createWorld = ({
   }
 
   return {
+    clock,
     renderer,
     scene,
     camera,

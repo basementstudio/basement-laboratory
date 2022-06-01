@@ -6,7 +6,7 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { Capsule } from 'three/examples/jsm/math/Capsule'
 import { Octree } from 'three/examples/jsm/math/Octree'
 
-import { Loader } from '../components/common/loader'
+import { Loader, useLoader } from '../components/common/loader'
 import { Script } from '../components/common/script'
 import { PlainCanvasLayout } from '../components/layout/plain-canvas-layout.tsx'
 import { createWorld } from '../lib/three'
@@ -18,14 +18,12 @@ const VRButton = dynamic(() => import('three/examples/jsm/webxr/VRButton'), {
 const SculptureGallery = () => {
   const canvas = document.querySelector('#webgl')
 
-  const { destroy, camera, scene, renderer } = createWorld({
+  const { destroy, camera, scene, renderer, update } = createWorld({
     rendererConfig: {
       canvas,
       antialias: true
     }
   })
-
-  const clock = new THREE.Clock()
 
   scene.background = new THREE.Color(0x7696b1)
   scene.fog = new THREE.Fog(0x7696b1, 1, 30)
@@ -348,7 +346,7 @@ const SculptureGallery = () => {
 
   const loadingManager = new THREE.LoadingManager()
   loadingManager.onLoad = () => {
-    console.log('Loaded')
+    useLoader.getState().setLoaded()
   }
 
   new RGBELoader(loadingManager)
@@ -392,7 +390,23 @@ const SculptureGallery = () => {
     mixer = new THREE.AnimationMixer(model)
     mixer.clipAction(gltf.animations[0]).play()
 
-    animate()
+    update((delta) => {
+      const deltaTime = delta / STEPS_PER_FRAME
+      console.log(deltaTime)
+
+      // we look for collisions in substeps to mitigate the risk of
+      // an object traversing another too quickly for detection.
+
+      for (let i = 0; i < STEPS_PER_FRAME; i++) {
+        controls(deltaTime)
+
+        updatePlayer(deltaTime)
+
+        updateSpheres(deltaTime)
+
+        teleportPlayerIfOob()
+      }
+    })
   })
 
   function teleportPlayerIfOob() {
@@ -405,28 +419,9 @@ const SculptureGallery = () => {
     }
   }
 
-  function animate() {
-    const deltaTime = Math.min(0.05, clock.getDelta()) / STEPS_PER_FRAME
-
-    // we look for collisions in substeps to mitigate the risk of
-    // an object traversing another too quickly for detection.
-
-    for (let i = 0; i < STEPS_PER_FRAME; i++) {
-      controls(deltaTime)
-
-      updatePlayer(deltaTime)
-
-      updateSpheres(deltaTime)
-
-      teleportPlayerIfOob()
-    }
-
-    renderer.render(scene, camera)
-
-    requestAnimationFrame(animate)
+  return () => {
+    destroy()
   }
-
-  return destroy
 }
 
 SculptureGallery.getLayout = ({ Component: fn, ...rest }) => (
@@ -437,6 +432,5 @@ SculptureGallery.getLayout = ({ Component: fn, ...rest }) => (
 )
 
 SculptureGallery.Title = 'Sculpture Gallery'
-SculptureGallery.Description = 'Lorem ipsum'
 
 export default SculptureGallery
