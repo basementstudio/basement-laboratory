@@ -14,10 +14,12 @@ export const R3FCanvasLayout: FC<NavigationLayoutProps> = ({
 }) => {
   return (
     <NavigationLayout title={title} description={description} slug={slug}>
-      <Canvas {...rest}>
-        <Stats className={s['stats']} />
-        {children}
-      </Canvas>
+      <div style={{ position: 'fixed', height: '100vh', width: '100vw' }}>
+        <Canvas {...rest}>
+          <Stats className={s['stats']} />
+          {children}
+        </Canvas>
+      </div>
     </NavigationLayout>
   )
 }
