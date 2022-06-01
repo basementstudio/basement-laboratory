@@ -5,8 +5,8 @@ import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
 import { range } from '../lib/utils'
 
 const ImagePortal = () => {
-  const firstPickRef = useRef()
-  const secondPickRef = useRef()
+  const firstPicRef = useRef()
+  const secondPicRef = useRef()
   const sectionRef = useRef()
 
   useEffect(() => {
@@ -18,24 +18,20 @@ const ImagePortal = () => {
   }, [])
 
   useGsapFrame(() => {
-    if (
-      !secondPickRef.current ||
-      !firstPickRef.current ||
-      !sectionRef.current
-    ) {
+    if (!secondPicRef.current || !firstPicRef.current || !sectionRef.current) {
       return
     }
 
     const divisor = sectionRef.current.clientHeight / window.innerHeight
 
-    firstPickRef.current.style.transform = `translateY(${
+    firstPicRef.current.style.transform = `translateY(${
       -window.scrollY / divisor
     }px)`
-    firstPickRef.current.style.transformStyle = 'preserve-3d'
-    secondPickRef.current.style.transform = `translateY(${
+    firstPicRef.current.style.transformStyle = 'preserve-3d'
+    secondPicRef.current.style.transform = `translateY(${
       -window.scrollY / divisor
     }px)`
-    secondPickRef.current.style.transformStyle = 'preserve-3d'
+    secondPicRef.current.style.transformStyle = 'preserve-3d'
   }, [])
 
   return (
@@ -64,7 +60,7 @@ const ImagePortal = () => {
             width: '100%'
           }}
           src="/images/misho-jb.jpg"
-          ref={firstPickRef}
+          ref={firstPicRef}
         />
       </div>
 
@@ -122,7 +118,7 @@ const ImagePortal = () => {
                 width: '100vw'
               }}
               src="/images/misho-jb.jpg"
-              ref={secondPickRef}
+              ref={secondPicRef}
             />
           </div>
         </div>
