@@ -25,7 +25,7 @@ const Model = () => {
       map.wrapT = THREE.RepeatWrapping
 
       normal.matrixAutoUpdate = false
-      map.matrixAutoUpdate = false
+      // map.matrixAutoUpdate = false
       disp.matrixAutoUpdate = false
     }
   )
@@ -62,11 +62,13 @@ const Model = () => {
     const offset = ((scrollHeight - window.scrollY) / scrollHeight - 1) * 5
     disp.needsUpdate = false
     textures.needsUpdate = false
-    map.matrix.translate(0, offset, 0)
+    map.offset.y = offset
+    map.needsUpdate = true
   })
+
   return (
     <>
-      <OrbitControls />
+      <OrbitControls enableZoom={false} />
       <pointLight position={[0, -2, 2]} />
       <ambientLight />
       <mesh ref={meshRef} rotation={[0, Math.PI, 0]}>
