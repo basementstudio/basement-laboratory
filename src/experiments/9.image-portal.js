@@ -133,5 +133,18 @@ const ImagePortal = () => {
 
 ImagePortal.Layout = SmoothScrollLayout
 ImagePortal.Title = 'Image Portal'
+ImagePortal.Description = (
+  <p>
+    Image portal ilusion inspired in{' '}
+    <a
+      target="_blank"
+      href="https://www.danielspatzek.com/home/"
+      rel="noopener"
+    >
+      Daniel Spatzek website
+    </a>
+    .
+  </p>
+)
 
 export default ImagePortal
