@@ -58,7 +58,11 @@ const ImagePortal = () => {
         }}
       >
         <img
-          style={{ position: 'relative', willChange: 'transform' }}
+          style={{
+            position: 'relative',
+            willChange: 'transform',
+            width: '100%'
+          }}
           src="/images/misho-jb.jpg"
           ref={firstPickRef}
         />
