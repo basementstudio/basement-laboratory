@@ -6,6 +6,7 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import { Capsule } from 'three/examples/jsm/math/Capsule'
 import { Octree } from 'three/examples/jsm/math/Octree'
 
+import { Loader } from '../components/common/loader'
 import { Script } from '../components/common/script'
 import { PlainCanvasLayout } from '../components/layout/plain-canvas-layout.tsx'
 import { createWorld } from '../lib/three'
@@ -345,7 +346,12 @@ const SculptureGallery = () => {
     }
   }
 
-  new RGBELoader()
+  const loadingManager = new THREE.LoadingManager()
+  loadingManager.onLoad = () => {
+    console.log('Loaded')
+  }
+
+  new RGBELoader(loadingManager)
     .setPath('/images/')
     .load('royal_esplanade_1k.hdr', function (texture) {
       texture.mapping = THREE.EquirectangularReflectionMapping
@@ -354,7 +360,7 @@ const SculptureGallery = () => {
       scene.environment = texture
     })
 
-  const loader = new GLTFLoader().setPath('/models/')
+  const loader = new GLTFLoader(loadingManager).setPath('/models/')
   let model, mixer
 
   loader.load('SculptureGallery.gltf', (gltf) => {
@@ -425,6 +431,7 @@ const SculptureGallery = () => {
 
 SculptureGallery.getLayout = ({ Component: fn, ...rest }) => (
   <PlainCanvasLayout {...rest}>
+    <Loader />
     <Script fn={fn} />
   </PlainCanvasLayout>
 )
