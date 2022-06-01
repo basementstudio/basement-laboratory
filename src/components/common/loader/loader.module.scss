@@ -1,0 +1,21 @@
+.loading {
+  font-size: 42px;
+
+  span {
+    animation: blink 1s linear infinite calc(0.2s * var(--idx));
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+
+  66% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
