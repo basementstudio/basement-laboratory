@@ -20,10 +20,13 @@ const Model = () => {
       '/textures/11.normal.png',
       '/textures/11.displacement.png'
     ],
-    ([map]) => {
-      // map.repeat = new THREE.Vector2(10, 10)
+    ([map, normal]) => {
       map.wrapS = THREE.RepeatWrapping
       map.wrapT = THREE.RepeatWrapping
+
+      normal.matrixAutoUpdate = false
+      map.matrixAutoUpdate = false
+      disp.matrixAutoUpdate = false
     }
   )
   const CONFIG = useControls({
@@ -56,9 +59,11 @@ const Model = () => {
   const scrollHeight = useMemo(() => document.documentElement.scrollHeight, [])
 
   useFrame(() => {
-    map.offset.y = ((scrollHeight - window.scrollY) / scrollHeight) * 5
+    const offset = ((scrollHeight - window.scrollY) / scrollHeight - 1) * 5
+    disp.needsUpdate = false
+    textures.needsUpdate = false
+    map.matrix.translate(0, offset, 0)
   })
-
   return (
     <>
       <OrbitControls />
@@ -77,7 +82,7 @@ const Model = () => {
           ]}
         />
         <meshStandardMaterial
-          // map={map}
+          map={map}
           displacementMap={disp}
           displacementScale={CONFIG.displacementScale}
           normalMap={textures}
