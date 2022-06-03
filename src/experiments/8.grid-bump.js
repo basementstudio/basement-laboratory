@@ -39,7 +39,8 @@ const GridBump = (CONFIG) => {
   const viewport = getViewport()
   const { update, destroy, scene, camera, getWorld } = createWorld({
     rendererConfig: {
-      canvas
+      canvas,
+      antialias: true
     },
     withRaycaster: false
   })
@@ -60,31 +61,40 @@ const GridBump = (CONFIG) => {
   const raycaster = new THREE.Raycaster()
 
   /* Create plane */
-  let material
-  let mesh
+  const geometry = new THREE.PlaneBufferGeometry(
+    viewportInThree.width,
+    viewportInThree.height,
+    Math.round(viewportInThree.width) * CONFIG.divisions,
+    Math.round(viewportInThree.height) * CONFIG.divisions
+  ).toGrid()
 
-  if (CONFIG.draw === 'points') {
-    material = new THREE.PointsMaterial({
+  const targetGrid = new THREE.Points(
+    geometry,
+    new THREE.PointsMaterial({
       color: CONFIG.color,
       size: CONFIG.particleSize
     })
-    mesh = THREE.Points
-  } else {
-    material = new THREE.MeshBasicMaterial({ color: CONFIG.color })
-    mesh = THREE.LineSegments
-  }
-
-  var gridPlane = new mesh(
-    new THREE.PlaneBufferGeometry(
-      viewportInThree.width,
-      viewportInThree.height,
-      Math.round(viewportInThree.width) * CONFIG.divisions,
-      Math.round(viewportInThree.height) * CONFIG.divisions
-    ).toGrid(),
-    material
   )
 
-  scene.add(gridPlane)
+  if (CONFIG.lines) {
+    var lines = new THREE.LineSegments(
+      geometry,
+      new THREE.MeshBasicMaterial({ color: CONFIG.color })
+    )
+
+    scene.add(lines)
+  }
+
+  if (CONFIG.points) {
+    const points = new THREE.Points(
+      geometry,
+      new THREE.PointsMaterial({
+        color: CONFIG.color,
+        size: CONFIG.particleSize
+      })
+    )
+    scene.add(points)
+  }
 
   const vector3 = new THREE.Vector3()
 
@@ -96,7 +106,7 @@ const GridBump = (CONFIG) => {
     let found
 
     if (cursorTracker.hasMoved) {
-      const intersections = raycaster.intersectObject(gridPlane)
+      const intersections = raycaster.intersectObject(targetGrid)
       found = intersections[0]
     }
 
@@ -152,9 +162,11 @@ const Controls = ({ children }) => {
       value: 2,
       max: 10
     },
-    draw: {
-      options: ['lines', 'points'],
-      value: 'points'
+    points: {
+      value: true
+    },
+    lines: {
+      value: true
     },
     color: {
       value: '#00ff00'
