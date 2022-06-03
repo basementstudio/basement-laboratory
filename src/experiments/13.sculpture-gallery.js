@@ -392,11 +392,9 @@ const SculptureGallery = () => {
 
     update((delta) => {
       const deltaTime = delta / STEPS_PER_FRAME
-      console.log(deltaTime)
 
       // we look for collisions in substeps to mitigate the risk of
       // an object traversing another too quickly for detection.
-
       for (let i = 0; i < STEPS_PER_FRAME; i++) {
         controls(deltaTime)
 
