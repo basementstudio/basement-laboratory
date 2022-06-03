@@ -111,31 +111,36 @@ const SculptureGallery = () => {
     })
   }
 
-  document.addEventListener('keydown', (event) => {
-    keyStates[event.code] = true
-  })
-
-  document.addEventListener('keyup', (event) => {
-    keyStates[event.code] = false
-  })
-
-  document.addEventListener('mousedown', () => {
-    document.body.requestPointerLock()
-
-    mouseTime = performance.now()
-  })
-
-  document.addEventListener('mouseup', () => {
-    if (document.pointerLockElement !== null) throwBall()
-  })
-
-  document.body.addEventListener('mousemove', (event) => {
+  const handleMouseMove = (event) => {
     if (document.pointerLockElement === document.body) {
       camera.rotation.y -= event.movementX / 500
       camera.rotation.x -= event.movementY / 500
     }
-  })
+  }
 
+  const handleMouseUp = () => {
+    if (document.pointerLockElement !== null) throwBall()
+  }
+
+  const handleMouseDown = () => {
+    document.body.requestPointerLock()
+
+    mouseTime = performance.now()
+  }
+
+  const handleKeyUp = (event) => {
+    keyStates[event.code] = false
+  }
+
+  const handleKeyDown = (event) => {
+    keyStates[event.code] = true
+  }
+
+  document.addEventListener('keydown', handleKeyDown)
+  document.addEventListener('keyup', handleKeyUp)
+  document.addEventListener('mousedown', handleMouseDown)
+  document.addEventListener('mouseup', handleMouseUp)
+  document.body.addEventListener('mousemove', handleMouseMove)
   window.addEventListener('resize', onWindowResize)
 
   function onWindowResize() {
@@ -418,6 +423,12 @@ const SculptureGallery = () => {
   }
 
   return () => {
+    document.removeEventListener('keydown', handleKeyDown)
+    document.removeEventListener('keyup', handleKeyUp)
+    document.removeEventListener('mousedown', handleMouseDown)
+    document.removeEventListener('mouseup', handleMouseUp)
+    document.body.removeEventListener('mousemove', handleMouseMove)
+    window.removeEventListener('resize', onWindowResize)
     destroy()
   }
 }
