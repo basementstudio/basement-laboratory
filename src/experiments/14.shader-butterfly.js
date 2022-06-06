@@ -69,8 +69,8 @@ const PlainThreejs = (CONFIG) => {
         gl_FragColor = vec4(uColor, alphaTexture.a);
       } 
     `,
-    wireframe: true,
-    transparent: true
+    transparent: true,
+    depthTest: false
   })
   const downWingMaterial = upWingMaterial.clone()
   downWingMaterial.uniforms.uAlphaTexture.value = wing2
