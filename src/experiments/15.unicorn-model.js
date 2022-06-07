@@ -1,4 +1,4 @@
-import { model } from '~/lib/builders'
+import { model } from '~/lib/builders/model'
 
 const Unicorn = model('Unicorn_v3.gltf', {
   scale: 1.4,

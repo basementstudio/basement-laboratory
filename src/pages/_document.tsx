@@ -6,7 +6,7 @@ import Document, {
   NextScript
 } from 'next/document'
 
-import { model } from '~/lib/builders'
+import { model } from '~/lib/builders/model'
 
 // @ts-ignore
 globalThis.model = model

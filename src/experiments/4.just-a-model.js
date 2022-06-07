@@ -1,4 +1,4 @@
-import { model } from '~/lib/builders'
+import { model } from '~/lib/builders/model'
 
 const JustAModel = model('BasementLogo_Short.glb', {
   scale: 2
