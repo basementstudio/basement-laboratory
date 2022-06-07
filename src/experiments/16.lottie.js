@@ -15,5 +15,6 @@ Lottie.getLayout = ({ Component, title, description, slug }) => {
 }
 
 Lottie.Title = 'Lottie Hoverboard'
+Lottie.Tags = 'lottie,animation'
 
 export default Lottie

@@ -8,5 +8,6 @@ const Unicorn = model('Unicorn_v3.gltf', {
 })
 
 Unicorn.Title = 'This is an Unicorn'
+Unicorn.Tags = '3d'
 
 export default Unicorn

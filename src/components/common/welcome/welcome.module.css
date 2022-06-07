@@ -32,21 +32,49 @@
 }
 
 .box {
-  padding: 20px;
   background: var(--color-gray);
   border-radius: var(--rounded-lg);
   border: 1px solid var(--color-gray-lighter);
+}
+
+.box:not(.noPadding) {
+  padding: 20px;
+}
+
+.experimentItem:not(:last-child) {
+  border-bottom: 1px solid var(--color-gray-lighter);
+}
+
+.experimentItem a {
+  text-decoration: none !important;
+}
+
+.experimentItem .tags {
+  justify-self: end;
+}
+
+.experimentItem .tags .tag {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--color-gray-lighter);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.experimentItem .tags .tag:not(:last-child) {
+  margin-right: 6px;
+}
+
+.experimentInner {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .welcome code {
   padding: 2px 6px;
   border-radius: var(--rounded-md);
   background: var(--color-gray-lighter);
-}
-
-.welcome ol {
-  list-style: decimal;
-  list-style-position: inside;
 }
 
 .welcome h3 {

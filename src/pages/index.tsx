@@ -33,7 +33,11 @@ export const getStaticProps: GetStaticProps = async () => {
       return {
         filename: exp[0],
         title,
-        href: `/experiments/${exp[0]}`
+        href: `/experiments/${exp[0]}`,
+        tags:
+          (exp[1].Tags as string)
+            ?.split(',')
+            ?.map((tag) => tag.toLowerCase().trim()) || []
       }
     })
     .sort((a, b) =>

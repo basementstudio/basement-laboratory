@@ -142,5 +142,6 @@ ImagePortal.Description = (
     .
   </p>
 )
+ImagePortal.Tags = 'html,animation'
 
 export default ImagePortal

@@ -54,5 +54,6 @@ GreenNumbers.getLayout = ({ Component, title, description, slug }) => {
 GreenNumbers.Title = 'Green numbers'
 GreenNumbers.Description =
   'Green numbers shader from shadertoy. Made with OGL & React-OGL.'
+GreenNumbers.Tags = 'ogl,shaders'
 
 export default GreenNumbers

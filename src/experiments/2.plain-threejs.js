@@ -49,5 +49,6 @@ PlainThreejs.getLayout = ({ Component: fn, ...rest }) => (
 
 PlainThreejs.Title = 'Plain ThreeJS (example)'
 PlainThreejs.Description = 'An example of how to do a plain ThreeJS experiment.'
+PlainThreejs.Tags = 'example'
 
 export default PlainThreejs

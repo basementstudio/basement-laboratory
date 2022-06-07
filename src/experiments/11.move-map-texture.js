@@ -124,9 +124,10 @@ MoveMapTexture.getLayout = ({ Component, title, description, slug }) => (
 MoveMapTexture.Title = 'Move map texture (In progress)'
 MoveMapTexture.Description = (
   <p>
-    Inspirated in{' '}
+    Inspired in{' '}
     <a href="https://www.zikd.space/en/">https://www.zikd.space/en/</a>
   </p>
 )
+MoveMapTexture.Tags = 'ogl,shaders'
 
 export default MoveMapTexture

@@ -52,5 +52,6 @@ RGBShiftedModel.Description = (
     .
   </p>
 )
+RGBShiftedModel.Tags = '3d,postprocessing'
 
 export default RGBShiftedModel
