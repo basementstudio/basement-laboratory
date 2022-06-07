@@ -53,6 +53,6 @@ const Unicorn = (props) => {
   )
 }
 
-Unicorn.Title = 'This is a Unicorn (example)'
+Unicorn.Title = 'This is a Unicorn'
 
 export default Unicorn
