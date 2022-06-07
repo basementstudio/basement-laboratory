@@ -9,8 +9,8 @@ const Unicorn = (props) => {
       <OrbitControls />
       <Environment preset="sunset" />
       {/* <pointLight position="" /> */}
-      <color attach="background" args={['#FFFFFF']} />
-      <ambientLight />
+      <color attach="background" args={['#666']} />
+      <ambientLight intensity={0.1} />
 
       <Center>
         <group ref={group} {...props} dispose={null}>
