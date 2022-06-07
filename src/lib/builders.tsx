@@ -20,6 +20,7 @@ export const model = (path: string, config?: typeof baseControls): FC => {
 
     return (
       <>
+        <ambientLight />
         <OrbitControls />
         <group scale={scale}>
           {/*@ts-ignore*/}

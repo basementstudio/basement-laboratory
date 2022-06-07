@@ -38,18 +38,21 @@ const PlainThreejs = (CONFIG) => {
       uTime: { value: clock.elapsedTime },
       uAlphaTexture: { value: wing1 },
       uMinMaxX: {
-        value: new THREE.Vector2(
+        value: [
           geometry.attributes.position.array[0],
           geometry.attributes.position.array[(count - 1) * 3]
-        )
+        ]
       }
     },
     vertexShader: /* glsl */ `
       uniform float uTime;
       uniform vec2 uMinMaxX;
+      uniform mat3 positions;
 
       varying float vHeight;
       varying vec2 vUv;
+      varying float vNormalizedXPos;
+		  varying vec3 vNormal; 
 
       void main() {
         vec4 modelPosition = modelMatrix * vec4(position, 1.0);
@@ -69,6 +72,8 @@ const PlainThreejs = (CONFIG) => {
 
         vHeight = movement;
         vUv = uv;
+        vNormalizedXPos = normalizedXPos;
+        vNormal = normal;
       }
     `,
     fragmentShader: /* glsl */ `
@@ -77,17 +82,21 @@ const PlainThreejs = (CONFIG) => {
 
       varying float vHeight;
       varying vec2 vUv;
+      varying float vNormalizedXPos;
+      varying mediump vec3 vNormal;
 
       void main() {
         vec4 alphaTexture = texture2D(uAlphaTexture, vUv);
 
-        float hMultiplier = clamp(vHeight, 0.6, 1.0);
-        vec3 vecMultiplier = vec3(hMultiplier, hMultiplier, hMultiplier);
+        mediump vec3 light = vec3(0.5, 0.2, 1.0);
+        light = normalize(light);
 
+        mediump float dProd = max(0.0, dot(vNormal, light));
+ 
         vec3 invertedColor = vec3(1.0, 1.0, 1.0) - alphaTexture.rgb;
         float alpha = (invertedColor.r + invertedColor.g + invertedColor.b / 3.0);
 
-        gl_FragColor = vec4(uColor, alpha);
+        gl_FragColor = vec4(dProd, dProd, dProd, alpha);
       } 
     `,
     transparent: true,
@@ -127,6 +136,7 @@ const PlainThreejs = (CONFIG) => {
 
   update(() => {
     controls.update()
+    geometry.computeVertexNormals()
     upWingMaterial.uniforms.uTime.value = clock.elapsedTime
     downWingMaterial.uniforms.uTime.value = clock.elapsedTime - 0.1
   })
