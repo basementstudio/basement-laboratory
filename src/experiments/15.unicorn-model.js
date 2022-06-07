@@ -1,22 +1,12 @@
-import { Environment } from '@react-three/drei'
-
 import { model } from '~/lib/builders'
 
-const Model = model('Unicorn_v3.gltf', {
+const Unicorn = model('Unicorn_v3.gltf', {
   scale: 1.4,
-  ambientLight: 0.1
+  ambientLight: 0.1,
+  background: '#666',
+  environment: 'sunset'
 })
 
-const JustAModel = () => {
-  return (
-    <>
-      <color attach="background" args={['#666']} />
-      <Environment preset="sunset" />
-      <Model />
-    </>
-  )
-}
+Unicorn.Title = 'This is an Unicorn'
 
-JustAModel.Title = 'This is an Unicorn'
-
-export default JustAModel
+export default Unicorn
