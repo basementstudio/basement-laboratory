@@ -19,6 +19,7 @@
     "@basementstudio/definitive-scroll": "^0.1.4",
     "@react-three/drei": "^9.11.2",
     "@react-three/fiber": "^8.0.19",
+    "@react-three/gltfjsx": "^4.3.4",
     "@react-three/postprocessing": "^2.3.2",
     "clsx": "1.1.1",
     "gsap": "^3.10.4",
