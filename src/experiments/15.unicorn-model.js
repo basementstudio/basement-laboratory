@@ -10,6 +10,7 @@ const Model = model('Unicorn_v3.gltf', {
 const JustAModel = () => {
   return (
     <>
+      <color attach="background" args={['#666']} />
       <Environment preset="sunset" />
       <Model />
     </>
