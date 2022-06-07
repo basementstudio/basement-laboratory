@@ -27,55 +27,75 @@ const PlainThreejs = (CONFIG) => {
   controls.update()
 
   /* Object */
+  const geometry = new THREE.PlaneBufferGeometry(1, 1, 50, 50)
+
+  const count = geometry.attributes.position.count
+
   const upWingMaterial = new THREE.ShaderMaterial({
     side: THREE.DoubleSide,
     uniforms: {
-      uColor: { value: new THREE.Color('red') },
+      uColor: { value: new THREE.Color('white') },
       uTime: { value: clock.elapsedTime },
-      uAlphaTexture: { value: wing1 }
+      uAlphaTexture: { value: wing1 },
+      uMinMaxX: {
+        value: new THREE.Vector2(
+          geometry.attributes.position.array[0],
+          geometry.attributes.position.array[(count - 1) * 3]
+        )
+      }
     },
     vertexShader: /* glsl */ `
       uniform float uTime;
-      
+      uniform vec2 uMinMaxX;
+
       varying float vHeight;
       varying vec2 vUv;
 
       void main() {
         vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-      
-        float normalizedXPos = position.x / 1.0;
 
-        modelPosition.z += sin(-position.x * float(${CONFIG.frequency}) + uTime * float(${CONFIG.speed})) * float(${CONFIG.intensity}) * (1.0 + normalizedXPos);
+        float normalizedXPos = (position.x - float(uMinMaxX.x)) / (float(uMinMaxX.y) - float(uMinMaxX.x));
 
-        vHeight = modelPosition.z;
-        vUv = uv;
+        float movement = sin(-position.x * float(${CONFIG.frequency}) + uTime * float(${CONFIG.speed}));
+
+        float transformedMovement = movement * float(${CONFIG.intensity}) * normalizedXPos;
+
+        modelPosition.z += transformedMovement;
 
         vec4 viewPosition = viewMatrix * modelPosition;
         vec4 projectedPosition = projectionMatrix * viewPosition;
 
         gl_Position = projectedPosition;
+
+        vHeight = movement;
+        vUv = uv;
       }
     `,
     fragmentShader: /* glsl */ `
       uniform vec3 uColor;
       uniform sampler2D uAlphaTexture;
-      
+
       varying float vHeight;
       varying vec2 vUv;
 
       void main() {
         vec4 alphaTexture = texture2D(uAlphaTexture, vUv);
 
-        gl_FragColor = vec4(uColor, alphaTexture.a);
+        float hMultiplier = clamp(vHeight, 0.6, 1.0);
+        vec3 vecMultiplier = vec3(hMultiplier, hMultiplier, hMultiplier);
+
+        vec3 invertedColor = vec3(1.0, 1.0, 1.0) - alphaTexture.rgb;
+        float alpha = (invertedColor.r + invertedColor.g + invertedColor.b / 3.0);
+
+        gl_FragColor = vec4(uColor, alpha);
       } 
     `,
     transparent: true,
     depthTest: false
   })
+
   const downWingMaterial = upWingMaterial.clone()
   downWingMaterial.uniforms.uAlphaTexture.value = wing2
-
-  const geometry = new THREE.PlaneBufferGeometry(1, 1, 50, 50)
 
   const wingRightUp = new THREE.Mesh(geometry, upWingMaterial)
   const wingLeftUp = new THREE.Mesh(geometry, upWingMaterial)
@@ -108,7 +128,7 @@ const PlainThreejs = (CONFIG) => {
   update(() => {
     controls.update()
     upWingMaterial.uniforms.uTime.value = clock.elapsedTime
-    downWingMaterial.uniforms.uTime.value = clock.elapsedTime
+    downWingMaterial.uniforms.uTime.value = clock.elapsedTime - 0.1
   })
 
   return () => {
