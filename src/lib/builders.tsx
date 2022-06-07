@@ -1,10 +1,14 @@
-import { Center, OrbitControls, useGLTF } from '@react-three/drei'
+import { Center, Environment, OrbitControls, useGLTF } from '@react-three/drei'
+// @ts-ignore
+import { presetsObj } from '@react-three/drei/helpers/environment-assets.cjs'
 import { useControls } from 'leva'
 import { FC } from 'react'
 
 const baseControls = {
   scale: 1,
-  ambientLight: 1
+  ambientLight: 1,
+  background: '#000',
+  environment: 'city'
 }
 
 export const model = (path: string, config?: typeof baseControls): FC => {
@@ -22,11 +26,21 @@ export const model = (path: string, config?: typeof baseControls): FC => {
         step: 0.1,
         value: config?.ambientLight || baseControls.ambientLight,
         max: 2
+      },
+      background: {
+        value: config?.background || baseControls.background
+      },
+      environment: {
+        options: Object.keys(presetsObj),
+        value: config?.environment || baseControls.environment
       }
     })
 
     return (
       <>
+        <color attach="background" args={[resolvedConfig.background]} />
+        {/* @ts-ignore */}
+        <Environment preset={resolvedConfig?.environment} />
         <ambientLight intensity={resolvedConfig?.ambientLight} />
         <OrbitControls />
         <Center>
