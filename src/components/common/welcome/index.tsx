@@ -1,25 +1,13 @@
 import clsx from 'clsx'
-import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
 
+import ExperimentsSection, {
+  ExperimentsSectionProps
+} from './experiments-section'
 import s from './welcome.module.css'
 
-type WelcomeProps = {
-  experiments: {
-    title: string
-    href: string
-    tags: string[]
-    contributors: {
-      id: string
-      url: string
-      name: string
-      avatarUrl: string
-      email: string
-      company: string
-    }[]
-  }[]
-}
+type WelcomeProps = ExperimentsSectionProps
 
 const links = [
   {
@@ -78,7 +66,7 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
         </p>
       </div>
 
-      <h3>Useful Links</h3>
+      <h3 className={s.header}>Useful Links</h3>
       <div className={clsx(s.box, s.noPadding)}>
         <ul>
           {links.map(({ href, label }) => (
@@ -117,50 +105,7 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
         </ul>
       </div>
 
-      <h3>Experiments</h3>
-      <div className={clsx(s.box, s.noPadding)}>
-        <ol>
-          {experiments.map(({ title, href, tags, contributors }, idx) => (
-            <li className={s.boxEntry} key={href}>
-              <Link href={href}>
-                <a>
-                  <div className={s.experimentInner}>
-                    <div className={s.info}>
-                      <span className={s.leftSign}>{idx + 1}</span>
-                      <h4>{title}</h4>
-                    </div>
-                    <div className={s.tags}>
-                      {tags.map((tag) => (
-                        <span key={tag} className={s.tag}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    <div className={s.contributors}>
-                      {contributors.map((user) => (
-                        <span
-                          className={s.contributor}
-                          key={user.id}
-                          title={user.name}
-                        >
-                          <Link href={user.url}>
-                            <Image
-                              layout="raw"
-                              width={32}
-                              height={32}
-                              src={user.avatarUrl}
-                            />
-                          </Link>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </a>
-              </Link>
-            </li>
-          ))}
-        </ol>
-      </div>
+      <ExperimentsSection experiments={experiments} />
     </div>
   </div>
 )
