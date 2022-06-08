@@ -4,6 +4,8 @@ import { presetsObj } from '@react-three/drei/helpers/environment-assets.cjs'
 import { useControls } from 'leva'
 import { FC } from 'react'
 
+import { useLoader } from '~/components/common/loader'
+
 const baseControls = {
   scale: 1,
   ambientLight: 1,
@@ -13,7 +15,11 @@ const baseControls = {
 
 export const model = (path: string, config?: typeof baseControls): FC => {
   return () => {
-    const model = useGLTF(`/models/${path}`)
+    const setLoaded = useLoader((s) => s.setLoaded)
+    const model = useGLTF(`/models/${path}`, undefined, undefined, (loader) => {
+      loader.manager.onLoad = () => setLoaded()
+    })
+
     const resolvedConfig = useControls({
       scale: {
         min: 0,
