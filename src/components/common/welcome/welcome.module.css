@@ -41,20 +41,20 @@
   padding: 20px;
 }
 
-.experimentItem:not(:last-child) {
+.boxEntry:not(:last-child) {
   border-bottom: 1px solid var(--color-gray-lighter);
 }
 
-.experimentItem a {
+.boxEntry a {
   text-decoration: none !important;
 }
 
-.experimentItem .contributors {
+.boxEntry .contributors {
   justify-self: end;
   padding-left: 20px;
 }
 
-.experimentItem .contributors .contributor {
+.boxEntry .contributors .contributor {
   transition: all 0.2s ease-in-out;
   display: inline-block;
   vertical-align: top;
@@ -62,19 +62,19 @@
   overflow: hidden;
 }
 
-.experimentItem .contributors .contributor:not(:last-child) {
+.boxEntry .contributors .contributor:not(:last-child) {
   margin-right: 6px;
 }
 
-.experimentItem .contributors:not(:hover) .contributor:not(:first-child) {
+.boxEntry .contributors:not(:hover) .contributor:not(:first-child) {
   margin-left: -20px;
 }
 
-.experimentItem .tags {
+.boxEntry .tags {
   justify-self: end;
 }
 
-.experimentItem .tags .tag {
+.boxEntry .tags .tag {
   padding: 4px 12px;
   border-radius: 999px;
   background: var(--color-gray-lighter);
@@ -82,8 +82,29 @@
   font-weight: 800;
 }
 
-.experimentItem .tags .tag:not(:last-child) {
+.boxEntry .tags .tag:not(:last-child) {
   margin-right: 6px;
+}
+
+.linkInner {
+  padding: 20px;
+  align-items: center;
+}
+
+.boxEntry .leftSign {
+  background-color: var(--color-gray-lighter);
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 16px;
+}
+
+.boxEntry .linkInner p {
+  margin-left: 16px;
+  display: inline-block;
 }
 
 .experimentInner {
@@ -91,6 +112,11 @@
   display: grid;
   align-items: center;
   grid-template-columns: repeat(2, 1fr) minmax(10%, auto);
+}
+
+.experimentInner .info h4 {
+  margin-left: 16px;
+  display: inline-block;
 }
 
 .welcome code {
