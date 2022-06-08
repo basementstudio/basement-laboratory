@@ -43,7 +43,10 @@ export const getSizes = (
 }
 
 export const getExampleGithubUrl = (filename: string) =>
-  `${githubUrl}/blob/main/src/experiments/${filename}`
+  `${githubUrl}/blob/main/${getExamplePath(filename)}`
+
+export const getExamplePath = (filename: string) =>
+  `src/experiments/${filename}`
 
 export const getAllExperimentSlugs = async () => {
   const fs = await import('fs')

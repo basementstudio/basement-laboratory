@@ -3,7 +3,8 @@ import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { Meta } from '~/components/common/meta'
 import Welcome from '~/components/common/welcome'
 import { PageLayout } from '~/components/layout/page'
-import { getAllExperimentSlugs } from '~/lib/utils'
+import { getFileContributors } from '~/lib/github'
+import { getAllExperimentSlugs, getExamplePath } from '~/lib/utils'
 
 const HomePage = ({
   experiments
@@ -26,7 +27,7 @@ export const getStaticProps: GetStaticProps = async () => {
     )
   )
 
-  const experiments = modules
+  let experiments = modules
     .map((exp) => {
       const title: string = exp[1].Title || exp[0]
 
@@ -43,6 +44,17 @@ export const getStaticProps: GetStaticProps = async () => {
     .sort((a, b) =>
       a.filename.localeCompare(b.filename, undefined, { numeric: true })
     )
+
+  experiments = await Promise.all(
+    experiments.map(async (e) => {
+      const contributors = await getFileContributors(getExamplePath(e.filename))
+
+      return {
+        ...e,
+        contributors
+      }
+    })
+  )
 
   return {
     props: {

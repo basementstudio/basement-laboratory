@@ -13,6 +13,7 @@ const config = {
     return config
   },
   images: {
+    domains: ['avatars.githubusercontent.com'],
     formats: ['image/avif', 'image/webp']
   },
   experimental: { images: { layoutRaw: true }, esmExternals: 'loose' },

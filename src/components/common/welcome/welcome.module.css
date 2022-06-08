@@ -49,6 +49,27 @@
   text-decoration: none !important;
 }
 
+.experimentItem .contributors {
+  justify-self: end;
+  padding-left: 12px;
+}
+
+.experimentItem .contributors .contributor {
+  transition: all 0.2s ease-in-out;
+  display: inline-block;
+  vertical-align: top;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.experimentItem .contributors .contributor:not(:last-child) {
+  margin-right: 6px;
+}
+
+.experimentItem .contributors:not(:hover) .contributor:not(:first-child) {
+  margin-left: -20px;
+}
+
 .experimentItem .tags {
   justify-self: end;
 }
@@ -68,7 +89,8 @@
 .experimentInner {
   padding: 20px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  grid-template-columns: repeat(2, 1fr) minmax(10%, auto);
 }
 
 .welcome code {
