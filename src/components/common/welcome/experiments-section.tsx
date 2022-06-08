@@ -61,47 +61,47 @@ const ExperimentsSection: FC<ExperimentsSectionProps> = ({ experiments }) => {
           {filteredExperiments.map(
             ({ title, href, tags, contributors }, idx) => (
               <li className={s.boxEntry} key={href}>
-                {/* <Link href={href}> */}
-                {/* <a> */}
-                <div className={s.experimentInner}>
-                  <div className={s.info}>
-                    <span className={s.leftSign}>{idx + 1}</span>
-                    <h4>{title}</h4>
-                  </div>
-                  <div className={s.tags}>
-                    {tags.map((tag) => (
-                      <button
-                        onClick={() => handleTagClick(tag)}
-                        key={tag}
-                        className={clsx(s.tag, {
-                          [s.activeTag]: tagFilters.includes(tag)
-                        })}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                  <div className={s.contributors}>
-                    {contributors.map((user) => (
-                      <span
-                        className={s.contributor}
-                        key={user.id}
-                        title={user.name}
-                      >
-                        <Link href={user.url}>
-                          <Image
-                            layout="raw"
-                            width={32}
-                            height={32}
-                            src={user.avatarUrl}
-                          />
-                        </Link>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                {/* </a> */}
-                {/* </Link> */}
+                <Link href={href}>
+                  <a>
+                    <div className={s.experimentInner}>
+                      <div className={s.info}>
+                        <span className={s.leftSign}>{idx + 1}</span>
+                        <h4>{title}</h4>
+                      </div>
+                      <div className={s.tags}>
+                        {tags.map((tag) => (
+                          <button
+                            onClick={() => handleTagClick(tag)}
+                            key={tag}
+                            className={clsx(s.tag, {
+                              [s.activeTag]: tagFilters.includes(tag)
+                            })}
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                      <div className={s.contributors}>
+                        {contributors.map((user) => (
+                          <span
+                            className={s.contributor}
+                            key={user.id}
+                            title={user.name}
+                          >
+                            <Link href={user.url}>
+                              <Image
+                                layout="raw"
+                                width={32}
+                                height={32}
+                                src={user.avatarUrl}
+                              />
+                            </Link>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </a>
+                </Link>
               </li>
             )
           )}

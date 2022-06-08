@@ -50,7 +50,7 @@
 }
 
 .boxEntry .contributors {
-  justify-self: end;
+  justify-self: self-end;
   padding-left: 20px;
 }
 
@@ -117,7 +117,7 @@
 
 .experimentsHeader .filterTags {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .experimentInner {
@@ -133,7 +133,7 @@
 }
 
 .experimentInner .tags {
-  justify-self: end;
+  justify-self: flex-end;
 }
 
 .welcome code {
