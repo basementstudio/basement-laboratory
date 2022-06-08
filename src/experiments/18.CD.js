@@ -4,7 +4,7 @@ import { model } from '~/lib/builders/model'
 
 const CD = model('cd.glb', {
   scale: 0.6,
-  ambientLight: 0.0,
+  ambientLight: 0.1,
   background: '#000',
   environment: 'sunset'
 })
