@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import Image from 'next/image'
 import Link from 'next/link'
 import { FC } from 'react'
 
@@ -9,6 +10,14 @@ type WelcomeProps = {
     title: string
     href: string
     tags: string[]
+    contributors: {
+      id: string
+      url: string
+      name: string
+      avatarUrl: string
+      email: string
+      company: string
+    }[]
   }[]
 }
 
@@ -80,7 +89,7 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
       <h3>Experiments</h3>
       <div className={clsx(s.box, s.noPadding)}>
         <ol>
-          {experiments.map(({ title, href, tags }, idx) => (
+          {experiments.map(({ title, href, tags, contributors }, idx) => (
             <li className={s.experimentItem} key={href}>
               <Link href={href}>
                 <a>
@@ -92,6 +101,24 @@ const Welcome: FC<WelcomeProps> = ({ experiments }) => (
                       {tags.map((tag) => (
                         <span key={tag} className={s.tag}>
                           {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className={s.contributors}>
+                      {contributors.map((user) => (
+                        <span
+                          className={s.contributor}
+                          key={user.id}
+                          title={user.name}
+                        >
+                          <Link href={user.url}>
+                            <Image
+                              layout="raw"
+                              width={32}
+                              height={32}
+                              src={user.avatarUrl}
+                            />
+                          </Link>
                         </span>
                       ))}
                     </div>
