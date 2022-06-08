@@ -1,3 +1,4 @@
+import { isDev } from 'lib/constants'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 
 import { Meta } from '~/components/common/meta'
@@ -45,6 +46,17 @@ export const getStaticProps: GetStaticProps = async () => {
       a.filename.localeCompare(b.filename, undefined, { numeric: true })
     )
 
+  if (!isDev) {
+    // Filter privates
+    experiments = experiments.filter((e) => !e.tags.includes('private'))
+  }
+
+  // Numerate experiments
+  experiments = experiments.map((e, i) => ({
+    ...e,
+    number: i + 1
+  }))
+
   // Add contributors
   experiments = await Promise.all(
     experiments.map(async (e) => {
@@ -56,9 +68,6 @@ export const getStaticProps: GetStaticProps = async () => {
       }
     })
   )
-
-  // Filter privates
-  experiments = experiments.filter((e) => !e.tags.includes('private'))
 
   return {
     props: {
