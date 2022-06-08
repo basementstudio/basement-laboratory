@@ -7,6 +7,7 @@ import s from './welcome.module.css'
 
 export type ExperimentsSectionProps = {
   experiments: {
+    number: number
     title: string
     href: string
     tags: string[]
@@ -59,13 +60,13 @@ const ExperimentsSection: FC<ExperimentsSectionProps> = ({ experiments }) => {
       <div className={clsx(s.box, s.noPadding)}>
         <ol>
           {filteredExperiments.map(
-            ({ title, href, tags, contributors }, idx) => (
+            ({ title, href, tags, contributors, number }) => (
               <li className={s.boxEntry} key={href}>
                 <div className={s.experimentInner}>
                   <div className={s.info}>
                     <Link href={href}>
                       <a>
-                        <span className={s.leftSign}>{idx + 1}</span>
+                        <span className={s.leftSign}>{number}</span>
                         <h4>{title}</h4>
                       </a>
                     </Link>
