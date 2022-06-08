@@ -8,6 +8,6 @@ const nextJS = model('next.glb', {
 })
 
 nextJS.Title = 'Next.js 3d model'
-nextJS.Tags = '3d'
+nextJS.Tags = '3d,private'
 
 export default nextJS

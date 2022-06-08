@@ -92,12 +92,14 @@ const ExperimentsSection: FC<ExperimentsSectionProps> = ({ experiments }) => {
                         title={user.name}
                       >
                         <Link href={user.url}>
-                          <Image
-                            layout="raw"
-                            width={32}
-                            height={32}
-                            src={user.avatarUrl}
-                          />
+                          <a>
+                            <Image
+                              layout="raw"
+                              width={32}
+                              height={32}
+                              src={user.avatarUrl}
+                            />
+                          </a>
                         </Link>
                       </span>
                     ))}

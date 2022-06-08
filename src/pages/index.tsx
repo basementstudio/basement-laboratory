@@ -45,6 +45,7 @@ export const getStaticProps: GetStaticProps = async () => {
       a.filename.localeCompare(b.filename, undefined, { numeric: true })
     )
 
+  // Add contributors
   experiments = await Promise.all(
     experiments.map(async (e) => {
       const contributors = await getFileContributors(getExamplePath(e.filename))
@@ -55,6 +56,9 @@ export const getStaticProps: GetStaticProps = async () => {
       }
     })
   )
+
+  // Filter privates
+  experiments = experiments.filter((e) => !e.tags.includes('private'))
 
   return {
     props: {
