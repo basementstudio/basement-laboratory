@@ -6,13 +6,21 @@ import { NavigationLayout } from '../components/layout/navigation-layout'
 
 const SVGFilters = () => {
   return (
-    <main style={{ overflow: 'hidden', minHeight: '100vh' }}>
+    <main
+      style={{
+        overflow: 'hidden',
+        minHeight: '100vh',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px'
+      }}
+    >
       <div
         style={{
           filter: 'url(#n1)',
-          padding: '140px 20px',
           maxWidth: '768px',
-          margin: '0 auto',
           mixBlendMode: 'difference',
           fontSize: 'min(56px, 7vw)'
         }}
