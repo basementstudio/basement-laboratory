@@ -26,3 +26,14 @@
   font-style: normal;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'Basement Grotesque';
+  src: url('https://basement.studio/fonts/basement-grotesque/BasementGrotesque-Black_v1.202.woff2')
+      format('woff2'),
+    url('https://basement.studio/fonts/basement-grotesque/BasementGrotesque-Black_v1.202.woff')
+      format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
