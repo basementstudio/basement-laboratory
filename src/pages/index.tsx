@@ -71,7 +71,7 @@ export const getStaticProps: GetStaticProps = async () => {
   )
 
   fs.writeFileSync(
-    process.cwd() + 'public/experiments.json',
+    process.cwd() + '/public/experiments.json',
     JSON.stringify(experiments, null, 2)
   )
 
