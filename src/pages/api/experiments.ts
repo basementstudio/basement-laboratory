@@ -1,7 +1,12 @@
+import { NextApiRequest, NextApiResponse } from 'next'
+
 import { getFileContributors } from '../../lib/github'
 import { getAllExperimentSlugs, getExamplePath } from '../../lib/utils'
 
-export default async function handler(req, res) {
+export default async function handler(
+  _req: NextApiRequest,
+  res: NextApiResponse
+) {
   const allSlugs = await getAllExperimentSlugs()
 
   const modules = await Promise.all(
