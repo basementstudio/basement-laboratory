@@ -28,12 +28,14 @@ const config = {
     ]
   },
   async rewrites() {
-    return [
-      {
-        source: '/experiments/:path*',
-        destination: `${BASEMENT_WEBSITE_URL}/lab/experiments/:path*`
-      }
-    ]
+    return {
+      fallback: [
+        {
+          source: '/experiments/:path*',
+          destination: `${BASEMENT_WEBSITE_URL}/lab/experiments/:path*`
+        }
+      ]
+    }
   }
 }
 
