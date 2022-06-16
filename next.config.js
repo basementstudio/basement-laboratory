@@ -1,6 +1,7 @@
 const withPlugins = require('next-compose-plugins')
 const withBundleAnalyzer = require('@next/bundle-analyzer')
 const withTM = require('next-transpile-modules')
+const { BASEMENT_WEBSITE_URL } = process.env
 
 /**
  * @type {import('next').NextConfig}
@@ -23,6 +24,14 @@ const config = {
         source: '/experiments',
         destination: '/',
         permanent: true
+      }
+    ]
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/experiments/:path*',
+        destination: `${BASEMENT_WEBSITE_URL}/lab/experiments/:path*`
       }
     ]
   }
