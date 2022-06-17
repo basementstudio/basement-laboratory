@@ -1,4 +1,4 @@
-# basement laboratory 🧪
+# basement laboratory 
 
 basement lab is carving out a vanguard position by combining intensive technology with formal design expertise – we are making the internet everything it can be.
 
