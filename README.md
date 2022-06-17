@@ -7,8 +7,8 @@ basement lab is carving out a vanguard position by combining intensive technolog
 
 This repo motivation is to be a centralized place to throw every experimental piece of crappy code see how it rocks on the web. Here you'll find all kinds of utilities that might make your 3d crafting process easier.
 
-## Deps
-- ThreeJS
+## Technologies
+- [Three JS]([https://threejs.org/])
 - Three Fiber
 - Three Drei
 
