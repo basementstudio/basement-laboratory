@@ -7,7 +7,7 @@ basement lab is carving out a vanguard position by combining intensive technolog
 ## Technologies
 - [Three.js](https://threejs.org/)
 - [React Three Fiber](https://docs.pmnd.rs/react-three-fiber/getting-started/introduction)
-- [Three Drei](https://github.com/pmndrs/drei)
+- [Drei](https://github.com/pmndrs/drei)
 
 ## Contributors
 
