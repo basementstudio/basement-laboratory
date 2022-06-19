@@ -20,6 +20,7 @@ const HomePage = ({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  const fs = await import('fs')
   const allSlugs = await getAllExperimentSlugs()
 
   const modules = await Promise.all(
@@ -67,6 +68,11 @@ export const getStaticProps: GetStaticProps = async () => {
         contributors
       }
     })
+  )
+
+  fs.writeFileSync(
+    process.cwd() + '/public/experiments.json',
+    JSON.stringify(experiments, null, 2)
   )
 
   return {
