@@ -25,6 +25,10 @@ const links = [
   {
     href: 'https://gltf.report/',
     label: 'Tool | GLTF Report'
+  },
+  {
+    href: 'https://medium.com/@pailhead011/extending-three-js-materials-with-glsl-78ea7bbb9270',
+    label: 'Article | Extending Three.js materials with GLSL 🪄'
   }
 ]
 
