@@ -94,7 +94,7 @@ const Model = () => {
               #define PHONG
 
               uniform mat3 uCustomUvTransform;
-              
+
               varying mat3 vUvTransform;
               varying mat3 vCustomUvTransform;
               `
@@ -114,6 +114,7 @@ const Model = () => {
               '#define PHONG',
               /* glsl */ `
                 #define PHONG
+
                 varying mat3 vUvTransform;
                 varying mat3 vCustomUvTransform;
               `
@@ -122,14 +123,12 @@ const Model = () => {
             shader.fragmentShader = shader.fragmentShader.replace(
               '#include <map_fragment>',
               /* glsl */ `
-               
-                  vec2 untransformedUv     = ( inverse(vUvTransform) * vec3( vUv, 1 ) ).xy;
-                  vec2 customTransformedUv = ( vCustomUvTransform    * vec3( vUv, 1 ) ).xy;
+                vec2 untransformedUv     = ( inverse(vUvTransform) * vec3( vUv, 1 ) ).xy;
+                vec2 customTransformedUv = ( vCustomUvTransform    * vec3( vUv, 1 ) ).xy;
 
-                  vec4 sampledDiffuseColor = texture2D( map, customTransformedUv );
+                vec4 sampledDiffuseColor = texture2D( map, customTransformedUv );
 
-                  diffuseColor *= sampledDiffuseColor;
-                
+                diffuseColor *= sampledDiffuseColor;
               `
             )
           }}
