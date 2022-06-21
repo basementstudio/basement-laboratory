@@ -168,7 +168,11 @@ MoveMapTexture.Title = 'Move map texture'
 MoveMapTexture.Description = (
   <p>
     Inspired in{' '}
-    <a href="https://www.zikd.space/en/">https://www.zikd.space/en/</a>
+    <a href="https://www.zikd.space/en/">https://www.zikd.space/en/</a>.
+    <br />
+    <br />
+    Here I extended the <code>MeshPhongMaterial</code> shader replacing the map
+    texture uv mapping implementation, to use a custom transformed uv set.
   </p>
 )
 MoveMapTexture.Tags = 'shaders'
