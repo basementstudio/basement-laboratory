@@ -78,11 +78,6 @@ const Model = () => {
           ]}
         />
         <meshPhongMaterial
-          uniforms={{
-            uCustomUvTransform: {
-              value: new THREE.Matrix3()
-            }
-          }}
           onBeforeCompile={(shader) => {
             shader.uniforms.uCustomUvTransform = {
               value: customUvTransform
@@ -124,7 +119,7 @@ const Model = () => {
               '#include <map_fragment>',
               /* glsl */ `
                 vec2 untransformedUv     = ( inverse(vUvTransform) * vec3( vUv, 1 ) ).xy;
-                vec2 customTransformedUv = ( vCustomUvTransform    * vec3( vUv, 1 ) ).xy;
+                vec2 customTransformedUv = ( vCustomUvTransform    * vec3( untransformedUv, 1 ) ).xy;
 
                 vec4 sampledDiffuseColor = texture2D( map, customTransformedUv );
 
