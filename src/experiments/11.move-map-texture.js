@@ -11,6 +11,8 @@ import { NavigationLayout } from '../components/layout/navigation-layout'
 
 const WebGL = tunnel()
 
+const customUvTransform = new THREE.Matrix3()
+
 const Model = () => {
   const meshRef = useRef()
   const disp = useLoader(EXRLoader, '/textures/11.displacement.exr')
@@ -20,13 +22,9 @@ const Model = () => {
       '/textures/11.normal.png',
       '/textures/11.displacement.png'
     ],
-    ([map, normal]) => {
+    ([map]) => {
       map.wrapS = THREE.RepeatWrapping
       map.wrapT = THREE.RepeatWrapping
-
-      normal.matrixAutoUpdate = false
-      // map.matrixAutoUpdate = false
-      disp.matrixAutoUpdate = false
     }
   )
   const CONFIG = useControls({
@@ -60,16 +58,12 @@ const Model = () => {
 
   useFrame(() => {
     const offset = ((scrollHeight - window.scrollY) / scrollHeight - 1) * 5
-    disp.needsUpdate = false
-    textures.needsUpdate = false
-    map.offset.y = offset
-    map.needsUpdate = true
+    customUvTransform.setUvTransform(0, offset, 1, 1, 0, 0, 0)
   })
 
   return (
     <>
       <OrbitControls enableZoom={false} />
-      <pointLight position={[0, -2, 2]} />
       <ambientLight />
       <mesh ref={meshRef} rotation={[0, Math.PI, 0]}>
         <cylinderGeometry
@@ -83,7 +77,62 @@ const Model = () => {
             true
           ]}
         />
-        <meshStandardMaterial
+        <meshPhongMaterial
+          uniforms={{
+            uCustomUvTransform: {
+              value: new THREE.Matrix3()
+            }
+          }}
+          onBeforeCompile={(shader) => {
+            shader.uniforms.uCustomUvTransform = {
+              value: customUvTransform
+            }
+
+            shader.vertexShader = shader.vertexShader.replace(
+              '#define PHONG',
+              /* glsl */ `
+              #define PHONG
+
+              uniform mat3 uCustomUvTransform;
+              
+              varying mat3 vUvTransform;
+              varying mat3 vCustomUvTransform;
+              `
+            )
+
+            shader.vertexShader = shader.vertexShader.replace(
+              '#include <fog_vertex>',
+              /* glsl */ `
+                #include <fog_vertex>
+
+                vUvTransform = uvTransform;
+                vCustomUvTransform = uCustomUvTransform;
+              `
+            )
+
+            shader.fragmentShader = shader.fragmentShader.replace(
+              '#define PHONG',
+              /* glsl */ `
+                #define PHONG
+                varying mat3 vUvTransform;
+                varying mat3 vCustomUvTransform;
+              `
+            )
+
+            shader.fragmentShader = shader.fragmentShader.replace(
+              '#include <map_fragment>',
+              /* glsl */ `
+               
+                  vec2 untransformedUv     = ( inverse(vUvTransform) * vec3( vUv, 1 ) ).xy;
+                  vec2 customTransformedUv = ( vCustomUvTransform    * vec3( vUv, 1 ) ).xy;
+
+                  vec4 sampledDiffuseColor = texture2D( map, customTransformedUv );
+
+                  diffuseColor *= sampledDiffuseColor;
+                
+              `
+            )
+          }}
           map={map}
           displacementMap={disp}
           displacementScale={CONFIG.displacementScale}
@@ -121,13 +170,13 @@ MoveMapTexture.getLayout = ({ Component, title, description, slug }) => (
   </NavigationLayout>
 )
 
-MoveMapTexture.Title = 'Move map texture (In progress)'
+MoveMapTexture.Title = 'Move map texture'
 MoveMapTexture.Description = (
   <p>
     Inspired in{' '}
     <a href="https://www.zikd.space/en/">https://www.zikd.space/en/</a>
   </p>
 )
-MoveMapTexture.Tags = 'ogl,shaders'
+MoveMapTexture.Tags = 'shaders'
 
 export default MoveMapTexture
