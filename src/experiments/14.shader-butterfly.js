@@ -4,10 +4,16 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { Script } from '../components/common/script'
 import { PlainCanvasLayout } from '../components/layout/plain-canvas-layout.tsx'
+import { isClient } from '../lib/constants'
 import { createWorld } from '../lib/three'
 
-const canvasHelper = document.createElement('canvas')
-const ctx = canvasHelper.getContext('2d')
+let canvasHelper
+let ctx
+
+if (isClient) {
+  canvasHelper = document.createElement('canvas')
+  ctx = canvasHelper.getContext('2d')
+}
 
 const PlainThreejs = (CONFIG) => {
   let loaded = false
@@ -118,10 +124,12 @@ const PlainThreejs = (CONFIG) => {
 
     const image = wing1.image
 
-    canvasHelper.width = image.width
-    canvasHelper.height = image.height
+    if (isClient) {
+      canvasHelper.width = image.width
+      canvasHelper.height = image.height
 
-    ctx.drawImage(image, 0, 0)
+      ctx.drawImage(image, 0, 0)
+    }
 
     // https://developer.mozilla.org/en-US/docs/Web/API/ImageData/data
     // const imgData = ctx.getImageData(0, 0, image.width, image.height)
