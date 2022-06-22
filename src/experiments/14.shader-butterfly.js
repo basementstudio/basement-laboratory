@@ -124,7 +124,7 @@ const PlainThreejs = (CONFIG) => {
     ctx.drawImage(image, 0, 0)
 
     // https://developer.mozilla.org/en-US/docs/Web/API/ImageData/data
-    const imgData = ctx.getImageData(0, 0, image.width, image.height)
+    // const imgData = ctx.getImageData(0, 0, image.width, image.height)
   })
   const textureLoader = new THREE.TextureLoader(loadingManager)
   const wing1 = textureLoader.load('/textures/14.wing-1.png')
