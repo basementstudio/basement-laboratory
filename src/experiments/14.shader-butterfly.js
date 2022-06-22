@@ -67,9 +67,7 @@ const PlainThreejs = (CONFIG) => {
             float transformedNormalizedXPos = normalizedXPos * float(${CONFIG.intensity});
             // This movement decreases its intensity towards the root of the wing
             float transformedMovement = movement * transformedNormalizedXPos;
-            
-            // Used to calc color, because we dont use negative values to shade color based on depth
-            float normalizedMinMaxHeightFromCeroRange = (transformedMovement - (0.0)) / (transformedNormalizedXPos - (0.0));
+
             // Used to calc x position, we care about negative values
             float normalizedMinMaxHeightFullRange = (transformedMovement - (-transformedNormalizedXPos)) / (transformedNormalizedXPos - (-transformedNormalizedXPos));
 
@@ -84,15 +82,16 @@ const PlainThreejs = (CONFIG) => {
             vHeight = transformedMovement;
             vUv = uv;
             vNormalizedXPos = transformedNormalizedXPos;
-            vNormalizedMinMaxHeightRange = normalizedMinMaxHeightFromCeroRange;
             vNormal = normal;
+            // Used to calc color, because we dont use negative values to shade color based on depth
+            vNormalizedMinMaxHeightRange = movement;
           }
         `,
       fragmentShader: /* glsl */ `
           uniform float uAlpha;
           uniform vec3 uColor;
           uniform sampler2D uAlphaTexture;
-    
+
           varying float vHeight;
           varying vec2 vUv;
           varying float vNormalizedXPos;
@@ -108,9 +107,9 @@ const PlainThreejs = (CONFIG) => {
             float alpha = invertedAlphaColor * uAlpha;
 
             float darkeningMultiplier = 0.75;
-            float depthDarkening = vNormalizedMinMaxHeightRange * darkeningMultiplier * ((1.0 - vNormalizedXPos) - 0.28);
+            float depthDarkening = vNormalizedMinMaxHeightRange * darkeningMultiplier * (1.0 - vNormalizedXPos);
 
-            gl_FragColor = vec4(uColor - clamp(depthDarkening, 0.0, 1.0), alpha);
+            gl_FragColor = vec4(uColor - depthDarkening, alpha);
           }
         `,
       transparent: true,
@@ -162,9 +161,6 @@ const PlainThreejs = (CONFIG) => {
   wingRightDown.position.set(1 / 2 + 0.025, -0.72, 0)
   wingLeftDown.position.set(-(1 / 2 + 0.025), -0.72, 0)
 
-  // wingRightDown.material.uniforms.uAlphaTexture.value = wing2
-  // wingLeftDown.material.uniforms.uAlphaTexture.value = wing2
-
   const fly = new THREE.Group().add(
     wingRightUp,
     wingRightDown,
@@ -184,6 +180,7 @@ const PlainThreejs = (CONFIG) => {
   let resolvedAlpha = 0
   let defaultColor = new THREE.Color('white')
   let hoverColor = new THREE.Color('red')
+  let intersection
 
   update(() => {
     raycaster.setFromCamera(cursor, camera)
@@ -192,11 +189,11 @@ const PlainThreejs = (CONFIG) => {
       mesh.material.uniforms.uColor.value = defaultColor
     })
 
-    raycaster.intersectObjects(fly.children).map((intersect) => {
-      console.log(intersect.face)
+    intersection = raycaster.intersectObjects(fly.children)[0]
 
-      intersect.object.material.uniforms.uColor.value = hoverColor
-    })
+    if (intersection) {
+      intersection.object.material.uniforms.uColor.value = hoverColor
+    }
 
     controls.update()
     geometry.computeVertexNormals()
