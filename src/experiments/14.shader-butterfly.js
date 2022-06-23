@@ -109,7 +109,7 @@ const PlainThreejs = (CONFIG) => {
             float darkeningMultiplier = 0.75;
             float depthDarkening = vNormalizedMinMaxHeightRange * darkeningMultiplier * ((1.0 - vNormalizedXPos) - 0.28);
 
-            gl_FragColor = vec4(uColor - depthDarkening, alpha);
+            gl_FragColor = vec4(uColor - clamp(depthDarkening, 0.0, 1.0), alpha);
           }
         `,
       transparent: true,
@@ -156,10 +156,17 @@ const PlainThreejs = (CONFIG) => {
   const wingRightDown = new THREE.Mesh(geometry, downWingMaterial)
   const wingLeftDown = new THREE.Mesh(geometry, downWingMaterial.clone())
 
+  // Positionate Wings
   wingRightUp.position.set(1 / 2 + 0.025, 0, 0)
   wingLeftUp.position.set(-(1 / 2 + 0.025), 0, 0)
   wingRightDown.position.set(1 / 2 + 0.025, -0.72, -0.0005)
   wingLeftDown.position.set(-(1 / 2 + 0.025), -0.72, -0.0005)
+
+  // Name wings
+  wingRightUp.userData.name = 'right-up'
+  wingLeftUp.userData.name = 'left-up'
+  wingRightDown.userData.name = 'right-down'
+  wingLeftDown.userData.name = 'left-down'
 
   const fly = new THREE.Group().add(
     wingRightUp,
@@ -180,6 +187,12 @@ const PlainThreejs = (CONFIG) => {
   let resolvedAlpha = 0
   let defaultColor = new THREE.Color('white')
   let hoverColor = new THREE.Color('red')
+  let wingHoverColors = {
+    'right-up': '#1676FF',
+    'right-down': '#06D6A0',
+    'left-up': '#FF0075',
+    'left-down': '#FFBE0B'
+  }
   let intersection
 
   update(() => {
@@ -192,6 +205,7 @@ const PlainThreejs = (CONFIG) => {
     intersection = raycaster.intersectObjects(fly.children)[0]
 
     if (intersection) {
+      hoverColor.set(wingHoverColors[intersection.object.userData.name])
       intersection.object.material.uniforms.uColor.value = hoverColor
     }
 
