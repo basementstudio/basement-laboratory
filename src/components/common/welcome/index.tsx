@@ -29,6 +29,10 @@ const links = [
   {
     href: 'https://medium.com/@pailhead011/extending-three-js-materials-with-glsl-78ea7bbb9270',
     label: 'Article | Extending Three.js materials with GLSL 🪄'
+  },
+  {
+    href: 'https://webrtc.github.io/samples/',
+    label: 'Examples | WebRTC code examples'
   }
 ]
 
