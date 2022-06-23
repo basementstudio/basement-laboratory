@@ -107,7 +107,7 @@ const PlainThreejs = (CONFIG) => {
             float alpha = invertedAlphaColor * uAlpha;
 
             float darkeningMultiplier = 0.75;
-            float depthDarkening = vNormalizedMinMaxHeightRange * darkeningMultiplier * (1.0 - vNormalizedXPos);
+            float depthDarkening = vNormalizedMinMaxHeightRange * darkeningMultiplier * ((1.0 - vNormalizedXPos) - 0.28);
 
             gl_FragColor = vec4(uColor - depthDarkening, alpha);
           }
@@ -158,8 +158,8 @@ const PlainThreejs = (CONFIG) => {
 
   wingRightUp.position.set(1 / 2 + 0.025, 0, 0)
   wingLeftUp.position.set(-(1 / 2 + 0.025), 0, 0)
-  wingRightDown.position.set(1 / 2 + 0.025, -0.72, 0)
-  wingLeftDown.position.set(-(1 / 2 + 0.025), -0.72, 0)
+  wingRightDown.position.set(1 / 2 + 0.025, -0.72, -0.0005)
+  wingLeftDown.position.set(-(1 / 2 + 0.025), -0.72, -0.0005)
 
   const fly = new THREE.Group().add(
     wingRightUp,
