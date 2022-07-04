@@ -1,4 +1,5 @@
 import { createClient } from '@liveblocks/client'
+import { useQRCode } from 'next-qrcode'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMobileOrientation } from 'react-device-detect'
 
@@ -67,6 +68,7 @@ const IS_CONTROL = PART_TYPE === 'control'
 const IS_RECEIVER = PART_TYPE === 'receiver'
 
 const RemoteControl = ({ layoutProps }) => {
+  const { Image } = useQRCode()
   const { isLandscape } = useMobileOrientation()
   const [controls, setControls] = useState({ a: false, b: false })
   const [controller, setController] = useState(null)
@@ -175,9 +177,24 @@ const RemoteControl = ({ layoutProps }) => {
         }}
       >
         <div>
-          {process.env.NEXT_PUBLIC_SITE_URL}
-          /experiments/20.remote-control.js?control="
-          {'remote-control'}"
+          <Image
+            text={
+              process.env.NEXT_PUBLIC_SITE_URL +
+              '/experiments/20.remote-control.js?control=remote-control'
+            }
+            options={{
+              type: 'image/jpeg',
+              quality: 0.3,
+              level: 'M',
+              margin: 3,
+              scale: 4,
+              width: 200,
+              color: {
+                dark: '#000',
+                light: '#fff'
+              }
+            }}
+          />
         </div>
         <br />
         <div>{controller ? 'Has control' : 'Has no control'}</div>
