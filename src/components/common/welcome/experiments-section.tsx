@@ -95,6 +95,7 @@ const ExperimentsSection: FC<ExperimentsSectionProps> = ({ experiments }) => {
                         <Link href={user.url}>
                           <a>
                             <Image
+                              // @ts-ignore
                               layout="raw"
                               width={32}
                               height={32}
