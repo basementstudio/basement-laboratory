@@ -16,7 +16,7 @@ const config = {
     domains: ['avatars.githubusercontent.com'],
     formats: ['image/avif', 'image/webp']
   },
-  experimental: { images: { layoutRaw: true }, esmExternals: 'loose' },
+  experimental: { images: { allowFutureImage: true }, esmExternals: 'loose' },
   async redirects() {
     return [
       {

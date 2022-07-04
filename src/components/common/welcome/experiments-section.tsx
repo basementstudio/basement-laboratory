@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import Image from 'next/image'
+import Image from 'next/future/image'
 import Link from 'next/link'
 import { FC, useState } from 'react'
 
@@ -95,6 +95,7 @@ const ExperimentsSection: FC<ExperimentsSectionProps> = ({ experiments }) => {
                         <Link href={user.url}>
                           <a>
                             <Image
+                              // @ts-ignore
                               layout="raw"
                               width={32}
                               height={32}
