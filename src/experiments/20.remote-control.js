@@ -3,9 +3,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMobileOrientation } from 'react-device-detect'
 
 import { NavigationLayout } from '../components/layout/navigation-layout'
-import { safeWindow } from '../lib/constants'
+import { isClient, safeWindow } from '../lib/constants'
 
 const hasControl = () => {
+  if (!isClient) return
+
   const url = new URL(safeWindow.location.href)
   return url.searchParams.get('control')
 }
