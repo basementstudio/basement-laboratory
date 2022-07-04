@@ -180,7 +180,7 @@ const RemoteControl = ({ layoutProps }) => {
           <Image
             text={
               process.env.NEXT_PUBLIC_SITE_URL +
-              '/experiments/20.remote-control.js?control=remote-control'
+              '/experiments/21.remote-control.js?control=remote-control'
             }
             options={{
               type: 'image/jpeg',
