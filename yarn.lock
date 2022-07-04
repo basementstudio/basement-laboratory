@@ -476,6 +476,11 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
+"@liveblocks/client@^0.17.4":
+  version "0.17.4"
+  resolved "https://registry.yarnpkg.com/@liveblocks/client/-/client-0.17.4.tgz#a68c1567a353e6e0d339e121b05caa488f426f6e"
+  integrity sha512-9oWh0Bnbb3D+Z59V52PAUXB939FeezQSGuaXAddlYrGF2kXohOykZQKHKOOFm2gLkKtBp8r1pMqWdRzFEhHGHg==
+
 "@next/bundle-analyzer@^12.1.2":
   version "12.1.2"
   resolved "https://registry.yarnpkg.com/@next/bundle-analyzer/-/bundle-analyzer-12.1.2.tgz#53e9f3595bd25404479b7a40a85a846b328af12b"
