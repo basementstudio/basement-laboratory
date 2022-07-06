@@ -1,0 +1,470 @@
+[
+  {
+    "filename": "1.just-html.js",
+    "title": "Just an HTML (example)",
+    "href": "/experiments/1.just-html.js",
+    "tags": [
+      "example"
+    ],
+    "number": 1,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "2.plain-threejs.js",
+    "title": "Plain ThreeJS (example)",
+    "href": "/experiments/2.plain-threejs.js",
+    "tags": [
+      "example"
+    ],
+    "number": 2,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "3.just-a-cube.js",
+    "title": "This is just a cube (example)",
+    "href": "/experiments/3.just-a-cube.js",
+    "tags": [
+      "example"
+    ],
+    "number": 3,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "4.just-a-model.js",
+    "title": "This is just a model (example)",
+    "href": "/experiments/4.just-a-model.js",
+    "tags": [
+      "example"
+    ],
+    "number": 4,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "5.rgb-shifted-model.js",
+    "title": "RGB shifted smiley face",
+    "href": "/experiments/5.rgb-shifted-model.js",
+    "tags": [
+      "3d",
+      "postprocessing"
+    ],
+    "number": 5,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "6.animated-gradient.js",
+    "title": "Animated gradient",
+    "href": "/experiments/6.animated-gradient.js",
+    "tags": [
+      "ogl",
+      "shaders"
+    ],
+    "number": 6,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "7.model-box.js",
+    "title": "Particled Model (in progress)",
+    "href": "/experiments/7.model-box.js",
+    "tags": [
+      "3d",
+      "particles"
+    ],
+    "number": 7,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "8.grid-bump.js",
+    "title": "Grid Bump",
+    "href": "/experiments/8.grid-bump.js",
+    "tags": [
+      "3d"
+    ],
+    "number": 8,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "9.image-portal.js",
+    "title": "Image Portal",
+    "href": "/experiments/9.image-portal.js",
+    "tags": [
+      "html",
+      "animation"
+    ],
+    "number": 9,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "10.hover-flowmap.js",
+    "title": "Hover flowmap",
+    "href": "/experiments/10.hover-flowmap.js",
+    "tags": [
+      "ogl",
+      "shaders"
+    ],
+    "number": 10,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "11.move-map-texture.js",
+    "title": "Move map texture",
+    "href": "/experiments/11.move-map-texture.js",
+    "tags": [
+      "shaders"
+    ],
+    "number": 11,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "12.green-numbers.js",
+    "title": "Green numbers",
+    "href": "/experiments/12.green-numbers.js",
+    "tags": [
+      "ogl",
+      "shaders"
+    ],
+    "number": 12,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "13.sculpture-gallery.js",
+    "title": "Sculpture Gallery",
+    "href": "/experiments/13.sculpture-gallery.js",
+    "tags": [
+      "3d",
+      "experience"
+    ],
+    "number": 13,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "14.shader-butterfly.js",
+    "title": "Shader Butterfly (in progress)",
+    "href": "/experiments/14.shader-butterfly.js",
+    "tags": [
+      "shader",
+      "threejs",
+      "private"
+    ],
+    "number": 14,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "15.unicorn-model.js",
+    "title": "This is an Unicorn",
+    "href": "/experiments/15.unicorn-model.js",
+    "tags": [
+      "3d"
+    ],
+    "number": 15,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "16.lottie.js",
+    "title": "Lottie Hoverboard",
+    "href": "/experiments/16.lottie.js",
+    "tags": [
+      "lottie",
+      "animation"
+    ],
+    "number": 16,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "17.next.js",
+    "title": "Next.js 3d model",
+    "href": "/experiments/17.next.js",
+    "tags": [
+      "3d",
+      "private"
+    ],
+    "number": 17,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "U_kgDOBlLnQQ",
+        "url": "https://github.com/tteFluten",
+        "name": "Juan Lautaro Martin",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/106096449?u=8c30c69d9a76276b7203a776a6fb77ed53ee3e09&v=4",
+        "email": "",
+        "company": "basement."
+      }
+    ]
+  },
+  {
+    "filename": "18.CD.js",
+    "title": "CD founded under the desk",
+    "href": "/experiments/18.CD.js",
+    "tags": [
+      "3d"
+    ],
+    "number": 18,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "U_kgDOBlLnQQ",
+        "url": "https://github.com/tteFluten",
+        "name": "Juan Lautaro Martin",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/106096449?u=8c30c69d9a76276b7203a776a6fb77ed53ee3e09&v=4",
+        "email": "",
+        "company": "basement."
+      }
+    ]
+  },
+  {
+    "filename": "19.Box.js",
+    "title": "Hologram using Normals and HDRI Test",
+    "href": "/experiments/19.Box.js",
+    "tags": [
+      "3d"
+    ],
+    "number": 19,
+    "contributors": [
+      {
+        "id": "U_kgDOBlLnQQ",
+        "url": "https://github.com/tteFluten",
+        "name": "Juan Lautaro Martin",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/106096449?u=8c30c69d9a76276b7203a776a6fb77ed53ee3e09&v=4",
+        "email": "",
+        "company": "basement."
+      }
+    ]
+  },
+  {
+    "filename": "20.svg-filter.js",
+    "title": "SVG Filters",
+    "href": "/experiments/20.svg-filter.js",
+    "tags": [
+      "example"
+    ],
+    "number": 20,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "21.remote-control.js",
+    "title": "Remote Control (in progress)",
+    "href": "/experiments/21.remote-control.js",
+    "tags": [
+      "webrtc"
+    ],
+    "number": 21,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "22.linear-lantern.js",
+    "title": "Linear Lantern",
+    "href": "/experiments/22.linear-lantern.js",
+    "tags": [
+      "example"
+    ],
+    "number": 22,
+    "contributors": []
+  }
+]
