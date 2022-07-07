@@ -465,6 +465,25 @@
       "example"
     ],
     "number": 22,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQwMDM0MTE1",
+        "url": "https://github.com/julianbenegas",
+        "name": "Julian Benegas",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/40034115?u=81f13c0151a4c8a6f1ad6356eb2b66f216ea0efe&v=4",
+        "email": "julianbenegas99@gmail.com",
+        "company": "@basementstudio "
+      }
+    ]
+  },
+  {
+    "filename": "23.cupcake.js",
+    "title": "Num Num Num 3D Cupcake",
+    "href": "/experiments/23.cupcake.js",
+    "tags": [
+      "3d"
+    ],
+    "number": 23,
     "contributors": []
   }
 ]
