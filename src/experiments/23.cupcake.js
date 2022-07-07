@@ -6,7 +6,7 @@ const cupcake = model('cupcake.glb', {
   scale: 0.6,
   ambientLight: 0.1,
   background: '#FFF',
-  environment: 'sunset'
+  environment: 'dawn'
 })
 
 cupcake.Layout = (props) => <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
