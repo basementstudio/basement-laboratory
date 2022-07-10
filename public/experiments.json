@@ -484,6 +484,15 @@
       "3d"
     ],
     "number": 23,
-    "contributors": []
+    "contributors": [
+      {
+        "id": "U_kgDOBlLnQQ",
+        "url": "https://github.com/tteFluten",
+        "name": "Juan Lautaro Martin",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/106096449?u=8c30c69d9a76276b7203a776a6fb77ed53ee3e09&v=4",
+        "email": "",
+        "company": "basement."
+      }
+    ]
   }
 ]
