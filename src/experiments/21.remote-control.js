@@ -1,9 +1,10 @@
 import { createClient } from '@liveblocks/client'
 import { useQRCode } from 'next-qrcode'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useMobileOrientation } from 'react-device-detect'
 
 import { NavigationLayout } from '../components/layout/navigation-layout'
+import { useWebRTC } from '../hooks/use-web-rtc'
 import { isClient, safeWindow } from '../lib/constants'
 
 const hasControl = () => {
@@ -72,7 +73,34 @@ const RemoteControl = ({ layoutProps }) => {
   const { isLandscape } = useMobileOrientation()
   const [controls, setControls] = useState({ a: false, b: false })
   const [controller, setController] = useState(null)
-  const room = useRef(null)
+  const [room, setRoom] = useState(null)
+  const {
+    send,
+    initOffer,
+    acceptOffer,
+    answerOffer,
+    addIceCandidate,
+    addDataChannel,
+    connection,
+    channel
+  } = useWebRTC()
+
+  const onIceCandidate = useCallback(
+    (e) => {
+      if (!room || !e.candidate) {
+        console.log('OnIceCandidate but returned', room, e.candidate)
+        return
+      }
+
+      console.log('Sending ice candidate...')
+
+      room.broadcastEvent({
+        type: 'webrtc-ice-candidate',
+        candidate: JSON.stringify(e.candidate)
+      })
+    },
+    [room]
+  )
 
   const setControl = useCallback(
     (targetControl) => (value) => {
@@ -84,34 +112,81 @@ const RemoteControl = ({ layoutProps }) => {
   )
 
   useEffect(() => {
-    if (IS_CONTROL && room.current) {
-      const _room = room.current
-
-      _room.broadcastEvent({ type: 'update-controls', controls })
+    if (IS_CONTROL && room) {
+      send({ type: 'controls-update', controls })
     }
-  }, [controls])
+  }, [controls, send, room])
 
   useEffect(() => {
-    const ROOM_ID = 'remote-control'
+    if (!connection) return
+
+    console.log('Adding on ice candidate listener')
+
+    connection.addEventListener('icecandidate', onIceCandidate)
+    connection.addEventListener('datachannel', addDataChannel)
+
+    return () => {
+      connection.removeEventListener('icecandidate', onIceCandidate)
+      connection.removeEventListener('datachannel', addDataChannel)
+    }
+  }, [onIceCandidate, addDataChannel, connection])
+
+  useEffect(() => {
+    const onChannelOpen = () => {
+      console.log('Channel opened!')
+    }
+
+    const onChannelClose = () => {
+      console.log('Channel closed!')
+    }
+
+    const onChannelMessage = (e) => {
+      const data = JSON.parse(e.data)
+
+      if (data.type === 'controls-update') {
+        setControls(data.controls)
+        console.log('Update controls!', data.controls)
+      }
+    }
+
+    channel.addEventListener('open', onChannelOpen)
+    channel.addEventListener('close', onChannelClose)
+    channel.addEventListener('message', onChannelMessage)
+
+    return () => {
+      channel.removeEventListener('open', onChannelOpen)
+      channel.removeEventListener('close', onChannelClose)
+      channel.removeEventListener('message', onChannelMessage)
+    }
+  }, [channel])
+
+  const connect = (roomId) => {
     let _room
 
     try {
-      _room = client.enter(ROOM_ID, {
+      _room = client.enter(roomId, {
         initialPresence: { type: PART_TYPE }
       })
 
       if (IS_RECEIVER) {
         _room.subscribe('others', (others, event) => {
-          const isSelf = () => event.user.id === _room.getSelf().id
+          const isSelf = () =>
+            event.user.connectionId === _room.getSelf().connectionId
 
           if (event.type === 'enter') {
-            if (isSelf()) {
+            if (!isSelf()) {
+              initOffer().then((offer) => {
+                _room.broadcastEvent({
+                  type: 'webrtc-offer',
+                  offer
+                })
+              })
               setController(event.user)
             }
           }
 
           if (event.type === 'leave') {
-            if (isSelf()) {
+            if (!isSelf()) {
               if (others.count === 0) {
                 setController(null)
               }
@@ -120,25 +195,73 @@ const RemoteControl = ({ layoutProps }) => {
         })
 
         _room.subscribe('event', (event) => {
-          console.log('New event', event)
-
-          if (event.event.type === 'update-controls') {
-            console.log('Update controls!', event.controls)
+          if (event.event.type === 'controls-update') {
             setControls(event.event.controls)
+            console.log('Update controls!', event.event.controls)
+          }
+
+          if (event.event.type === 'webrtc-ice-candidate') {
+            addIceCandidate(event.event.candidate)
+            console.log('Got ice candidate!', event.event.candidate)
+          }
+
+          if (event.event.type === 'webrtc-answer') {
+            acceptOffer(event.event.answer)
+            console.log('Answer received!', event.event.answer)
+          }
+        })
+      } else if (IS_CONTROL) {
+        _room.subscribe('event', (event) => {
+          if (event.event.type === 'webrtc-offer') {
+            answerOffer(event.event.offer).then((answer) => {
+              _room.broadcastEvent({
+                type: 'webrtc-answer',
+                answer
+              })
+            })
+          }
+
+          if (event.event.type === 'webrtc-ice-candidate') {
+            addIceCandidate(event.event.candidate)
+            console.log('Got ice candidate!', event.event.candidate)
           }
         })
       }
 
       console.log('Room connection successful: ', _room)
-      room.current = _room
+      setRoom(_room)
     } catch (error) {
       console.log('Error connecting to room: ', error)
+    }
+  }
+
+  useEffect(() => {
+    let ROOM_ID
+
+    if (IS_CONTROL) {
+      const url = new URL(safeWindow.location.href)
+      ROOM_ID = url.searchParams.get('control')
+
+      connect(ROOM_ID)
+    } else if (IS_RECEIVER) {
+      fetch(`/api/21.remote-control/get-room`)
+        .then((res) => res.json())
+        .then((res) => {
+          ROOM_ID = res.roomHash
+
+          connect(ROOM_ID)
+        })
     }
 
     return () => {
       client.leave(ROOM_ID)
     }
   }, [])
+
+  const roomUrl =
+    process.env.NEXT_PUBLIC_SITE_URL +
+    '/experiments/21.remote-control.js?control=' +
+    room?.id
 
   return IS_CONTROL ? (
     <div
@@ -176,25 +299,28 @@ const RemoteControl = ({ layoutProps }) => {
           alignItems: 'center'
         }}
       >
-        <div>
-          <Image
-            text={
-              process.env.NEXT_PUBLIC_SITE_URL +
-              '/experiments/21.remote-control.js?control=remote-control'
-            }
-            options={{
-              type: 'image/jpeg',
-              quality: 0.3,
-              level: 'M',
-              margin: 3,
-              scale: 4,
-              width: 200,
-              color: {
-                dark: '#000',
-                light: '#fff'
-              }
-            }}
-          />
+        <div
+          onClick={() => {
+            navigator.clipboard.writeText(roomUrl)
+          }}
+        >
+          {room?.id && (
+            <Image
+              text={roomUrl}
+              options={{
+                type: 'image/jpeg',
+                quality: 0.3,
+                level: 'M',
+                margin: 3,
+                scale: 4,
+                width: 200,
+                color: {
+                  dark: '#000',
+                  light: '#fff'
+                }
+              }}
+            />
+          )}
         </div>
         <br />
         <div>{controller ? 'Has control' : 'Has no control'}</div>

@@ -1,21 +1,29 @@
 import crypto from 'crypto'
 import type { NextRequest } from 'next/server'
 
+import { isDev } from '~/lib/constants'
+
 type Response = {
   ip?: string
-  headers: Record<string, string>
   roomHash?: string
   roomUUID?: string
+  headers?: Record<string, string>
 }
 
-export default (req: NextRequest) => {
-  const res: Response = { ip: req.ip, headers: {} }
+export default async (req: NextRequest) => {
+  const res: Response = { ip: req.ip }
 
-  req.headers.forEach((value, key) => {
-    res['headers'][key] = value
+  const headers: Response['headers'] = {}
+
+  req.headers?.forEach?.((value, key) => {
+    headers[key] = value
   })
 
-  const uuid = req.ip || '' + crypto.randomBytes(16).toString('hex')
+  const uuid =
+    req.ip ||
+    (isDev ? headers['host'] : 'localhost') ||
+    (Math.random() * 1000).toString() ||
+    ''
 
   res['roomUUID'] = uuid
   res['roomHash'] = crypto.createHash('sha256').update(uuid).digest('hex')
