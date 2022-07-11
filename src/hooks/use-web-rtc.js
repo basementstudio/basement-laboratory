@@ -5,7 +5,13 @@ let sendChannel
 
 function createConnection() {
   console.log('Creating RTCPeerConnection')
-  const servers = null
+  const servers = {
+    iceServers: [
+      {
+        urls: 'stun:stun.l.google.com:19302'
+      }
+    ]
+  }
 
   localConnection = new RTCPeerConnection(servers)
 
