@@ -18,10 +18,52 @@ const client = createClient({
   publicApiKey: process.env.NEXT_PUBLIC_LIVEBLOCKS_API_KEY
 })
 
-const Button = ({ active, ...rest }) => {
+const TrackPad = ({ onChange, coords }) => {
+  const handleUpdate = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Get relative coords
+    const rect = e.target.getBoundingClientRect()
+    const x = e.touches[0].clientX - rect.left
+    const y = e.touches[0].clientY - rect.top
+    onChange([x, y])
+  }
+
+  return (
+    <div
+      onTouchStart={handleUpdate}
+      onTouchMove={handleUpdate}
+      style={{
+        position: 'relative',
+        height: '100%',
+        width: '100%',
+        border: '1px solid white'
+      }}
+    >
+      <span
+        style={{
+          position: 'absolute',
+          left: coords[0],
+          top: coords[1],
+          display: 'inline-block',
+          borderRadius: '50%',
+          width: 50,
+          height: 50,
+          border: '1px solid white',
+          transform: 'translate(-50%, -50%)',
+          background: 'black'
+        }}
+      />
+    </div>
+  )
+}
+
+const Button = ({ active, style, ...rest }) => {
   return (
     <button
       style={{
+        ...style,
         WebkitUserSelect: 'none',
         userSelect: 'none',
         width: '100%',
@@ -43,10 +85,12 @@ const ControlView = ({ controls }) => {
         display: 'grid',
         height: '100%',
         width: '100%',
-        gridTemplateColumns: 'repeat(2, 1fr)'
+        gridTemplateColumns: 'auto 100px',
+        gridTemplateRows: 'repeat(2, 1fr)'
       }}
     >
       <Button
+        style={{ gridColumn: 2, gridRow: 1 }}
         active={controls?.a?.value}
         onTouchStart={() => controls?.a?.onChange(true)}
         onTouchEnd={() => controls?.a?.onChange(false)}
@@ -54,12 +98,19 @@ const ControlView = ({ controls }) => {
         A
       </Button>
       <Button
+        style={{ gridColumn: 2, gridRow: 2 }}
         active={controls?.b?.value}
         onTouchStart={() => controls?.b?.onChange(true)}
         onTouchEnd={() => controls?.b?.onChange(false)}
       >
         B
       </Button>
+      <div style={{ gridColumn: 1, gridRow: '1/3' }}>
+        <TrackPad
+          coords={controls.trackpad.value}
+          onChange={(coords) => controls.trackpad.onChange(coords)}
+        />
+      </div>
     </div>
   )
 }
@@ -71,7 +122,11 @@ const IS_RECEIVER = PART_TYPE === 'receiver'
 const RemoteControl = ({ layoutProps }) => {
   const { Image } = useQRCode()
   const { isLandscape } = useMobileOrientation()
-  const [controls, setControls] = useState({ a: false, b: false })
+  const [controls, setControls] = useState({
+    a: false,
+    b: false,
+    trackpad: [0, 0]
+  })
   const [controller, setController] = useState(null)
   const [room, setRoom] = useState(null)
   const {
@@ -279,7 +334,11 @@ const RemoteControl = ({ layoutProps }) => {
           <ControlView
             controls={{
               a: { value: controls.a, onChange: setControl('a') },
-              b: { value: controls.b, onChange: setControl('b') }
+              b: { value: controls.b, onChange: setControl('b') },
+              trackpad: {
+                value: controls.trackpad,
+                onChange: setControl('trackpad')
+              }
             }}
           />
         </>
@@ -327,7 +386,14 @@ const RemoteControl = ({ layoutProps }) => {
         <br />
         <div style={{ width: '100%', height: 400, maxWidth: 700 }}>
           <ControlView
-            controls={{ a: { value: controls.a }, b: { value: controls.b } }}
+            controls={{
+              a: { value: controls.a },
+              b: { value: controls.b },
+              trackpad: {
+                value: controls.trackpad,
+                onChange: setControl('trackpad')
+              }
+            }}
           />
         </div>
       </div>
