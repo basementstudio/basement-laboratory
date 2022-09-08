@@ -10,7 +10,7 @@ const dagger = model('dagger.glb', {
 })
 
 dagger.Layout = (props) => <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
-dagger.Title = 'Num Num Num 3D dagger'
+dagger.Title = 'Dagger'
 dagger.Tags = '3d, private'
 
 export default dagger
