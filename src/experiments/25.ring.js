@@ -1,5 +1,3 @@
-import { Loader } from '~/components/common/loader'
-import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 import { model } from '~/lib/builders/model'
 
 const ring = model('ring.glb', {
@@ -9,9 +7,7 @@ const ring = model('ring.glb', {
   environment: 'dawn'
 })
 
-ring.Layout = (props) => <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
 ring.Title = 'The Ring'
 ring.Tags = '3d, private'
 
 export default ring
-

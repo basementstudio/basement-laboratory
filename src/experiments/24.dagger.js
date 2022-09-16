@@ -1,5 +1,3 @@
-import { Loader } from '~/components/common/loader'
-import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 import { model } from '~/lib/builders/model'
 
 const dagger = model('dagger.glb', {
@@ -9,9 +7,7 @@ const dagger = model('dagger.glb', {
   environment: 'dawn'
 })
 
-dagger.Layout = (props) => <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
 dagger.Title = 'Dagger'
 dagger.Tags = '3d, private'
 
 export default dagger
-

@@ -513,7 +513,7 @@
   },
   {
     "filename": "24.dagger.js",
-    "title": "Num Num Num 3D dagger",
+    "title": "Dagger",
     "href": "/experiments/24.dagger.js",
     "tags": [
       "3d",
@@ -530,5 +530,33 @@
         "company": "basement."
       }
     ]
+  },
+  {
+    "filename": "25.ring.js",
+    "title": "The Ring",
+    "href": "/experiments/25.ring.js",
+    "tags": [
+      "3d",
+      "private"
+    ],
+    "number": 25,
+    "contributors": [
+      {
+        "id": "U_kgDOBlLnQQ",
+        "url": "https://github.com/tteFluten",
+        "name": "Juan Lautaro Martin",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/106096449?u=8c30c69d9a76276b7203a776a6fb77ed53ee3e09&v=4",
+        "email": "",
+        "company": "basement."
+      }
+    ]
+  },
+  {
+    "filename": "26.sticky-scroll-trigger.js",
+    "title": "Sticky ScrollTrigger",
+    "href": "/experiments/26.sticky-scroll-trigger.js",
+    "tags": [],
+    "number": 26,
+    "contributors": []
   }
 ]

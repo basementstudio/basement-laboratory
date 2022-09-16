@@ -25,7 +25,7 @@
     "clsx": "1.1.1",
     "graphql": "^16.5.0",
     "graphql-request": "^4.3.0",
-    "gsap": "^3.10.4",
+    "gsap": "./src/lib/gsap/gsap-bonus.tgz",
     "hls.js": "1.1.5",
     "lamina": "^1.1.20",
     "leva": "^0.9.27",

@@ -1,0 +1,23 @@
+@supports (aspect-ratio: var(--raw-ratio)) {
+  .aspect-box {
+    aspect-ratio: var(--raw-ratio);
+  }
+}
+
+@supports not (aspect-ratio: var(--raw-ratio)) {
+  .aspect-box::before {
+    content: '';
+    width: 1px;
+    margin-left: -1px;
+    float: left;
+    height: 0;
+    padding-top: var(--ratio);
+  }
+
+  .aspect-box::after {
+    /* to clear float */
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
