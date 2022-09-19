@@ -6,9 +6,6 @@ const withTM = require('next-transpile-modules')
  * @type {import('next').NextConfig}
  */
 const config = {
-  typescript: {
-    ignoreBuildErrors: true
-  },
   reactStrictMode: false,
   swcMinify: true,
   webpack: (config) => {
