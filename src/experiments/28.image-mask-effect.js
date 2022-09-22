@@ -9,7 +9,7 @@ import { useFrame } from '@react-three/fiber'
 import glsl from 'glslify'
 import Image from 'next/future/image'
 import { useEffect, useRef } from 'react'
-import { Vector2 } from 'three'
+import { Vector2 } from 'three/src/math/Vector2'
 
 import mishoJbImage from '../../public/images/misho-jb.jpg'
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
@@ -40,6 +40,21 @@ const fragment = glsl`
     return 1.-smoothstep(_radius-(_radius*blurriness), _radius+(_radius*blurriness), dot(dist,dist)*4.0);
   }
 
+  vec4 RGBtoCMYK (vec3 rgb) {
+    float r = rgb.r;
+    float g = rgb.g;
+    float b = rgb.b;
+    float k = min(1.0 - r, min(1.0 - g, 1.0 - b));
+    vec3 cmy = vec3(0.0);
+    float invK = 1.0 - k;
+    if (invK != 0.0) {
+        cmy.x = (1.0 - r - k) / invK;
+        cmy.y = (1.0 - g - k) / invK;
+        cmy.z = (1.0 - b - k) / invK;
+    }
+    return clamp(vec4(cmy, k), 0.0, 1.0);
+  }
+
   void main() {
     // We manage the device ratio by passing PR constant
     vec2 res = u_res * PR;
@@ -66,7 +81,7 @@ const fragment = glsl`
     vec4 image = texture2D(u_image, v_uv);
 	  vec4 hover = texture2D(u_imagehover, v_uv);
 
-    vec4 finalImage = mix(image, vec4(1.0, 1.0, 1.0, 1.0), finalMask);
+    vec4 finalImage = mix(image, RGBtoCMYK(image.rgb), finalMask);
 
     gl_FragColor = vec4(vec3(finalImage), 1.);
   }
