@@ -608,5 +608,13 @@
         "company": "@basementstudio"
       }
     ]
+  },
+  {
+    "filename": "28.image-mask-effect.js",
+    "title": "Image Mask Effect",
+    "href": "/experiments/28.image-mask-effect.js",
+    "tags": [],
+    "number": 28,
+    "contributors": []
   }
 ]
