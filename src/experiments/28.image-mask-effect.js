@@ -15,7 +15,7 @@ import mishoJbImage from '../../public/images/misho-jb.jpg'
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
 import { trackCursor } from '../lib/three'
 
-const vertex = glsl`
+const vertex = glsl/* glsl */ `
   varying vec2 v_uv;
 
   void main() {
@@ -25,7 +25,7 @@ const vertex = glsl`
   }
 `
 
-const fragment = glsl`
+const fragment = glsl/* glsl */ `
   #pragma glslify: snoise3 = require('glsl-noise/simplex/3d')
 
   uniform vec2 u_mouse;
@@ -61,6 +61,7 @@ const fragment = glsl`
     vec2 st = gl_FragCoord.xy / res.xy - vec2(0.5);
     // tip: use the following formula to keep the good ratio of your coordinates
     st.y *= u_res.y / u_res.x;
+    float time = u_time * 0.0001;
 
     // We readjust the mouse coordinates
     vec2 mouse = u_mouse * 0.5;
@@ -69,14 +70,17 @@ const fragment = glsl`
     mouse *= -1.;
 
     vec2 circlePos = st + mouse;
-    float c = circle(circlePos, 0.05, 2.) * 2.5;
+    float c = circle(circlePos, 0.08, 2.) * 3.5;
   
-    float offx = v_uv.x + sin(v_uv.y + u_time * .1);
-    float offy = v_uv.y - u_time * 0.1 - cos(u_time * .001) * .01;
+    float offx = v_uv.x;
+    float offy = v_uv.y - time - cos(time) * .01;
   
-    float n = snoise3(vec3(offx, offy, u_time * .1) * 8.) - 1.;
+    float n1 = snoise3(vec3(offx, offy, time) * 300.) - 1.;
+    float n2 = snoise3(vec3(offx, offy, time) * 200.) - 1.;
+    float n3 = snoise3(vec3(offx, offy, time) * 6.) - 1.;
+    float n4 = snoise3(vec3(offx, offy, time) * 2.) - 1.;
   
-    float finalMask = smoothstep(0.4, 0.5, n + pow(c, 2.));
+    float finalMask = smoothstep(0.99, 1., n1 + n2 + n3 + n4 + pow(c, 2.));
 
     vec4 image = texture2D(u_image, v_uv);
 	  vec4 hover = texture2D(u_imagehover, v_uv);
