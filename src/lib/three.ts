@@ -1,12 +1,17 @@
-import * as THREE from 'three'
-import { ArrowHelper } from 'three'
+import { PerspectiveCamera } from 'three/src/cameras/PerspectiveCamera'
+import { Clock } from 'three/src/core/Clock'
+import { Raycaster } from 'three/src/core/Raycaster'
+import { ArrowHelper } from 'three/src/helpers/ArrowHelper'
+import { Vector2 } from 'three/src/math/Vector2'
+import { WebGLRenderer } from 'three/src/renderers/WebGLRenderer'
+import { Scene } from 'three/src/scenes/Scene'
 
 import { safeWindow } from './constants'
 
 // Track the mouse position with event listeners
-export const trackCursor = () => {
+export const trackCursor = (onMove?: (cursor: Vector2) => void) => {
   const hasMoved = { current: false }
-  const cursor = new THREE.Vector2(0, 0)
+  const cursor = new Vector2(0, 0)
 
   const onMouseMove = (event: MouseEvent) => {
     if (!hasMoved.current) {
@@ -15,6 +20,8 @@ export const trackCursor = () => {
 
     cursor.x = (event.clientX / window.innerWidth) * 2 - 1
     cursor.y = -(event.clientY / window.innerHeight) * 2 + 1
+
+    onMove?.(cursor)
   }
 
   safeWindow.addEventListener('mousemove', onMouseMove)
@@ -32,7 +39,7 @@ export const trackCursor = () => {
 
 /* ----------------------------------------------- */
 
-export const defaultCamera = new THREE.PerspectiveCamera(
+export const defaultCamera = new PerspectiveCamera(
   40,
   (safeWindow.innerWidth || 0) / (safeWindow.innerHeight || 0),
   0.1,
@@ -165,15 +172,15 @@ export const createWorld = ({
   rendererConfig,
   withRaycaster = false
 }: CreateRendererArgs) => {
-  const renderer = new THREE.WebGLRenderer(rendererConfig)
+  const renderer = new WebGLRenderer(rendererConfig)
   renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
   let animationFrameId: number
   let oldElapsedTime = 0
 
-  const clock = new THREE.Clock()
-  const scene = new THREE.Scene()
+  const clock = new Clock()
+  const scene = new Scene()
   let raycaster:
     | (THREE.Raycaster & {
         helper?: ArrowHelper
@@ -184,13 +191,13 @@ export const createWorld = ({
   const cursorTracker = trackCursor()
 
   if (withRaycaster) {
-    raycaster = new THREE.Raycaster()
+    raycaster = new Raycaster()
     raycaster.intersections = []
   }
 
   let _getWorld: ReturnType<typeof getWorld> | undefined
 
-  if (camera instanceof THREE.PerspectiveCamera) {
+  if (camera instanceof PerspectiveCamera) {
     _getWorld = getWorld(camera)
   }
 

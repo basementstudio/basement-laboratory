@@ -13,6 +13,7 @@ import { Vector2 } from 'three/src/math/Vector2'
 
 import mishoJbImage from '../../public/images/face-hover.jpg'
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
+import { gsap } from '../lib/gsap'
 import { trackCursor } from '../lib/three'
 
 const vertex = glsl/* glsl */ `
@@ -33,11 +34,14 @@ const fragment = glsl/* glsl */ `
   uniform float u_time;
   uniform sampler2D u_image;
   uniform sampler2D u_imagehover;
+  uniform float u_progressHover;
+  uniform vec3 u_multipliers;
+  
   varying vec2 v_uv;
 
   float circle(in vec2 _st, in float _radius, in float blurriness){
     vec2 dist = _st;
-    return 1.-smoothstep(_radius-(_radius*blurriness), _radius+(_radius*blurriness), dot(dist,dist)*4.0);
+    return 1. - smoothstep(_radius-(_radius*blurriness), _radius+(_radius*blurriness), dot(dist,dist)*4.0);
   }
 
   void main() {
@@ -47,6 +51,7 @@ const fragment = glsl/* glsl */ `
     // tip: use the following formula to keep the good ratio of your coordinates
     st.y *= u_res.y / u_res.x;
     float time = u_time * 0.001;
+    float progressHover = u_progressHover;
 
     // We readjust the mouse coordinates
     vec2 mouse = u_mouse * 0.5;
@@ -56,9 +61,9 @@ const fragment = glsl/* glsl */ `
 
     vec2 circlePos = st + mouse;
 
-    float c1 = circle(circlePos, 0.06, 2.) * 3.5;
-    float c2 = circle(circlePos, 0.12, 2.) * 3.5;
-    float c3 = circle(circlePos, 0.20, 2.) * 3.5;
+    float c1 = circle(circlePos * 1., 0.06 * progressHover, 2.) * 3.5;
+    float c2 = circle(circlePos * 1., 0.12 * progressHover, 2.) * 3.5;
+    float c3 = circle(circlePos * 1., 0.20 * progressHover, 2.) * 3.5;
 
     float offx = v_uv.x;
     float offy = v_uv.y - time - cos(time) * .01;
@@ -68,46 +73,89 @@ const fragment = glsl/* glsl */ `
     float n3 = snoise3(vec3(offx, offy, time * 50.0) * 6.) - 1.;
     float n4 = snoise3(vec3(offx, offy, time * 50.0) * 2.) - 1.;
 
-    float mixedNoise =  n1 + n2 + n3 + n4;
+    float mixedNoise =  (n1 + n2 + n3 + n4);
 
-    float finalMask1 = smoothstep(0.99, 1., mixedNoise + pow(c1, 2.));
-    float finalMask2 = smoothstep(0.99, 1., mixedNoise + pow(c2, 2.));
-    float finalMask3 = smoothstep(0.99, 1., mixedNoise + pow(c3, 2.));
+    float finalMask1 = smoothstep(0.99, 1., mixedNoise + pow(c1, 2.)) * progressHover;
+    float finalMask2 = smoothstep(0.99, 1., mixedNoise + pow(c2, 2.)) * progressHover;
+    float finalMask3 = smoothstep(0.99, 1., mixedNoise + pow(c3, 2.)) * progressHover;
 
     vec4 image = texture2D(u_image, v_uv);
     vec4 hover = vec4(1., 1., 1., 1.) - (image * 1.5);
 
-    vec4 finalImage1 = mix(image, hover, (finalMask3 - finalMask2) * 0.13 + (finalMask2 - finalMask1) * 0.7 + finalMask1);
+    vec4 finalImage = mix(
+      image,
+      hover,
+      clamp(
+        /* Color multiplier */
+        (finalMask3 - finalMask2) * 0.13 +
+        /* Color multiplier */
+        (finalMask2 - finalMask1) * 0.7 +
+        finalMask1,
+        0.,
+        1.
+      )
+    );
 
-    gl_FragColor = vec4(vec3(finalImage1), 1.);
+    gl_FragColor = vec4(vec3(finalImage), 1.);
   }
 `
 
-const imageEffect = (ref) => {
-  const cursor = useRef()
+const imageEffect = (ref, imageRef) => {
   const texture = useTexture(mishoJbImage.src)
 
   const uniforms = useRef({
     u_image: { value: texture },
     u_imagehover: { value: texture },
     u_mouse: { value: { x: 0, y: 0 } },
-    u_time: { value: 10 },
+    u_time: { value: 0 },
+    u_dtime: { value: 0 },
+    u_multipliers: { value: { x: 0, y: 0, z: 0 } },
+    u_progressHover: { value: 0 },
     u_res: {
       value: new Vector2(window.innerWidth, window.innerHeight)
     }
   })
 
   useEffect(() => {
-    const tracker = trackCursor()
+    const handleHoverImage = () => {
+      gsap.to(ref.current?.material?.uniforms?.u_progressHover, {
+        value: 1,
+        overwrite: true,
+        ease: 'power2.out'
+      })
+    }
 
-    cursor.current = tracker.cursor
+    const handleUnhoverImage = () => {
+      gsap.to(ref.current?.material?.uniforms?.u_progressHover, {
+        value: 0,
+        overwrite: true,
+        ease: 'power2.out'
+      })
+    }
 
-    return tracker.destroy
+    const imageElm = imageRef.current
+
+    const tracker = trackCursor((cursor) => {
+      gsap.to(ref.current?.material?.uniforms?.u_mouse?.value, {
+        x: cursor.x,
+        y: cursor.y,
+        overwrite: true,
+        ease: 'power2.out'
+      })
+    })
+
+    imageElm?.addEventListener('mouseenter', handleHoverImage)
+    imageElm?.addEventListener('mouseleave', handleUnhoverImage)
+
+    return () => {
+      imageElm?.removeEventListener('mouseenter', handleHoverImage)
+      imageElm?.removeEventListener('mouseleave', handleUnhoverImage)
+      tracker.destroy()
+    }
   }, [])
 
   useFrame(() => {
     ref.current.material.uniforms.u_time.value += 0.01
-    ref.current.material.uniforms.u_mouse.value = cursor.current
   })
 
   return (
@@ -126,18 +174,20 @@ const imageEffect = (ref) => {
 }
 
 const EnhancedImage = () => {
+  const imageRef = useRef()
+
   return (
     <div style={{ width: '70vw' }}>
       <WebGLShadow
         shadowChildren={
           <>
-            <div style={{ opacity: 0, pointerEvents: 'none' }}>
+            <div style={{ opacity: 0 }} ref={imageRef}>
               <Image src={mishoJbImage} />
             </div>
           </>
         }
       >
-        {imageEffect}
+        {(ref) => imageEffect(ref, imageRef)}
       </WebGLShadow>
     </div>
   )
