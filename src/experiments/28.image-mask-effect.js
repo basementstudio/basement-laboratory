@@ -11,7 +11,7 @@ import Image from 'next/future/image'
 import { useEffect, useRef } from 'react'
 import { Vector2 } from 'three/src/math/Vector2'
 
-import mishoJbImage from '../../public/images/misho-jb.jpg'
+import mishoJbImage from '../../public/images/face-hover.jpg'
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
 import { trackCursor } from '../lib/three'
 
@@ -40,21 +40,6 @@ const fragment = glsl/* glsl */ `
     return 1.-smoothstep(_radius-(_radius*blurriness), _radius+(_radius*blurriness), dot(dist,dist)*4.0);
   }
 
-  vec4 RGBtoCMYK (vec3 rgb) {
-    float r = rgb.r;
-    float g = rgb.g;
-    float b = rgb.b;
-    float k = min(1.0 - r, min(1.0 - g, 1.0 - b));
-    vec3 cmy = vec3(0.0);
-    float invK = 1.0 - k;
-    if (invK != 0.0) {
-        cmy.x = (1.0 - r - k) / invK;
-        cmy.y = (1.0 - g - k) / invK;
-        cmy.z = (1.0 - b - k) / invK;
-    }
-    return clamp(vec4(cmy, k), 0.0, 1.0);
-  }
-
   void main() {
     // We manage the device ratio by passing PR constant
     vec2 res = u_res * PR;
@@ -71,21 +56,23 @@ const fragment = glsl/* glsl */ `
 
     vec2 circlePos = st + mouse;
     float c = circle(circlePos, 0.08, 2.) * 3.5;
-  
+
     float offx = v_uv.x;
     float offy = v_uv.y - time - cos(time) * .01;
-  
+
     float n1 = snoise3(vec3(offx, offy, time) * 300.) - 1.;
     float n2 = snoise3(vec3(offx, offy, time) * 200.) - 1.;
     float n3 = snoise3(vec3(offx, offy, time) * 6.) - 1.;
     float n4 = snoise3(vec3(offx, offy, time) * 2.) - 1.;
-  
+
     float finalMask = smoothstep(0.99, 1., n1 + n2 + n3 + n4 + pow(c, 2.));
 
     vec4 image = texture2D(u_image, v_uv);
-	  vec4 hover = texture2D(u_imagehover, v_uv);
+	  vec4 hover = vec4(.0, .0, .0, 1.);
 
-    vec4 finalImage = mix(image, RGBtoCMYK(image.rgb), finalMask);
+    hover = vec4(1., 1., 1., 1.) - image;
+
+    vec4 finalImage = mix(image, hover, finalMask);
 
     gl_FragColor = vec4(vec3(finalImage), 1.);
   }
@@ -93,9 +80,7 @@ const fragment = glsl/* glsl */ `
 
 const imageEffect = (ref) => {
   const cursor = useRef()
-  const texture = useTexture(
-    'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80'
-  )
+  const texture = useTexture(mishoJbImage.src)
 
   const uniforms = useRef({
     u_image: { value: texture },
@@ -137,7 +122,7 @@ const imageEffect = (ref) => {
 
 const EnhancedImage = () => {
   return (
-    <div style={{ width: '30vw' }}>
+    <div style={{ width: '70vw' }}>
       <WebGLShadow
         shadowChildren={
           <>
