@@ -13,7 +13,7 @@ import { Vector2 } from 'three/src/math/Vector2'
 
 import mishoJbImage from '../../public/images/face-hover.jpg'
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
-import { gsap } from '../lib/gsap'
+import { DURATION, gsap } from '../lib/gsap'
 import { trackCursor } from '../lib/three'
 
 const vertex = glsl/* glsl */ `
@@ -121,7 +121,8 @@ const imageEffect = (ref, imageRef) => {
       gsap.to(ref.current?.material?.uniforms?.u_progressHover, {
         value: 1,
         overwrite: true,
-        ease: 'power2.out'
+        ease: 'power2.out',
+        duration: DURATION
       })
     }
 
@@ -129,8 +130,14 @@ const imageEffect = (ref, imageRef) => {
       gsap.to(ref.current?.material?.uniforms?.u_progressHover, {
         value: 0,
         overwrite: true,
-        ease: 'power2.out'
+        ease: 'power2.out',
+        duration: DURATION * 0.65
       })
+    }
+
+    const firstCheck = () => {
+      handleHoverImage()
+      imageElm.removeEventListener('mousemove', firstCheck)
     }
 
     const imageElm = imageRef.current
@@ -144,12 +151,14 @@ const imageEffect = (ref, imageRef) => {
       })
     })
 
+    imageElm?.addEventListener('mousemove', firstCheck)
     imageElm?.addEventListener('mouseenter', handleHoverImage)
     imageElm?.addEventListener('mouseleave', handleUnhoverImage)
 
     return () => {
       imageElm?.removeEventListener('mouseenter', handleHoverImage)
       imageElm?.removeEventListener('mouseleave', handleUnhoverImage)
+      imageElm?.removeEventListener('mousemove', firstCheck)
       tracker.destroy()
     }
   }, [])
