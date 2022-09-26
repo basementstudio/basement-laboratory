@@ -46,7 +46,7 @@ const fragment = glsl/* glsl */ `
     vec2 st = gl_FragCoord.xy / res.xy - vec2(0.5);
     // tip: use the following formula to keep the good ratio of your coordinates
     st.y *= u_res.y / u_res.x;
-    float time = u_time * 0.0001;
+    float time = u_time * 0.001;
 
     // We readjust the mouse coordinates
     vec2 mouse = u_mouse * 0.5;
@@ -55,26 +55,31 @@ const fragment = glsl/* glsl */ `
     mouse *= -1.;
 
     vec2 circlePos = st + mouse;
-    float c = circle(circlePos, 0.08, 2.) * 3.5;
+
+    float c1 = circle(circlePos, 0.06, 2.) * 3.5;
+    float c2 = circle(circlePos, 0.12, 2.) * 3.5;
+    float c3 = circle(circlePos, 0.20, 2.) * 3.5;
 
     float offx = v_uv.x;
     float offy = v_uv.y - time - cos(time) * .01;
 
     float n1 = snoise3(vec3(offx, offy, time) * 300.) - 1.;
     float n2 = snoise3(vec3(offx, offy, time) * 200.) - 1.;
-    float n3 = snoise3(vec3(offx, offy, time) * 6.) - 1.;
-    float n4 = snoise3(vec3(offx, offy, time) * 2.) - 1.;
+    float n3 = snoise3(vec3(offx, offy, time * 50.0) * 6.) - 1.;
+    float n4 = snoise3(vec3(offx, offy, time * 50.0) * 2.) - 1.;
 
-    float finalMask = smoothstep(0.99, 1., n1 + n2 + n3 + n4 + pow(c, 2.));
+    float mixedNoise =  n1 + n2 + n3 + n4;
+
+    float finalMask1 = smoothstep(0.99, 1., mixedNoise + pow(c1, 2.));
+    float finalMask2 = smoothstep(0.99, 1., mixedNoise + pow(c2, 2.));
+    float finalMask3 = smoothstep(0.99, 1., mixedNoise + pow(c3, 2.));
 
     vec4 image = texture2D(u_image, v_uv);
-	  vec4 hover = vec4(.0, .0, .0, 1.);
+    vec4 hover = vec4(1., 1., 1., 1.) - (image * 1.5);
 
-    hover = vec4(1., 1., 1., 1.) - image;
+    vec4 finalImage1 = mix(image, hover, (finalMask3 - finalMask2) * 0.13 + (finalMask2 - finalMask1) * 0.7 + finalMask1);
 
-    vec4 finalImage = mix(image, hover, finalMask);
-
-    gl_FragColor = vec4(vec3(finalImage), 1.);
+    gl_FragColor = vec4(vec3(finalImage1), 1.);
   }
 `
 
@@ -126,7 +131,7 @@ const EnhancedImage = () => {
       <WebGLShadow
         shadowChildren={
           <>
-            <div style={{ opacity: 0 }}>
+            <div style={{ opacity: 0, pointerEvents: 'none' }}>
               <Image src={mishoJbImage} />
             </div>
           </>
