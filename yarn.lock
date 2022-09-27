@@ -273,10 +273,10 @@
     "@babel/helper-validator-identifier" "^7.18.6"
     to-fast-properties "^2.0.0"
 
-"@basementstudio/definitive-scroll@^0.1.4":
-  version "0.1.6"
-  resolved "https://npm.pkg.github.com/download/@basementstudio/definitive-scroll/0.1.6/018242a9dee97abba4c2ab6e410bb2456e514f82#018242a9dee97abba4c2ab6e410bb2456e514f82"
-  integrity sha512-+UrqsrjI+gXDroc6Uw7zxcQSndZvy0EonbOc1v8fbXks1paHzk4KuVjLz68RaJ3rSlsS3h591FfP55UrBE8TPg==
+"@basementstudio/definitive-scroll@^0.1.7":
+  version "0.1.7"
+  resolved "https://npm.pkg.github.com/download/@basementstudio/definitive-scroll/0.1.7/4f99a0a2eaa5b01ed26d005951f574abde4c5a9e#4f99a0a2eaa5b01ed26d005951f574abde4c5a9e"
+  integrity sha512-GmZj99bFAcOoUTD0XRTcUGzy5QegrHUcG765m2f4tzh63iBhseC/g3kfBGoD3+iv5Ca1PF2c8wgRHB5MSHn8dQ==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     react-merge-refs "^1.1.0"
@@ -801,10 +801,10 @@
     "@react-spring/shared" "~9.5.4"
     "@react-spring/types" "~9.5.4"
 
-"@react-three/drei@^9.32.0":
-  version "9.32.0"
-  resolved "https://registry.npmjs.org/@react-three/drei/-/drei-9.32.0.tgz"
-  integrity sha512-Ddb81jkmqDNCtKcYcEjfxG1QVRcYElnaqAIoxNe5kLg4+kuMHbb+c94/qNRYVj79iidn50ACmFQ87jsrmuQWEw==
+"@react-three/drei@^9.32.3":
+  version "9.32.3"
+  resolved "https://registry.yarnpkg.com/@react-three/drei/-/drei-9.32.3.tgz#75116c3be2261ce4df3fa0154ee98c3d79a21fd0"
+  integrity sha512-MLLBRukt5E94sXox3Ika2ltIrQi3kAfNhefev+Gk225iBdEX+J4fmhBj3TlSGw9Dg0neZ7d47XwTKXrdx/jxGQ==
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@react-spring/three" "^9.3.1"
@@ -820,19 +820,19 @@
     stats.js "^0.17.0"
     suspend-react "^0.0.8"
     three-mesh-bvh "^0.5.15"
-    three-stdlib "^2.14.3"
+    three-stdlib "2.17.0"
     troika-three-text "^0.46.4"
     utility-types "^3.10.0"
     zustand "^3.5.13"
 
-"@react-three/fiber@^8.8.1":
-  version "8.8.1"
-  resolved "https://registry.npmjs.org/@react-three/fiber/-/fiber-8.8.1.tgz"
-  integrity sha512-ImtV4SHkrOAgk8XIJM9QbgpUqjRNV1CuLqFM3po4YSEpI5MfliJqXipuuzDdxxQ8rr1+nz6Jkjcnhp7lscAC0Q==
+"@react-three/fiber@^8.8.6":
+  version "8.8.6"
+  resolved "https://registry.yarnpkg.com/@react-three/fiber/-/fiber-8.8.6.tgz#9bb135e863642be74f6da0a18584e46fbb5ef670"
+  integrity sha512-K9yRqe72yGttNSzbz9v5rAveoRHD4sg3e1DBYc0H3bOnlotn1QaWdBECLnh5ve+HndidwKi4mRCY6hiz6+KqFg==
   dependencies:
     "@babel/runtime" "^7.17.8"
     "@types/react-reconciler" "^0.26.7"
-    its-fine "^1.0.0"
+    its-fine "^1.0.4"
     react-reconciler "^0.27.0"
     react-use-measure "^2.1.1"
     scheduler "^0.21.0"
@@ -3474,10 +3474,10 @@ isstream@~0.1.2:
   resolved "https://registry.npmjs.org/isstream/-/isstream-0.1.2.tgz"
   integrity sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g==
 
-its-fine@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/its-fine/-/its-fine-1.0.0.tgz"
-  integrity sha512-EEVcyr+sR21lxLZg3U84HpY3Mb9aKmGYqxPsIbf/Ea4fO4qpvE/7lX5qtrkuCnljJ9RLMaSaeMq35PeLa+oM0w==
+its-fine@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/its-fine/-/its-fine-1.0.4.tgz#1d4956ecdb724247bee68094338ef991bc036f26"
+  integrity sha512-6nco3aUwt6isNlGLAhXLDV8y8X42J9dqRi8pY2vLaONUczUUbPaFAch1s3nfq6QfT05RTCNJ11B/GsWci1RUmQ==
   dependencies:
     "@types/react-reconciler" "^0.28.0"
 
@@ -5454,7 +5454,24 @@ three-mesh-bvh@^0.5.15:
   resolved "https://registry.npmjs.org/three-mesh-bvh/-/three-mesh-bvh-0.5.16.tgz"
   integrity sha512-kN3QGKJNiQQcuiOsjVIkjtPnV3PJa+0Orih2E52afa+kQfs3zfoYt6Kxn6b6RNiAfaQ+7ckwPK0mTVFVl2F2LA==
 
-three-stdlib@^2.14.3, three-stdlib@^2.8.11:
+three-stdlib@2.17.0:
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.17.0.tgz#5915b110ec6dbf07e0e653bd59889293c7b93407"
+  integrity sha512-m19X4+ajh+2EJIVcjB288LgbqTli5b8kFahJlg9oNCBfaL8geCgEoM4OUirgV0Ez6Lr58N1MPBR6LjJt7ALfKQ==
+  dependencies:
+    "@babel/runtime" "^7.16.7"
+    "@types/offscreencanvas" "^2019.6.4"
+    "@webgpu/glslang" "^0.0.15"
+    chevrotain "^10.1.2"
+    draco3d "^1.4.1"
+    fflate "^0.6.9"
+    ktx-parse "^0.4.5"
+    mmd-parser "^1.0.4"
+    opentype.js "^1.3.3"
+    potpack "^1.0.1"
+    zstddec "^0.0.2"
+
+three-stdlib@^2.8.11:
   version "2.15.0"
   resolved "https://registry.npmjs.org/three-stdlib/-/three-stdlib-2.15.0.tgz"
   integrity sha512-81jgpEajYB1HczIKAqcG8oEgRPbKJr/8KfxMY3xIHe9kDNw426PckStLt+GVmV15ezOS+QlUFVSuyjSRPpSLsg==
@@ -6032,9 +6049,9 @@ zustand@^3.5.13, zustand@^3.6.9, zustand@^3.7.1:
   resolved "https://registry.npmjs.org/zustand/-/zustand-3.7.2.tgz"
   integrity sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==
 
-zustand@^4.0.0-rc.1:
+zustand@^4.1.1:
   version "4.1.1"
-  resolved "https://registry.npmjs.org/zustand/-/zustand-4.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.1.1.tgz#5a61cc755a002df5f041840a414ae6e9a99ee22b"
   integrity sha512-h4F3WMqsZgvvaE0n3lThx4MM81Ls9xebjvrABNzf5+jb3/03YjNTSgZXeyrvXDArMeV9untvWXRw1tY+ntPYbA==
   dependencies:
     use-sync-external-store "1.2.0"

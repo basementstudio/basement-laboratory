@@ -8,10 +8,10 @@ import { useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import glsl from 'glslify'
 import Image from 'next/future/image'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Vector2 } from 'three/src/math/Vector2'
 
-import mishoJbImage from '../../public/images/face-hover.jpg'
+import sampleImage from '../../public/images/face-hover.jpg'
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
 import { DURATION, gsap } from '../lib/gsap'
 import { trackCursor } from '../lib/three'
@@ -36,7 +36,7 @@ const fragment = glsl/* glsl */ `
   uniform sampler2D u_imagehover;
   uniform float u_progressHover;
   uniform vec3 u_multipliers;
-  
+
   varying vec2 v_uv;
 
   float circle(in vec2 _st, in float _radius, in float blurriness){
@@ -100,8 +100,9 @@ const fragment = glsl/* glsl */ `
   }
 `
 
-const imageEffect = (ref, imageRef) => {
-  const texture = useTexture(mishoJbImage.src)
+const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
+  const ref = useRef()
+  const texture = useTexture(src, onLoad)
 
   const uniforms = useRef({
     u_image: { value: texture },
@@ -117,6 +118,8 @@ const imageEffect = (ref, imageRef) => {
   })
 
   useEffect(() => {
+    if (!imageRef?.current || !ref?.current) return
+
     const handleHoverImage = () => {
       gsap.to(ref.current?.material?.uniforms?.u_progressHover, {
         value: 1,
@@ -168,7 +171,7 @@ const imageEffect = (ref, imageRef) => {
   })
 
   return (
-    <mesh ref={ref}>
+    <mesh {...rest} ref={ref}>
       <planeBufferGeometry args={[1, 1]} />
       <shaderMaterial
         uniforms={uniforms.current}
@@ -182,23 +185,25 @@ const imageEffect = (ref, imageRef) => {
   )
 }
 
-const EnhancedImage = () => {
+const EnhancedImage = ({ src: image }) => {
+  const [loaded, setLoaded] = useState(false)
+
   const imageRef = useRef()
 
+  const handleLoad = useCallback(() => {
+    setLoaded(true)
+  }, [])
+
   return (
-    <div style={{ width: '70vw' }}>
-      <WebGLShadow
-        shadowChildren={
-          <>
-            <div style={{ opacity: 0 }} ref={imageRef}>
-              <Image src={mishoJbImage} />
-            </div>
-          </>
-        }
-      >
-        {(ref) => imageEffect(ref, imageRef)}
-      </WebGLShadow>
-    </div>
+    <WebGLShadow
+      shadowChildren={
+        <div style={{ opacity: loaded ? 0 : 1 }} ref={imageRef}>
+          <Image src={image} />
+        </div>
+      }
+    >
+      <ImageEffect src={image.src} imageRef={imageRef} onLoad={handleLoad} />
+    </WebGLShadow>
   )
 }
 
@@ -230,7 +235,9 @@ const ImageMaskEffect = () => {
             justifyContent: 'center'
           }}
         >
-          <EnhancedImage />
+          <div style={{ width: '70vw' }}>
+            <EnhancedImage src={sampleImage} />
+          </div>
         </div>
       </main>
     </div>

@@ -16,10 +16,10 @@
     "tsc": "tsc --pretty --noEmit"
   },
   "dependencies": {
-    "@basementstudio/definitive-scroll": "^0.1.4",
+    "@basementstudio/definitive-scroll": "^0.1.7",
     "@liveblocks/client": "^0.17.4",
-    "@react-three/drei": "^9.32.0",
-    "@react-three/fiber": "^8.8.1",
+    "@react-three/drei": "^9.32.3",
+    "@react-three/fiber": "^8.8.6",
     "@react-three/gltfjsx": "^4.3.4",
     "@react-three/postprocessing": "^2.3.2",
     "babel-plugin-glsl": "^1.0.0",
@@ -47,7 +47,7 @@
     "react-use-measure": "^2.1.1",
     "slugify": "^1.6.5",
     "three": "^0.140.2",
-    "zustand": "^4.0.0-rc.1"
+    "zustand": "^4.1.1"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^12.1.2",
