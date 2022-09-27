@@ -11,6 +11,7 @@ import { safeWindow } from './constants'
 // Track the mouse position with event listeners
 export const trackCursor = (onMove?: (cursor: Vector2) => void) => {
   const hasMoved = { current: false }
+  const firstRead = { current: true }
   const cursor = new Vector2(0, 0)
 
   const onMouseMove = (event: MouseEvent) => {
@@ -22,13 +23,18 @@ export const trackCursor = (onMove?: (cursor: Vector2) => void) => {
     cursor.y = -(event.clientY / window.innerHeight) * 2 + 1
 
     onMove?.(cursor)
+
+    firstRead.current = false
   }
 
-  safeWindow.addEventListener('mousemove', onMouseMove)
+  safeWindow.addEventListener('mousemove', onMouseMove, { passive: true })
 
   return {
     get hasMoved() {
       return hasMoved.current
+    },
+    get firstRead() {
+      return firstRead.current
     },
     cursor,
     destroy: () => {

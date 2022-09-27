@@ -5,8 +5,8 @@ import {
   WebGLShadow
 } from '@basementstudio/definitive-scroll/three'
 import { useTexture } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
 import glsl from 'glslify'
+import { button, useControls } from 'leva'
 import Image from 'next/future/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Vector2 } from 'three/src/math/Vector2'
@@ -37,6 +37,11 @@ const fragment = glsl/* glsl */ `
   uniform float u_progressHover;
   uniform vec3 u_multipliers;
 
+  /* Config */
+  uniform float u_portalRadius1;
+  uniform float u_portalRadius2;
+  uniform float u_portalRadius3;
+
   varying vec2 v_uv;
 
   float circle(in vec2 _st, in float _radius, in float blurriness){
@@ -61,9 +66,9 @@ const fragment = glsl/* glsl */ `
 
     vec2 circlePos = st + mouse;
 
-    float c1 = circle(circlePos * 1., 0.06 * progressHover, 2.) * 3.5;
-    float c2 = circle(circlePos * 1., 0.12 * progressHover, 2.) * 3.5;
-    float c3 = circle(circlePos * 1., 0.20 * progressHover, 2.) * 3.5;
+    float c1 = circle(circlePos * 1., u_portalRadius1 * progressHover, 2.) * 3.5;
+    float c2 = circle(circlePos * 1., u_portalRadius2 * progressHover, 2.) * 3.5;
+    float c3 = circle(circlePos * 1., u_portalRadius3 * progressHover, 2.) * 3.5;
 
     float offx = v_uv.x;
     float offy = v_uv.y - time - cos(time) * .01;
@@ -103,6 +108,36 @@ const fragment = glsl/* glsl */ `
 const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
   const ref = useRef()
   const texture = useTexture(src, onLoad)
+  const config = useControls({
+    portalRadius1: {
+      min: 0,
+      max: 1,
+      step: 0.01,
+      value: 0.03,
+      onChange: (v) => (uniforms.current.u_portalRadius1.value = v)
+    },
+    portalRadius2: {
+      min: 0,
+      max: 1,
+      step: 0.01,
+      value: 0.06,
+      onChange: (v) => (uniforms.current.u_portalRadius2.value = v)
+    },
+    portalRadius3: {
+      min: 0,
+      max: 1,
+      step: 0.01,
+      value: 0.14,
+      onChange: (v) => (uniforms.current.u_portalRadius3.value = v)
+    },
+    'Show portal on center': button(() => {
+      if (ref.current) {
+        ref.current.material.uniforms.u_mouse.value.x = 0
+        ref.current.material.uniforms.u_mouse.value.y = 0
+        ref.current.material.uniforms.u_progressHover.value = 1
+      }
+    })
+  })
 
   const uniforms = useRef({
     u_image: { value: texture },
@@ -114,13 +149,47 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
     u_progressHover: { value: 0 },
     u_res: {
       value: new Vector2(window.innerWidth, window.innerHeight)
-    }
+    },
+
+    /* Config */
+    u_portalRadius1: { value: config.portalRadius1 },
+    u_portalRadius2: { value: config.portalRadius2 },
+    u_portalRadius3: { value: config.portalRadius3 }
   })
 
   useEffect(() => {
     if (!imageRef?.current || !ref?.current) return
 
+    let updateCallbackId
+    let mouseTracker
+    const imageElm = imageRef.current
+
+    const update = () => {
+      ref.current.material.uniforms.u_time.value += 0.01
+    }
+
     const handleHoverImage = () => {
+      if (updateCallbackId) {
+        gsap.ticker.remove(updateCallbackId)
+      }
+
+      if (trackCursor) {
+        mouseTracker?.destroy()
+      }
+
+      updateCallbackId = gsap.ticker.add(update)
+      mouseTracker = trackCursor((cursor) => {
+        gsap[mouseTracker.firstRead ? 'set' : 'to'](
+          ref.current?.material?.uniforms?.u_mouse?.value,
+          {
+            x: cursor.x,
+            y: cursor.y,
+            overwrite: true,
+            ease: 'power2.out'
+          }
+        )
+      })
+
       gsap.to(ref.current?.material?.uniforms?.u_progressHover, {
         value: 1,
         overwrite: true,
@@ -134,7 +203,15 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
         value: 0,
         overwrite: true,
         ease: 'power2.out',
-        duration: DURATION * 0.65
+        duration: DURATION * 0.65,
+        onComplete: () => {
+          gsap.ticker.remove(update)
+
+          mouseTracker?.destroy()
+
+          updateCallbackId = undefined
+          mouseTracker = undefined
+        }
       })
     }
 
@@ -142,17 +219,6 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
       handleHoverImage()
       imageElm.removeEventListener('mousemove', firstCheck)
     }
-
-    const imageElm = imageRef.current
-
-    const tracker = trackCursor((cursor) => {
-      gsap.to(ref.current?.material?.uniforms?.u_mouse?.value, {
-        x: cursor.x,
-        y: cursor.y,
-        overwrite: true,
-        ease: 'power2.out'
-      })
-    })
 
     imageElm?.addEventListener('mousemove', firstCheck)
     imageElm?.addEventListener('mouseenter', handleHoverImage)
@@ -162,13 +228,10 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
       imageElm?.removeEventListener('mouseenter', handleHoverImage)
       imageElm?.removeEventListener('mouseleave', handleUnhoverImage)
       imageElm?.removeEventListener('mousemove', firstCheck)
-      tracker.destroy()
+      gsap.ticker.remove(updateCallbackId)
+      mouseTracker?.destroy()
     }
   }, [])
-
-  useFrame(() => {
-    ref.current.material.uniforms.u_time.value += 0.01
-  })
 
   return (
     <mesh {...rest} ref={ref}>
@@ -198,7 +261,7 @@ const EnhancedImage = ({ src: image, ...rest }) => {
     <WebGLShadow
       shadowChildren={
         <div style={{ opacity: loaded ? 0 : 1 }} ref={imageRef}>
-          <Image src={image} {...rest} priority />
+          <Image draggable={false} src={image} {...rest} priority />
         </div>
       }
     >
