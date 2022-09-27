@@ -185,7 +185,7 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
   )
 }
 
-const EnhancedImage = ({ src: image }) => {
+const EnhancedImage = ({ src: image, ...rest }) => {
   const [loaded, setLoaded] = useState(false)
 
   const imageRef = useRef()
@@ -198,7 +198,7 @@ const EnhancedImage = ({ src: image }) => {
     <WebGLShadow
       shadowChildren={
         <div style={{ opacity: loaded ? 0 : 1 }} ref={imageRef}>
-          <Image src={image} />
+          <Image src={image} {...rest} priority />
         </div>
       }
     >
@@ -236,7 +236,7 @@ const ImageMaskEffect = () => {
           }}
         >
           <div style={{ width: '70vw' }}>
-            <EnhancedImage src={sampleImage} />
+            <EnhancedImage src={sampleImage} alt="image" />
           </div>
         </div>
       </main>
