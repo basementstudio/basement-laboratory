@@ -1,4 +1,4 @@
-import { Environment, useGLTF } from '@react-three/drei'
+import { Center, Environment, useGLTF } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useLayoutEffect, useRef } from 'react'
 
@@ -15,8 +15,8 @@ const config = {
   background: '#000',
   environment: 'sunset',
   camXPosition: -2,
-  camYPosition: 35,
-  camZPosition: 15,
+  camYPosition: 25,
+  camZPosition: 18,
   camXRotation: -Math.PI / 2.8,
   camYRotation: 0,
   camZRotation: 0
@@ -53,6 +53,12 @@ const KarlBg = () => {
     const cards = model.scene.children.find((o) => o.name === 'Cards')
     cardsRef.current = cards.children
 
+    /* Floor size */
+    const floorScaleFactor = 3
+    const floor = model.scene.children.find((o) => o.name === 'Plane')
+    floor.scale.set(floorScaleFactor, floorScaleFactor, floorScaleFactor)
+    floor.material.map.repeat.set(floorScaleFactor, floorScaleFactor)
+
     const mouseTracker = trackCursor((cursor) => {
       gsap.to(camera.rotation, {
         overwrite: true,
@@ -75,7 +81,7 @@ const KarlBg = () => {
 
   return (
     <>
-      {/* <fog attach="fog" args={['#17171b', 30, 40]} /> */}
+      {/* <fog attach="fog" args={['#17171b', 70, 80]} /> */}
 
       <color attach="background" args={[config.background]} />
       {/* @ts-ignore */}
@@ -83,10 +89,12 @@ const KarlBg = () => {
       <ambientLight intensity={config?.ambientLight} />
       {/* <OrbitControls /> */}
 
-      <group scale={config?.scale}>
-        {/* @ts-ignore */}
-        <primitive object={model.scene} />
-      </group>
+      <Center>
+        <group scale={config?.scale}>
+          {/* @ts-ignore */}
+          <primitive object={model.scene} />
+        </group>
+      </Center>
     </>
   )
 }
