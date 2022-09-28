@@ -1,5 +1,6 @@
 import { Center, Environment, useGLTF } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
+import { useControls } from 'leva'
 import { useLayoutEffect, useRef } from 'react'
 
 import { Loader, useLoader } from '~/components/common/loader'
@@ -9,23 +10,31 @@ import { DURATION, gsap } from '../lib/gsap'
 import { trackCursor } from '../lib/three'
 
 const MODEL_NAME = 'KJ_Web_Scene.glb'
-const config = {
-  scale: 0.6,
-  ambientLight: 0.1,
-  background: '#000',
-  environment: 'sunset',
-  camXPosition: -2,
-  camYPosition: 25,
-  camZPosition: 18,
-  camXRotation: -Math.PI / 2.8,
-  camYRotation: 0,
-  camZRotation: 0
-}
 
 const KarlBg = () => {
+  const modelRef = useRef(null)
   const cardsRef = useRef([])
   const { camera } = useThree()
   const setLoaded = useLoader((s) => s.setLoaded)
+  const config = useControls({
+    scale: { value: 0.6, step: 0.01, min: 0, max: 2 },
+    ambientLight: { value: 0.1, step: 0.01, min: 0, max: 2 },
+    ambientLightColor: { value: '#fff' },
+    background: { value: '#000' },
+    environment: { value: 'sunset' },
+    camXPosition: { value: -2, step: 0.5, min: -10, max: 10 },
+    camYPosition: { value: 17, step: 0.5, min: 0, max: 30 },
+    camZPosition: { value: 18, step: 0.5, min: 0, max: 30 },
+    camXRotation: {
+      value: -Math.PI / 2.8,
+      min: -Math.PI * 2,
+      max: Math.PI * 2
+    },
+    camYRotation: { value: 0, min: -Math.PI * 2, max: Math.PI * 2 },
+    camZRotation: { value: 0, min: -Math.PI * 2, max: Math.PI * 2 },
+    camRotationMultiplierX: { value: 0.05, min: 0, max: 1 },
+    camRotationMultiplierY: { value: 0.05, min: 0, max: 1 }
+  })
   const model = useGLTF(
     `/models/${MODEL_NAME}`,
     undefined,
@@ -54,7 +63,7 @@ const KarlBg = () => {
     cardsRef.current = cards.children
 
     /* Floor size */
-    const floorScaleFactor = 3
+    const floorScaleFactor = 50
     const floor = model.scene.children.find((o) => o.name === 'Plane')
     floor.scale.set(floorScaleFactor, floorScaleFactor, floorScaleFactor)
     floor.material.map.repeat.set(floorScaleFactor, floorScaleFactor)
@@ -63,8 +72,13 @@ const KarlBg = () => {
       gsap.to(camera.rotation, {
         overwrite: true,
         duration: DURATION / 2.5,
-        x: config.camXRotation + cursor.y * (Math.PI / 10),
-        y: config.camYRotation + -cursor.x * (Math.PI / 20),
+        x:
+          config.camXRotation +
+          cursor.y * (Math.PI * config.camRotationMultiplierX) +
+          Math.PI * 0.025,
+        y:
+          config.camYRotation +
+          -cursor.x * (Math.PI * config.camRotationMultiplierY),
         ease: 'power2.out'
       })
     })
@@ -72,7 +86,7 @@ const KarlBg = () => {
     return () => {
       mouseTracker.destroy()
     }
-  }, [camera, model])
+  }, [camera, model, config])
 
   // useFrame((st) => {
   // const intersecting = raycaster.intersectObjects(cardsRef.current)
@@ -81,18 +95,18 @@ const KarlBg = () => {
 
   return (
     <>
-      {/* <fog attach="fog" args={['#17171b', 70, 80]} /> */}
-
       <color attach="background" args={[config.background]} />
-      {/* @ts-ignore */}
       <Environment preset={config?.environment} />
-      <ambientLight intensity={config?.ambientLight} />
+      <ambientLight
+        intensity={config?.ambientLight}
+        color={config.ambientLightColor}
+      />
       {/* <OrbitControls /> */}
 
       <Center>
         <group scale={config?.scale}>
           {/* @ts-ignore */}
-          <primitive object={model.scene} />
+          <primitive object={model.scene} ref={modelRef} />
         </group>
       </Center>
     </>
