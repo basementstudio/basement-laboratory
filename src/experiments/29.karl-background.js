@@ -103,6 +103,6 @@ KarlBg.Layout = (props) => (
   <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
 )
 KarlBg.Title = 'Karl Background'
-KarlBg.Tags = '3d'
+KarlBg.Tags = '3d,private'
 
 export default KarlBg
