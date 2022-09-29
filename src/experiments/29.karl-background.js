@@ -143,18 +143,6 @@ const KarlBg = () => {
   useLayoutEffect(() => {
     if (!model || !camera) return
 
-    camera.position.set(
-      config.camXPosition,
-      config.camYPosition,
-      config.camZPosition
-    )
-
-    camera.rotation.set(
-      config.camXRotation,
-      config.camYRotation,
-      config.camZRotation
-    )
-
     /* Cards hover */
     const cards = model.nodes['Cards']
     cardsRef.current = cards.children
@@ -221,6 +209,18 @@ const KarlBg = () => {
   }, [])
 
   useLayoutEffect(() => {
+    camera.position.set(
+      config.camXPosition,
+      config.camYPosition,
+      config.camZPosition
+    )
+
+    camera.rotation.set(
+      config.camXRotation,
+      config.camYRotation,
+      config.camZRotation
+    )
+
     if (scene.fog) {
       scene.fog.near = config.fogNear
       scene.fog.far = config.fogFar
