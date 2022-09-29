@@ -1,4 +1,4 @@
-import { Center, Environment, useGLTF } from '@react-three/drei'
+import { Center, Clone, Environment, useGLTF } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useControls } from 'leva'
 import { useLayoutEffect, useRef } from 'react'
@@ -59,13 +59,12 @@ const KarlBg = () => {
     )
 
     /* Cards hover */
-    const cards = model.scene.children.find((o) => o.name === 'Cards')
+    const cards = model.nodes['Cards']
     cardsRef.current = cards.children
 
     /* Floor size */
-    const floorScaleFactor = 50
-    const floor = model.scene.children.find((o) => o.name === 'Plane')
-    floor.scale.set(floorScaleFactor, floorScaleFactor, floorScaleFactor)
+    const floorScaleFactor = 4
+    const floor = model.nodes['Plane']
     floor.material.map.repeat.set(floorScaleFactor, floorScaleFactor)
 
     const mouseTracker = trackCursor((cursor) => {
@@ -105,8 +104,16 @@ const KarlBg = () => {
 
       <Center>
         <group scale={config?.scale}>
-          {/* @ts-ignore */}
-          <primitive object={model.scene} ref={modelRef} />
+          <primitive scale={4} object={model.nodes.Plane} />
+          <primitive object={model.nodes.tv} />
+          <primitive object={model.nodes.Gc} />
+          <primitive object={model.nodes.Controller} />
+          <primitive object={model.nodes.VHSPlayer} />
+          <primitive object={model.nodes.Cube} />
+          <primitive object={model.nodes.Cube1} />
+
+          <Clone object={model.nodes.Packs} />
+          <Clone object={model.nodes.Cards} />
         </group>
       </Center>
     </>
