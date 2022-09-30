@@ -1,7 +1,7 @@
 import { Center, Environment, useGLTF } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useControls } from 'leva'
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import * as THREE from 'three'
 
 import { Loader, useLoader } from '~/components/common/loader'
@@ -72,19 +72,13 @@ const fogParsFrag = `
 #endif
 `
 
-var params = {
-  fogNearColor: 0x000,
-  fogHorizonColor: 0x000,
-  fogDensity: 0.01,
-  fogNoiseSpeed: 100,
-  fogNoiseFreq: 0.0012,
-  fogNoiseImpact: 0.5
-}
-
 const KarlBg = () => {
   const cardsRef = useRef([])
   const { camera, scene } = useThree()
-  const setLoaded = useLoader((s) => s.setLoaded)
+  const { loading, setLoaded } = useLoader(({ setLoaded, loading }) => ({
+    loading,
+    setLoaded
+  }))
 
   const config = useControls({
     scale: { value: 0.6, step: 0.01, min: 0, max: 2 },
@@ -105,28 +99,30 @@ const KarlBg = () => {
       max: 30
     },
     camZPosition: {
-      value: 18,
+      value: -4,
       step: 0.5,
-      min: 0,
+      min: -30,
       max: 30
     },
     camXRotation: {
-      value: -Math.PI / 2.8,
+      value: -Math.PI * 0.49,
       min: -Math.PI * 2,
       max: Math.PI * 2
     },
     camYRotation: { value: 0, min: -Math.PI * 2, max: Math.PI * 2 },
     camZRotation: { value: 0, min: -Math.PI * 2, max: Math.PI * 2 },
-    camRotationMultiplierX: { value: 0.05, min: 0, max: 1 },
-    camRotationMultiplierY: { value: 0.05, min: 0, max: 1 },
-    fogNear: { value: 85, min: 0, max: 1000 },
-    fogFar: { value: 230, min: 0, max: 1000 },
+    camRotationMultiplierX: { value: 0.01, min: 0, max: 1 },
+    camRotationMultiplierY: { value: 0.01, min: 0, max: 1 },
+    fogNear: { value: 55, min: 0, max: 1000 },
+    fogFar: { value: 140, min: 0, max: 1000 },
     centerX: { value: 0, min: -1000, max: 1000 },
-    centerZ: { value: 0, min: -1000, max: 1000 }
+    centerZ: { value: 0, min: -1000, max: 1000 },
+    fogNearColor: { value: '#000' },
+    fogHorizonColor: { value: '#000' }
   })
 
   const uniforms = useRef({
-    fogNearColor: { value: new THREE.Color(params.fogNearColor) },
+    fogNearColor: { value: new THREE.Color(config.fogNearColor) },
     centerX: { value: config.centerX },
     centerZ: { value: config.centerZ }
   })
@@ -182,11 +178,7 @@ const KarlBg = () => {
       }
     })
 
-    scene.fog = new THREE.Fog(
-      params.fogHorizonColor,
-      config.fogNear,
-      config.fogFar
-    )
+    scene.fog = new THREE.Fog(config.fogHorizonColor, 0, 0)
 
     const mouseTracker = trackCursor((cursor) => {
       gsap.to(camera.rotation, {
@@ -194,8 +186,7 @@ const KarlBg = () => {
         duration: DURATION / 2.5,
         x:
           config.camXRotation +
-          cursor.y * (Math.PI * config.camRotationMultiplierX) +
-          Math.PI * 0.025,
+          cursor.y * (Math.PI * config.camRotationMultiplierX),
         y:
           config.camYRotation +
           -cursor.x * (Math.PI * config.camRotationMultiplierY),
@@ -206,12 +197,17 @@ const KarlBg = () => {
     return () => {
       mouseTracker.destroy()
     }
-  }, [])
+  }, [
+    config.camXRotation,
+    config.camYRotation,
+    config.camRotationMultiplierX,
+    config.camRotationMultiplierY
+  ])
 
   useLayoutEffect(() => {
     camera.position.set(
       config.camXPosition,
-      config.camYPosition,
+      config.camYPosition + 10,
       config.camZPosition
     )
 
@@ -221,25 +217,34 @@ const KarlBg = () => {
       config.camZRotation
     )
 
-    if (scene.fog) {
-      scene.fog.near = config.fogNear
-      scene.fog.far = config.fogFar
-    }
-
     const uniformKeys = Object.keys(uniforms.current)
+    const exclude = ['fogNearColor', 'fogHorizonColor']
 
     /* Update Uniforms */
     Object.keys(config)
+      .filter((key) => !exclude.includes(key))
       .filter((key) => uniformKeys.includes(key))
       .map((key) => {
         uniforms.current[key].value = config[key]
       })
   }, [config])
 
-  // useFrame((st) => {
-  // const intersecting = raycaster.intersectObjects(cardsRef.current)
-  // intersecting[0]?.object?.scale?.set?.(2, 2, 2)
-  // })
+  useEffect(() => {
+    if (scene.fog && !loading) {
+      gsap.to(camera.position, {
+        y: config.camYPosition,
+        delay: 1,
+        duration: DURATION * 3.5
+      })
+      gsap.to(scene.fog, {
+        near: config.fogNear,
+        far: config.fogFar,
+        ease: 'power2.out',
+        delay: 1,
+        duration: DURATION * 3.5
+      })
+    }
+  }, [loading])
 
   return (
     <>
@@ -259,7 +264,6 @@ const KarlBg = () => {
           <primitive object={model.nodes.VHSPlayer} />
           <primitive object={model.nodes.Cube} />
           <primitive object={model.nodes.Cube1} />
-
           <primitive object={model.nodes.Packs} />
           <primitive object={model.nodes.Cards} />
         </group>
