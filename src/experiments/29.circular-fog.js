@@ -245,7 +245,7 @@ const KarlBg = () => {
     return () => {
       mouseTracker.destroy()
     }
-  }, [config])
+  }, [config, scene.fog, camera])
 
   useEffect(() => {
     if (scene.fog && !loading) {
