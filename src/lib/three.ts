@@ -8,7 +8,6 @@ import { Scene } from 'three/src/scenes/Scene'
 
 import { safeWindow } from './constants'
 
-// Track the mouse position with event listeners
 export const trackCursor = (onMove?: (cursor: Vector2) => void) => {
   const hasMoved = { current: false }
   const firstRead = { current: true }

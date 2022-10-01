@@ -1,6 +1,6 @@
 import { Center, Environment, useGLTF } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { useControls } from 'leva'
+import { folder, useControls } from 'leva'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import * as THREE from 'three'
 
@@ -22,7 +22,9 @@ const fogParsVert = `
 const fogVert = `
 #ifdef USE_FOG
   /*
-    You only have to multiply it by the modelMatrix, bc we DON'T want matrix based on camera pos
+    You only have to multiply it by the modelMatrix, bc we DON'T want any matrix
+    transformation based on camera pos. That way we can fix it to world pos.
+    
     https://threejs.org/docs/#api/en/renderers/webgl/WebGLProgram
   */
   vPosition = (modelMatrix * vec4( position, 1.0 )).xyz;
@@ -31,49 +33,34 @@ const fogVert = `
 
 const fogFrag = `
 #ifdef USE_FOG
-  vec2 centerPos = vec2(centerX, centerZ);
+  vec2 centerPos = vec2(uFogCenterX, uFogCenterZ);
   vec2 toCenter = centerPos - vPosition.xz;
 
   float vFogDepth = (1.0) * distance(toCenter, vPosition.xz);
   
-#ifdef FOG_EXP2
-float fogFactor = 1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth );
-#else
-  
   float fogFactor = smoothstep(fogNear, fogFar, vFogDepth);
   
-#endif
-  
-
-  gl_FragColor.rgb = mix( gl_FragColor.rgb, mix(fogNearColor, fogColor, fogFactor), fogFactor);
+  gl_FragColor.rgb = mix( gl_FragColor.rgb, mix(uFogNearColor, fogColor, fogFactor), fogFactor);
 #endif
 
 `
 
 const fogParsFrag = `
 #ifdef USE_FOG
-	uniform vec3 fogColor;
-  uniform vec3 fogNearColor;
-	varying float vFogDepth;
+  varying float vFogDepth;
   varying vec3 vPosition;
-	#ifdef FOG_EXP2
-		uniform float fogDensity;
-	#else
-		uniform float fogNear;
-		uniform float fogFar;
-    uniform float centerX;
-    uniform float centerZ;
-	#endif
-  varying vec3 vFogWorldPosition;
-  uniform float time;
-  uniform float fogNoiseSpeed;
-  uniform float fogNoiseFreq;
-  uniform float fogNoiseImpact;
+
+  uniform float fogFar;
+  uniform float fogNear;
+  uniform vec3 fogColor;
+  uniform vec3 uFogNearColor;
+  uniform float uFogCenterX;
+  uniform float uFogCenterZ;
 #endif
 `
 
 const KarlBg = () => {
-  const cardsRef = useRef([])
+  const finishedEntrance = useRef(false)
   const { camera, scene } = useThree()
   const { loading, setLoaded } = useLoader(({ setLoaded, loading }) => ({
     loading,
@@ -81,50 +68,60 @@ const KarlBg = () => {
   }))
 
   const config = useControls({
-    scale: { value: 0.6, step: 0.01, min: 0, max: 2 },
-    ambientLight: { value: 0.1, step: 0.01, min: 0, max: 1 },
-    ambientLightColor: { value: '#fff' },
-    background: { value: '#000' },
-    environment: { value: 'sunset' },
-    camXPosition: {
-      value: -2,
-      step: 0.5,
-      min: -10,
-      max: 10
-    },
-    camYPosition: {
-      value: 17,
-      step: 0.5,
-      min: 0,
-      max: 30
-    },
-    camZPosition: {
-      value: -4,
-      step: 0.5,
-      min: -30,
-      max: 30
-    },
-    camXRotation: {
-      value: -Math.PI * 0.49,
-      min: -Math.PI * 2,
-      max: Math.PI * 2
-    },
-    camYRotation: { value: 0, min: -Math.PI * 2, max: Math.PI * 2 },
-    camZRotation: { value: 0, min: -Math.PI * 2, max: Math.PI * 2 },
-    camRotationMultiplierX: { value: 0.01, min: 0, max: 1 },
-    camRotationMultiplierY: { value: 0.01, min: 0, max: 1 },
-    fogNear: { value: 55, min: 0, max: 1000 },
-    fogFar: { value: 140, min: 0, max: 1000 },
-    centerX: { value: 0, min: -1000, max: 1000 },
-    centerZ: { value: 0, min: -1000, max: 1000 },
-    fogNearColor: { value: '#000' },
-    fogHorizonColor: { value: '#000' }
+    model: folder({
+      scale: { value: 0.6, step: 0.01, min: 0, max: 2 }
+    }),
+    scene: folder({
+      ambientLight: { value: 0.1, step: 0.01, min: 0, max: 1 },
+      ambientLightColor: { value: '#fff' },
+      background: { value: '#000' },
+      environment: { value: 'sunset' }
+    }),
+    camera: folder(
+      {
+        camXPosition: {
+          value: -2,
+          step: 0.5,
+          min: -10,
+          max: 50
+        },
+        camYPosition: {
+          value: 70,
+          step: 0.5,
+          min: 0,
+          max: 100
+        },
+        camZPosition: {
+          value: 70,
+          step: 0.5,
+          min: -30,
+          max: 100
+        },
+        camXRotation: {
+          value: -Math.PI * 0.25,
+          min: -Math.PI * 2,
+          max: Math.PI * 2
+        },
+        camYRotation: { value: 0, min: -Math.PI * 2, max: Math.PI * 2 },
+        camZRotation: { value: 0, min: -Math.PI * 2, max: Math.PI * 2 },
+        camRotationMultiplierX: { value: 0.01, min: 0, max: 1 },
+        camRotationMultiplierY: { value: 0.01, min: 0, max: 1 }
+      },
+      { collapsed: true }
+    ),
+    fog: folder({
+      uFogNear: { value: 55, min: 0, max: 500 },
+      uFogFar: { value: 140, min: 0, max: 500 },
+      uFogCenter: { value: { x: 0, z: 0 }, min: -500, max: 500 },
+      uFogNearColor: { value: '#000' },
+      uFogHorizonColor: { value: '#000' }
+    })
   })
 
   const uniforms = useRef({
-    fogNearColor: { value: new THREE.Color(config.fogNearColor) },
-    centerX: { value: config.centerX },
-    centerZ: { value: config.centerZ }
+    uFogNearColor: { value: new THREE.Color(config.uFogNearColor) },
+    uFogCenterX: { value: config.uFogCenter.x },
+    uFogCenterZ: { value: config.uFogCenter.z }
   })
 
   const model = useGLTF(
@@ -137,12 +134,6 @@ const KarlBg = () => {
   )
 
   useLayoutEffect(() => {
-    if (!model || !camera) return
-
-    /* Cards hover */
-    const cards = model.nodes['Cards']
-    cardsRef.current = cards.children
-
     /* Floor size */
     const floorScaleFactor = 4
     const floor = model.nodes['Plane']
@@ -178,7 +169,28 @@ const KarlBg = () => {
       }
     })
 
-    scene.fog = new THREE.Fog(config.fogHorizonColor, 0, 0)
+    scene.fog = new THREE.Fog(config.uFogHorizonColor, 0, 0)
+  }, [])
+
+  useLayoutEffect(() => {
+    camera.position.set(
+      config.camXPosition,
+      config.camYPosition,
+      config.camZPosition
+    )
+
+    camera.rotation.set(
+      config.camXRotation,
+      config.camYRotation,
+      config.camZRotation
+    )
+
+    if (finishedEntrance.current) {
+      scene.fog.near = config.uFogNear
+      scene.fog.far = config.uFogFar
+    }
+
+    scene?.fog?.color?.set(config.uFogHorizonColor)
 
     const mouseTracker = trackCursor((cursor) => {
       gsap.to(camera.rotation, {
@@ -194,54 +206,65 @@ const KarlBg = () => {
       })
     })
 
+    /* Update Uniforms */
+    const middlewares = {
+      uFogNearColor: (curr, input) => {
+        curr?.set(input)
+      },
+      uFogCenter: (_, input) => {
+        uniforms.current['uFogCenterX'].value = input.x
+        uniforms.current['uFogCenterZ'].value = input.z
+      }
+    }
+    const uniformKeys = Object.keys(uniforms.current)
+    const middlewareMissingKeys = Object.keys(middlewares).filter(
+      (k) => !uniformKeys.includes(k)
+    )
+
+    const include = [...uniformKeys, ...middlewareMissingKeys]
+    const exclude = ['uFogHorizonColor', 'uFogCenterX', 'uFogCenterZ']
+
+    Object.keys(config)
+      .filter((key) => !exclude.includes(key))
+      .filter((key) => include.includes(key))
+      .map((key) => {
+        if (middlewares[key]) {
+          const res = middlewares[key](
+            uniforms.current[key]?.value,
+            config[key]
+          )
+
+          if (res != undefined) {
+            uniforms.current[key].value = res
+          }
+        } else if (config[key]) {
+          uniforms.current[key].value = config[key]
+        }
+      })
+
     return () => {
       mouseTracker.destroy()
     }
-  }, [
-    config.camXRotation,
-    config.camYRotation,
-    config.camRotationMultiplierX,
-    config.camRotationMultiplierY
-  ])
-
-  useLayoutEffect(() => {
-    camera.position.set(
-      config.camXPosition,
-      config.camYPosition + 10,
-      config.camZPosition
-    )
-
-    camera.rotation.set(
-      config.camXRotation,
-      config.camYRotation,
-      config.camZRotation
-    )
-
-    const uniformKeys = Object.keys(uniforms.current)
-    const exclude = ['fogNearColor', 'fogHorizonColor']
-
-    /* Update Uniforms */
-    Object.keys(config)
-      .filter((key) => !exclude.includes(key))
-      .filter((key) => uniformKeys.includes(key))
-      .map((key) => {
-        uniforms.current[key].value = config[key]
-      })
   }, [config])
 
   useEffect(() => {
     if (scene.fog && !loading) {
+      const duration = DURATION * 3.5
+
       gsap.to(camera.position, {
         y: config.camYPosition,
         delay: 1,
-        duration: DURATION * 3.5
+        duration
       })
       gsap.to(scene.fog, {
-        near: config.fogNear,
-        far: config.fogFar,
+        near: config.uFogNear,
+        far: config.uFogFar,
         ease: 'power2.out',
         delay: 1,
-        duration: DURATION * 3.5
+        duration,
+        onComplete: () => {
+          finishedEntrance.current = true
+        }
       })
     }
   }, [loading])
@@ -275,7 +298,28 @@ const KarlBg = () => {
 KarlBg.Layout = (props) => (
   <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
 )
-KarlBg.Title = 'Karl Background'
-KarlBg.Tags = '3d,private'
+KarlBg.Title = 'Circular Fog Shader'
+KarlBg.Tags = 'shaders,private'
+KarlBg.Description = (
+  <>
+    <p>
+      <strong>Motivation:</strong> We needed a sort of reflector effect, that
+      fades out to black hidding the model edges.
+    </p>
+
+    <p>
+      <strong>How we did it:</strong> We override the predefined fog shader
+      behavior to fit our needs. Inspired on{' '}
+      <a
+        href="https://snayss.medium.com/three-js-fog-hacks-fc0b42f63386"
+        target="_blank"
+        rel="noopener"
+      >
+        this post
+      </a>
+      .
+    </p>
+  </>
+)
 
 export default KarlBg
