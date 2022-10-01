@@ -613,8 +613,30 @@
     "filename": "28.image-mask-effect.js",
     "title": "Image Mask Effect",
     "href": "/experiments/28.image-mask-effect.js",
-    "tags": [],
+    "tags": [
+      "private"
+    ],
     "number": 28,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "29.circular-fog.js",
+    "title": "Circular Fog Shader",
+    "href": "/experiments/29.circular-fog.js",
+    "tags": [
+      "shaders",
+      "private"
+    ],
+    "number": 29,
     "contributors": []
   }
 ]
