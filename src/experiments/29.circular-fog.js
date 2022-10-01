@@ -214,6 +214,11 @@ const KarlBg = () => {
       uFogCenter: (_, input) => {
         uniforms.current['uFogCenterX'].value = input.x
         uniforms.current['uFogCenterZ'].value = input.z
+
+        console.log([
+          uniforms.current['uFogCenterX'].value,
+          uniforms.current['uFogCenterZ'].value
+        ])
       }
     }
     const uniformKeys = Object.keys(uniforms.current)
