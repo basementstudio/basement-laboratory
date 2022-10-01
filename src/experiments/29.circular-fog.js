@@ -158,6 +158,7 @@ const KarlBg = () => {
       )
 
       Object.keys(uniforms.current).map((key) => {
+        console.log(uniforms.current[key])
         shader.uniforms[key] = uniforms.current[key]
       })
     }
@@ -215,10 +216,6 @@ const KarlBg = () => {
         uniforms.current['uFogCenterX'].value = input.x
         uniforms.current['uFogCenterZ'].value = input.z
 
-        console.log([
-          uniforms.current['uFogCenterX'].value,
-          uniforms.current['uFogCenterZ'].value
-        ])
       }
     }
     const uniformKeys = Object.keys(uniforms.current)
