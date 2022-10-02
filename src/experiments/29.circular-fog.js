@@ -59,6 +59,8 @@ const fogParsFrag = `
 #endif
 `
 
+let a
+
 const KarlBg = () => {
   const finishedEntrance = useRef(false)
   const { camera, scene } = useThree()
@@ -158,8 +160,8 @@ const KarlBg = () => {
       )
 
       Object.keys(uniforms.current).map((key) => {
-        console.log(uniforms.current[key])
         shader.uniforms[key] = uniforms.current[key]
+        a = shader.uniforms
       })
     }
 
@@ -216,6 +218,7 @@ const KarlBg = () => {
         uniforms.current['uFogCenterX'].value = input.x
         uniforms.current['uFogCenterZ'].value = input.z
 
+        console.log(uniforms.current['uFogCenterX'] == a?.['uFogCenterX'])
       }
     }
     const uniformKeys = Object.keys(uniforms.current)
@@ -306,11 +309,11 @@ KarlBg.Description = (
   <>
     <p>
       <strong>Motivation:</strong> We needed a sort of reflector effect, that
-      fades out to black hidding the model edges.
+      fades out to black hiding the model edges.
     </p>
 
     <p>
-      <strong>How we did it:</strong> We override the predefined fog shader
+      <strong>How we did it:</strong> We overridden the predefined fog shader
       behavior to fit our needs. Inspired on{' '}
       <a
         href="https://snayss.medium.com/three-js-fog-hacks-fc0b42f63386"
