@@ -1,7 +1,6 @@
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
-import dynamic from 'next/dynamic'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import { ParsedUrlQuery } from 'querystring'
-import { FC, useRef } from 'react'
+import { FC, useEffect } from 'react'
 
 // import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 import { getAllExperimentSlugs } from '~/lib/utils'
@@ -22,25 +21,8 @@ type GetLayoutFn<P = Record<string, unknown>> = FC<{
   slug: string
 }>
 
-const Experiment = ({
-  slug
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Experiment = () => {
   // const [Component, setComponent] = useState<Module<Component>>()
-
-  const ComponentRef = useRef(
-    dynamic(
-      () => {
-        const c = import(`~/experiments/${slug}`)
-
-        c.then((a) => {
-          console.log('loaded!', a)
-        })
-
-        return c
-      },
-      { ssr: false, loading: () => <div>Loading...</div> }
-    )
-  )
 
   // useEffect(() => {
   //   import(`~/experiments/${slug}`).then((Comp) => {
@@ -52,10 +34,11 @@ const Experiment = ({
   //   return <div>Loading...</div>
   // }
 
-  const Component = ComponentRef.current
   // const Layout = resolveLayout(Component)
 
-  console.log(Component)
+  useEffect(() => {
+    console.log('Hello from no deps component on layout')
+  }, [])
 
   return (
     <>
