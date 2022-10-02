@@ -6,6 +6,7 @@ import { FC, useRef } from 'react'
 // import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 import { getAllExperimentSlugs } from '~/lib/utils'
 
+import Comp from '../../experiments/29.circular-fog'
 
 type Component<P = Record<string, unknown>> = FC<P> & {
   Layout?: FC
@@ -20,7 +21,6 @@ type GetLayoutFn<P = Record<string, unknown>> = FC<{
   description?: string
   slug: string
 }>
-
 
 const Experiment = ({
   slug
@@ -66,7 +66,7 @@ const Experiment = ({
         slug={slug}
       /> */}
       {/* @ts-ignore */}
-      <Component />
+      <Comp />
     </>
   )
 }
