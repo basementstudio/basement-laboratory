@@ -16,12 +16,12 @@ type Component<P = Record<string, unknown>> = FC<P> & {
   Description?: string
 }
 
-type GetLayoutFn<P = Record<string, unknown>> = (props: {
+type GetLayoutFn<P = Record<string, unknown>> = FC<{
   Component: Component<P>
   title?: string
   description?: string
   slug: string
-}) => React.ReactNode
+}>
 
 const resolveLayout = (Comp: Module<Component>): GetLayoutFn => {
   const Component = Comp.default
@@ -31,8 +31,13 @@ const resolveLayout = (Comp: Module<Component>): GetLayoutFn => {
   }
 
   if (Component?.Layout) {
-    return ({ Component, ...rest }) =>
-      Component?.Layout?.({ children: <Component />, ...rest })
+    const Layout = Component.Layout
+
+    return ({ Component, ...rest }) => (
+      <Layout {...rest}>
+        <Component />
+      </Layout>
+    )
   }
 
   return ({ Component, ...rest }) => {
@@ -49,6 +54,8 @@ const Experiment = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [Component, setComponent] = useState<Module<Component>>()
 
+  // const ComponentRef = useRef(() => import(`~/experiments/${slug}`))
+
   useEffect(() => {
     import(`~/experiments/${slug}`).then((Comp) => {
       setComponent(Comp)
@@ -59,16 +66,17 @@ const Experiment = ({
     return <div>Loading...</div>
   }
 
-  const getLayout = resolveLayout(Component)
+  // const Component = ComponentRef.current
+  const Layout = resolveLayout(Component)
 
   return (
     <>
-      {getLayout({
-        Component: Component.default,
-        title: Component.default.Title,
-        description: Component.default.Description,
-        slug
-      })}
+      <Layout
+        Component={Component.default}
+        title={Component.default.Title}
+        description={Component.default.Description}
+        slug={slug}
+      />
     </>
   )
 }

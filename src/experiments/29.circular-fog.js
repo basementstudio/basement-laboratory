@@ -312,8 +312,8 @@ const KarlBg = () => {
 
 KarlBg.Layout = (props) => (
   <>
-  <Leva />
-  <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
+    <Leva />
+    <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
   </>
 )
 

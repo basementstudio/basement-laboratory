@@ -3014,8 +3014,8 @@ graphql@^16.5.0:
   integrity sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==
 
 gsap@./src/lib/gsap/gsap-bonus.tgz:
-  version "3.10.4"
-  resolved "./src/lib/gsap/gsap-bonus.tgz#6654c9ce70521e5be54cd087bbfb2cf09678f04b"
+  version "3.11.1"
+  resolved "./src/lib/gsap/gsap-bonus.tgz#eab8621dd1fd263410bea9ce8863f080be7b913e"
 
 gzip-size@^6.0.0:
   version "6.0.0"
@@ -4083,7 +4083,7 @@ next-transpile-modules@^9.0.0:
     enhanced-resolve "^5.7.0"
     escalade "^3.1.1"
 
-next@^12.2.0:
+next@^12.3.1:
   version "12.3.1"
   resolved "https://registry.yarnpkg.com/next/-/next-12.3.1.tgz#127b825ad2207faf869b33393ec8c75fe61e50f1"
   integrity sha512-l7bvmSeIwX5lp07WtIiP9u2ytZMv7jIeB8iacR28PuUEFG5j0HGAPnMqyG5kbZNBG2H7tRsrQ4HCjuMOPnANZw==

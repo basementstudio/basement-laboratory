@@ -13,7 +13,8 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx && stylelint '**/*.{css,scss}'",
-    "tsc": "tsc --pretty --noEmit"
+    "tsc": "tsc --pretty --noEmit",
+    "clear-packages": "rm -rf ./node_modules/ && rm -rf ./package-lock.json && rm -rf ./yarn.lock"
   },
   "dependencies": {
     "@basementstudio/definitive-scroll": "^0.1.7",
@@ -35,7 +36,7 @@
     "lodash": "^4.17.21",
     "lottie-web": "^5.9.4",
     "mousetrap": "^1.6.5",
-    "next": "^12.2.0",
+    "next": "^12.3.1",
     "next-qrcode": "^2.1.0",
     "next-real-viewport": "^0.7.0",
     "ogl": "^0.0.93",
