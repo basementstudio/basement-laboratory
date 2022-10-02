@@ -1,6 +1,6 @@
 import { Center, Environment, useGLTF } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { folder, useControls } from 'leva'
+import { folder, Leva, useControls } from 'leva'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import * as THREE from 'three'
 
@@ -311,7 +311,10 @@ const KarlBg = () => {
 }
 
 KarlBg.Layout = (props) => (
+  <>
+  <Leva />
   <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
+  </>
 )
 
 KarlBg.Title = 'Circular Fog Shader'
