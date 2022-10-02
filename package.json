@@ -18,8 +18,8 @@
   "dependencies": {
     "@basementstudio/definitive-scroll": "^0.1.7",
     "@liveblocks/client": "^0.17.4",
-    "@react-three/drei": "^9.32.3",
-    "@react-three/fiber": "^8.8.6",
+    "@react-three/drei": "^9.32.7",
+    "@react-three/fiber": "^8.8.7",
     "@react-three/gltfjsx": "^4.3.4",
     "@react-three/postprocessing": "^2.3.2",
     "babel-plugin-glsl": "^1.0.0",
