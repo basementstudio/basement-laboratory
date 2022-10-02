@@ -1,5 +1,5 @@
 import { Box } from '@react-three/drei'
-import { useFrame } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 
 import { R3FCanvasLayout } from '../components/layout/r3f-canvas-layout'
@@ -31,8 +31,10 @@ JustACube.Tags = 'example'
 
 export default () => {
   return (
-    <R3FCanvasLayout>
-      <JustACube />
-    </R3FCanvasLayout>
+    <div style={{ position: 'fixed', height: '100vh', width: '100vw' }}>
+      <Canvas>
+        <JustACube />
+      </Canvas>
+    </div>
   )
 }
