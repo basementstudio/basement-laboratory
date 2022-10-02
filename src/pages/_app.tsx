@@ -30,7 +30,7 @@ export type GetLayoutFn<P = Record<string, unknown>> = (
   props: AppProps<P>
 ) => React.ReactNode
 
-const App = ({ Component, pageProps, ...rest }: AppProps) => {
+const App = ({ Component, pageProps }: AppProps) => {
   if (gaTrackingId) useAppGA()
 
   React.useEffect(() => {
@@ -94,14 +94,12 @@ const App = ({ Component, pageProps, ...rest }: AppProps) => {
     }
   }, [])
 
-  const getLayout: GetLayoutFn =
-    (Component as any).getLayout ||
-    (({ Component, pageProps }) => <Component {...pageProps} />)
-
   return (
     <>
       {gaTrackingId && <GAScripts />}
-      {getLayout({ Component, pageProps, ...rest })}
+
+      {/* @ts-ignore */}
+      <Component {...pageProps} />
     </>
   )
 }
