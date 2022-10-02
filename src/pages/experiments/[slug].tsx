@@ -61,6 +61,10 @@ const Experiment = ({
 
   const getLayout = resolveLayout(Component)
 
+  useEffect(() => {
+    console.log('Hi!')
+  }, [])
+
   return (
     <>
       {getLayout({
