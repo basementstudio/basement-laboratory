@@ -310,9 +310,13 @@ const KarlBg = () => {
   )
 }
 
-KarlBg.Layout = (props) => (
-  <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
-)
+KarlBg.Layout = (props) => {
+  useEffect(() => {
+    console.log('Hi!')
+  }, [])
+
+  return <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
+}
 KarlBg.Title = 'Circular Fog Shader'
 KarlBg.Tags = 'shaders,private'
 KarlBg.Description = (
