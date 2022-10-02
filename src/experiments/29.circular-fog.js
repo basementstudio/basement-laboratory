@@ -136,6 +136,7 @@ const KarlBg = () => {
   )
 
   useLayoutEffect(() => {
+    console.log('hI')
     /* Floor size */
     const floorScaleFactor = 4
     const floor = model.nodes['Plane']
