@@ -54,8 +54,6 @@ const Experiment = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [Component, setComponent] = useState<Module<Component>>()
 
-  // const ComponentRef = useRef(() => import(`~/experiments/${slug}`))
-
   useEffect(() => {
     import(`~/experiments/${slug}`).then((Comp) => {
       setComponent(Comp)
@@ -66,7 +64,6 @@ const Experiment = ({
     return <div>Loading...</div>
   }
 
-  // const Component = ComponentRef.current
   const Layout = resolveLayout(Component)
 
   return (
