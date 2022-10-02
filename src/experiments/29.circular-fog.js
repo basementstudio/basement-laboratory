@@ -341,4 +341,13 @@ KarlBg.Description = (
   </>
 )
 
-export default KarlBg
+export default () => {
+  return (
+    <>
+      <Leva />
+      <R3FCanvasLayout>
+        <KarlBg />
+      </R3FCanvasLayout>
+    </>
+  )
+}

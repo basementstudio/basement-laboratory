@@ -1,13 +1,11 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
+import dynamic from 'next/dynamic'
 import { ParsedUrlQuery } from 'querystring'
-import { FC, useEffect, useState } from 'react'
+import { FC, useRef } from 'react'
 
-import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
+// import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 import { getAllExperimentSlugs } from '~/lib/utils'
 
-type Module<P> = {
-  default: P
-}
 
 type Component<P = Record<string, unknown>> = FC<P> & {
   Layout?: FC
@@ -23,61 +21,52 @@ type GetLayoutFn<P = Record<string, unknown>> = FC<{
   slug: string
 }>
 
-const resolveLayout = (Comp: Module<Component>): GetLayoutFn => {
-  const Component = Comp.default
-
-  if (Component?.getLayout) {
-    return Component.getLayout
-  }
-
-  if (Component?.Layout) {
-    const Layout = Component.Layout
-
-    return ({ Component, ...rest }) => (
-      <Layout {...rest}>
-        <Component />
-      </Layout>
-    )
-  }
-
-  return ({ Component, ...rest }) => {
-    return (
-      <R3FCanvasLayout {...rest}>
-        <Component />
-      </R3FCanvasLayout>
-    )
-  }
-}
 
 const Experiment = ({
   slug
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const [Component, setComponent] = useState<Module<Component>>()
+  // const [Component, setComponent] = useState<Module<Component>>()
 
-  useEffect(() => {
-    import(`~/experiments/${slug}`).then((Comp) => {
-      setComponent(Comp)
-    })
-  }, [slug])
+  const ComponentRef = useRef(
+    dynamic(
+      () => {
+        const c = import(`~/experiments/${slug}`)
 
-  useEffect(() => {
-    console.log('Hi from layout use effect')
-  }, [])
+        c.then((a) => {
+          console.log('loaded!', a)
+        })
 
-  if (!Component) {
-    return <div>Loading...</div>
-  }
+        return c
+      },
+      { ssr: false, loading: () => <div>Loading...</div> }
+    )
+  )
 
-  const Layout = resolveLayout(Component)
+  // useEffect(() => {
+  //   import(`~/experiments/${slug}`).then((Comp) => {
+  //     setComponent(Comp)
+  //   })
+  // }, [slug])
+
+  // if (!Component) {
+  //   return <div>Loading...</div>
+  // }
+
+  const Component = ComponentRef.current
+  // const Layout = resolveLayout(Component)
+
+  console.log(Component)
 
   return (
     <>
-      <Layout
-        Component={Component.default}
-        title={Component.default.Title}
-        description={Component.default.Description}
+      {/* <Layout
+        Component={Component?.default}
+        title={Component?.default?.Title}
+        description={Component?.default?.Description}
         slug={slug}
-      />
+      /> */}
+      {/* @ts-ignore */}
+      <Component />
     </>
   )
 }
