@@ -135,6 +135,10 @@ const KarlBg = () => {
     }
   )
 
+  useEffect(() => {
+    console.log('No dependency effect')
+  }, [])
+
   useLayoutEffect(() => {
     console.log('hI')
     /* Floor size */
@@ -176,7 +180,7 @@ const KarlBg = () => {
     })
 
     scene.fog = new THREE.Fog(config.uFogHorizonColor, 0, 0)
-  }, [scene, model.nodes])
+  }, [])
 
   useLayoutEffect(() => {
     camera.position.set(
