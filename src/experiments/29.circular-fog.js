@@ -161,6 +161,8 @@ const KarlBg = () => {
 
       Object.keys(uniforms.current).map((key) => {
         shader.uniforms[key] = uniforms.current[key]
+        console.log('first >>', shader.uniforms[key] == uniforms.current[key])
+
         a = shader.uniforms
       })
     }
@@ -218,7 +220,10 @@ const KarlBg = () => {
         uniforms.current['uFogCenterX'].value = input.x
         uniforms.current['uFogCenterZ'].value = input.z
 
-        console.log(uniforms.current['uFogCenterX'] == a?.['uFogCenterX'])
+        console.log(
+          'second >>',
+          uniforms.current['uFogCenterX'] == a?.['uFogCenterX']
+        )
       }
     }
     const uniformKeys = Object.keys(uniforms.current)
