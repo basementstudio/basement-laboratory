@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import { ParsedUrlQuery } from 'querystring'
 import { FC, useEffect, useState } from 'react'
 
+import { Meta } from '~/components/common/meta'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 import { getAllExperimentSlugs } from '~/lib/utils'
 
@@ -68,6 +69,7 @@ const Experiment = ({
 
   return (
     <>
+      <Meta />
       <Layout
         Component={Component.default}
         title={Component.default.Title}
