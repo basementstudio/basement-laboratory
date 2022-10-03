@@ -118,7 +118,7 @@ const KarlBg = () => {
     fog: folder({
       uFogNear: { value: 55, min: 0, max: 500 },
       uFogFar: { value: 140, min: 0, max: 500 },
-      uFogCenter: { value: { x: 0, z: 0 }, min: -500, max: 500 },
+      uFogCenter: { value: { x: 0, z: -20 }, min: -500, max: 500 },
       uFogNearColor: { value: '#000' },
       uFogHorizonColor: { value: '#000' }
     })
