@@ -317,7 +317,7 @@ KarlBg.Layout = (props) => (
 )
 
 KarlBg.Title = 'Circular Fog Shader'
-KarlBg.Tags = 'shaders,private'
+KarlBg.Tags = 'shaders'
 KarlBg.Description = (
   <>
     <p>
