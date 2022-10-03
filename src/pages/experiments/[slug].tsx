@@ -37,7 +37,7 @@ const Experiment = () => {
   // const Layout = resolveLayout(Component)
 
   useEffect(() => {
-    console.log('Hello from no deps component on layout')
+    console.log('Hello from no deps component on layout.')
   }, [])
 
   return (
