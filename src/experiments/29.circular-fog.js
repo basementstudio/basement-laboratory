@@ -133,12 +133,7 @@ const KarlBg = () => {
     }
   )
 
-  useEffect(() => {
-    console.log('No dependency effect')
-  }, [])
-
   useLayoutEffect(() => {
-    console.log('hI')
     /* Floor size */
     const floorScaleFactor = 4
     const floor = model.nodes['Plane']
