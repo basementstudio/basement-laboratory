@@ -62,7 +62,12 @@ const Experiment = ({
   }, [slug])
 
   if (!Component) {
-    return <div>Loading...</div>
+    return (
+      <>
+        <Meta />
+        <div>Loading...</div>
+      </>
+    )
   }
 
   const Layout = resolveLayout(Component)
