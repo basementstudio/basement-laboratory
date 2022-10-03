@@ -204,6 +204,20 @@ const KarlBg = () => {
           -cursor.x * (Math.PI * config.camRotationMultiplierY),
         ease: 'power2.out'
       })
+
+      gsap.to(uniforms.current.uFogCenterX, {
+        overwrite: true,
+        duration: DURATION / 2.5,
+        value: config.uFogCenter.x + cursor.x * 25,
+        ease: 'power2.out'
+      })
+
+      gsap.to(uniforms.current.uFogCenterZ, {
+        overwrite: true,
+        duration: DURATION / 1.5,
+        value: config.uFogCenter.z + -cursor.y * 25,
+        ease: 'power2.out'
+      })
     }, gl.domElement)
 
     /* Update Uniforms */
