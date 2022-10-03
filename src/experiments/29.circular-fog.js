@@ -68,15 +68,21 @@ const KarlBg = () => {
   }))
 
   const config = useControls({
-    model: folder({
-      scale: { value: 0.6, step: 0.01, min: 0, max: 2 }
-    }),
-    scene: folder({
-      ambientLight: { value: 0.1, step: 0.01, min: 0, max: 1 },
-      ambientLightColor: { value: '#fff' },
-      background: { value: '#000' },
-      environment: { value: 'sunset' }
-    }),
+    model: folder(
+      {
+        scale: { value: 0.6, step: 0.01, min: 0, max: 2 }
+      },
+      { collapsed: true }
+    ),
+    scene: folder(
+      {
+        ambientLight: { value: 0.1, step: 0.01, min: 0, max: 1 },
+        ambientLightColor: { value: '#fff' },
+        background: { value: '#000' },
+        environment: { value: 'sunset' }
+      },
+      { collapsed: true }
+    ),
     camera: folder(
       {
         camXPosition: {
