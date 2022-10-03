@@ -59,8 +59,6 @@ const fogParsFrag = `
 #endif
 `
 
-let a
-
 const KarlBg = () => {
   const finishedEntrance = useRef(false)
   const { camera, scene } = useThree()
@@ -166,9 +164,6 @@ const KarlBg = () => {
 
       Object.keys(uniforms.current).map((key) => {
         shader.uniforms[key] = uniforms.current[key]
-        console.log('first >>', shader.uniforms[key] == uniforms.current[key])
-
-        a = shader.uniforms
       })
     }
 
@@ -224,11 +219,6 @@ const KarlBg = () => {
       uFogCenter: (_, input) => {
         uniforms.current['uFogCenterX'].value = input.x
         uniforms.current['uFogCenterZ'].value = input.z
-
-        console.log(
-          'second >>',
-          uniforms.current['uFogCenterX'] == a?.['uFogCenterX']
-        )
       }
     }
     const uniformKeys = Object.keys(uniforms.current)

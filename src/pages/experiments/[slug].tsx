@@ -60,10 +60,6 @@ const Experiment = ({
     })
   }, [slug])
 
-  useEffect(() => {
-    console.log('Hi from layout use effect')
-  }, [])
-
   if (!Component) {
     return <div>Loading...</div>
   }
