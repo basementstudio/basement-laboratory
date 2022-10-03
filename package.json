@@ -40,7 +40,7 @@
     "next-qrcode": "^2.1.0",
     "next-real-viewport": "^0.7.0",
     "ogl": "^0.0.93",
-    "react": "^18.0.0",
+    "react": "^18.2.0",
     "react-device-detect": "2.1.2",
     "react-dom": "^18.0.0",
     "react-merge-refs": "1.1.0",
