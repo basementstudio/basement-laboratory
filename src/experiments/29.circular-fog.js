@@ -61,7 +61,7 @@ const fogParsFrag = `
 
 const KarlBg = () => {
   const finishedEntrance = useRef(false)
-  const { camera, scene } = useThree()
+  const { camera, scene, gl } = useThree()
   const { loading, setLoaded } = useLoader(({ setLoaded, loading }) => ({
     loading,
     setLoaded
@@ -204,7 +204,7 @@ const KarlBg = () => {
           -cursor.x * (Math.PI * config.camRotationMultiplierY),
         ease: 'power2.out'
       })
-    })
+    }, gl.domElement)
 
     /* Update Uniforms */
     const middlewares = {

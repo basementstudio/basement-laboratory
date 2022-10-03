@@ -8,7 +8,10 @@ import { Scene } from 'three/src/scenes/Scene'
 
 import { safeWindow } from './constants'
 
-export const trackCursor = (onMove?: (cursor: Vector2) => void) => {
+export const trackCursor = (
+  onMove?: (cursor: Vector2) => void,
+  target?: HTMLElement
+) => {
   const hasMoved = { current: false }
   const firstRead = { current: true }
   const cursor = new Vector2(0, 0)
@@ -26,7 +29,11 @@ export const trackCursor = (onMove?: (cursor: Vector2) => void) => {
     firstRead.current = false
   }
 
-  safeWindow.addEventListener('mousemove', onMouseMove, { passive: true })
+  const _target = target || safeWindow
+
+  _target.addEventListener('mousemove', onMouseMove, {
+    passive: true
+  })
 
   return {
     get hasMoved() {
@@ -37,7 +44,7 @@ export const trackCursor = (onMove?: (cursor: Vector2) => void) => {
     },
     cursor,
     destroy: () => {
-      safeWindow.removeEventListener('mousemove', onMouseMove)
+      _target.removeEventListener('mousemove', onMouseMove)
     }
   }
 }
