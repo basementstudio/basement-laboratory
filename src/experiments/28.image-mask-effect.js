@@ -7,14 +7,49 @@ import {
 import { useTexture } from '@react-three/drei'
 import glsl from 'glslify'
 import { button, folder, useControls } from 'leva'
+import cloneDeep from 'lodash/cloneDeep'
+import set from 'lodash/set'
 import Image from 'next/future/image'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Vector2 } from 'three/src/math/Vector2'
 
 import sampleImage from '../../public/images/face-hover.jpg'
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
 import { DURATION, gsap } from '../lib/gsap'
 import { trackCursor } from '../lib/three'
+import { getHrefWithQuery } from '../lib/utils/router'
+
+const fillInitialState = (_config) => {
+  let config = cloneDeep(_config)
+  const params = new URLSearchParams(window.location.search)
+
+  const configParam = params.get('_config')
+
+  if (configParam) {
+    /* Gen routes to values */
+    const routes = {}
+    Object.entries(config).forEach(([k, v]) => {
+      const type = v.type
+
+      if (type === 'FOLDER') {
+        Object.entries(v.schema).forEach(([_k]) => {
+          routes[_k] = `${k}.schema.${_k}.value`
+        })
+
+        return
+      }
+
+      routes[k] = `${k}.value`
+    })
+
+    /* Set based on params */
+    Object.entries(JSON.parse(configParam)).forEach(([k, v]) => {
+      config = set(config, routes[k], v)
+    })
+  }
+
+  return config
+}
 
 const vertex = glsl/* glsl */ `
   varying vec2 v_uv;
@@ -117,69 +152,74 @@ const fragment = glsl/* glsl */ `
 const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
   const ref = useRef()
   const texture = useTexture(src, onLoad)
-  const config = useControls({
-    u_portalRadius1: {
-      min: 0,
-      max: 1,
-      step: 0.01,
-      value: 0.03
-    },
-    u_portalRadius2: {
-      min: 0,
-      max: 1,
-      step: 0.01,
-      value: 0.06
-    },
-    u_portalRadius3: {
-      min: 0,
-      max: 1,
-      step: 0.01,
-      value: 0.14
-    },
-    'Noise 1': folder({
-      u_noise1: {
+
+  const showPortalsOnCenter = useCallback(() => {
+    if (ref.current) {
+      ref.current.material.uniforms.u_mouse.value.x = 0
+      ref.current.material.uniforms.u_mouse.value.y = 0
+      ref.current.material.uniforms.u_progressHover.value = 1
+    }
+  }, [])
+
+  const config = useControls(
+    fillInitialState({
+      u_portalRadius1: {
         min: 0,
-        max: 800,
-        step: 2,
-        value: 300
+        max: 1,
+        step: 0.01,
+        value: 0.03
       },
-      u_noise1_time: { value: 0, min: 0, max: 100, step: 2 }
-    }),
-    'Noise 2': folder({
-      u_noise2: {
+      u_portalRadius2: {
         min: 0,
-        max: 800,
-        step: 2,
-        value: 200
+        max: 1,
+        step: 0.01,
+        value: 0.06
       },
-      u_noise2_time: { value: 0, min: 0, max: 100, step: 2 }
-    }),
-    'Noise 3': folder({
-      u_noise3: {
+      u_portalRadius3: {
         min: 0,
-        max: 800,
-        step: 2,
-        value: 6
+        max: 1,
+        step: 0.01,
+        value: 0.14
       },
-      u_noise3_time: { value: 50, min: 0, max: 100, step: 2 }
-    }),
-    'Noise 4': folder({
-      u_noise4: {
-        min: 0,
-        max: 800,
-        step: 2,
-        value: 2
-      },
-      u_noise4_time: { value: 50, min: 0, max: 100, step: 2 }
-    }),
-    'Show portal on center': button(() => {
-      if (ref.current) {
-        ref.current.material.uniforms.u_mouse.value.x = 0
-        ref.current.material.uniforms.u_mouse.value.y = 0
-        ref.current.material.uniforms.u_progressHover.value = 1
-      }
+      'Noise 1': folder({
+        u_noise1: {
+          min: 0,
+          max: 800,
+          step: 2,
+          value: 300
+        },
+        u_noise1_time: { value: 0, min: 0, max: 100, step: 2 }
+      }),
+      'Noise 2': folder({
+        u_noise2: {
+          min: 0,
+          max: 800,
+          step: 2,
+          value: 200
+        },
+        u_noise2_time: { value: 0, min: 0, max: 100, step: 2 }
+      }),
+      'Noise 3': folder({
+        u_noise3: {
+          min: 0,
+          max: 800,
+          step: 2,
+          value: 6
+        },
+        u_noise3_time: { value: 50, min: 0, max: 100, step: 2 }
+      }),
+      'Noise 4': folder({
+        u_noise4: {
+          min: 0,
+          max: 800,
+          step: 2,
+          value: 2
+        },
+        u_noise4_time: { value: 50, min: 0, max: 100, step: 2 }
+      }),
+      'Show portal on center': button(showPortalsOnCenter)
     })
-  })
+  )
 
   const uniforms = useRef({
     u_image: { value: texture },
@@ -211,15 +251,7 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
 
   useEffect(() => {
     /* Update Uniforms */
-    const middlewares = {
-      uFogNearColor: (curr, input) => {
-        curr?.set(input)
-      },
-      uFogCenter: (_, input) => {
-        uniforms.current['uFogCenterX'].value = input.x
-        uniforms.current['uFogCenterZ'].value = input.z
-      }
-    }
+    const middlewares = {}
     const uniformKeys = Object.keys(uniforms.current)
     const middlewareMissingKeys = Object.keys(middlewares).filter(
       (k) => !uniformKeys.includes(k)
@@ -241,10 +273,21 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
           if (res != undefined) {
             uniforms.current[key].value = res
           }
-        } else if (config[key]) {
+        } else if (config[key] != undefined) {
           uniforms.current[key].value = config[key]
         }
       })
+  }, [config])
+
+  useEffect(() => {
+    const trget = getHrefWithQuery(
+      window.location.protocol +
+        '//' +
+        window.location.host +
+        window.location.pathname,
+      { _config: JSON.stringify(config) }
+    )
+    window.history.pushState({ path: trget }, '', trget)
   }, [config])
 
   useEffect(() => {
