@@ -327,13 +327,13 @@ KarlBg.Tags = 'shaders'
 KarlBg.Description = (
   <>
     <p>
-      <strong>Motivation:</strong> We needed a sort of reflector effect, that
-      fades out to black hiding the model edges.
+      <strong>Motivation:</strong> We were looking for a spotlight effect that
+      highlights only the elements in the middle of the scene.
     </p>
 
     <p>
-      <strong>How we did it:</strong> We overridden the predefined fog shader
-      behavior to fit our needs. Inspired on{' '}
+      <strong>How we did it:</strong> We've modified the predefined fog shader
+      behavior to fit our needs. Inspired by{' '}
       <a
         href="https://snayss.medium.com/three-js-fog-hacks-fc0b42f63386"
         target="_blank"
