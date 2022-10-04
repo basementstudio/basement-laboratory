@@ -172,14 +172,14 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
         min: 0,
         max: 1,
         step: 0.01,
-        value: 0.14
+        value: 0.1
       },
       'Noise 1': folder({
         u_noise1: {
           min: 0,
           max: 800,
           step: 2,
-          value: 300
+          value: 206
         },
         u_noise1_time: { value: 0, min: 0, max: 100, step: 2 }
       }),
@@ -188,7 +188,7 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
           min: 0,
           max: 800,
           step: 2,
-          value: 200
+          value: 90
         },
         u_noise2_time: { value: 0, min: 0, max: 100, step: 2 }
       }),
@@ -199,16 +199,16 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
           step: 2,
           value: 6
         },
-        u_noise3_time: { value: 50, min: 0, max: 100, step: 2 }
+        u_noise3_time: { value: 16, min: 0, max: 100, step: 2 }
       }),
       'Noise 4': folder({
         u_noise4: {
           min: 0,
           max: 800,
           step: 2,
-          value: 2
+          value: 18
         },
-        u_noise4_time: { value: 50, min: 0, max: 100, step: 2 }
+        u_noise4_time: { value: 28, min: 0, max: 100, step: 2 }
       }),
       'Show portal on center': button(() => {
         if (ref.current) {
