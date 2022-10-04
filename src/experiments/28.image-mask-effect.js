@@ -6,7 +6,7 @@ import {
 } from '@basementstudio/definitive-scroll/three'
 import { useTexture } from '@react-three/drei'
 import glsl from 'glslify'
-import { button, useControls } from 'leva'
+import { button, folder, useControls } from 'leva'
 import Image from 'next/future/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Vector2 } from 'three/src/math/Vector2'
@@ -41,6 +41,14 @@ const fragment = glsl/* glsl */ `
   uniform float u_portalRadius1;
   uniform float u_portalRadius2;
   uniform float u_portalRadius3;
+  uniform float u_noise1;
+  uniform float u_noise2;
+  uniform float u_noise3;
+  uniform float u_noise4;
+  uniform float u_noise1_time;
+  uniform float u_noise2_time;
+  uniform float u_noise3_time;
+  uniform float u_noise4_time;
 
   varying vec2 v_uv;
 
@@ -71,12 +79,12 @@ const fragment = glsl/* glsl */ `
     float c3 = circle(circlePos * 1., u_portalRadius3 * progressHover, 2.) * 3.5;
 
     float offx = v_uv.x;
-    float offy = v_uv.y - time - cos(time) * .01;
+    float offy = v_uv.y;
 
-    float n1 = snoise3(vec3(offx, offy, time) * 300.) - 1.;
-    float n2 = snoise3(vec3(offx, offy, time) * 200.) - 1.;
-    float n3 = snoise3(vec3(offx, offy, time * 50.0) * 6.) - 1.;
-    float n4 = snoise3(vec3(offx, offy, time * 50.0) * 2.) - 1.;
+    float n1 = snoise3(vec3(offx, offy, time * u_noise1_time) * u_noise1) - 1.;
+    float n2 = snoise3(vec3(offx, offy, time * u_noise2_time) * u_noise2) - 1.;
+    float n3 = snoise3(vec3(offx, offy, time * u_noise3_time) * u_noise3) - 1.;
+    float n4 = snoise3(vec3(offx, offy, time * u_noise4_time) * u_noise4) - 1.;
 
     float mixedNoise =  (n1 + n2 + n3 + n4);
 
@@ -85,6 +93,7 @@ const fragment = glsl/* glsl */ `
     float finalMask3 = smoothstep(0.99, 1., mixedNoise + pow(c3, 2.)) * progressHover;
 
     vec4 image = texture2D(u_image, v_uv);
+    /* Tweak color */
     vec4 hover = vec4(1., 1., 1., 1.) - (image * 1.5);
 
     vec4 finalImage = mix(
@@ -109,27 +118,60 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
   const ref = useRef()
   const texture = useTexture(src, onLoad)
   const config = useControls({
-    portalRadius1: {
+    u_portalRadius1: {
       min: 0,
       max: 1,
       step: 0.01,
-      value: 0.03,
-      onChange: (v) => (uniforms.current.u_portalRadius1.value = v)
+      value: 0.03
     },
-    portalRadius2: {
+    u_portalRadius2: {
       min: 0,
       max: 1,
       step: 0.01,
-      value: 0.06,
-      onChange: (v) => (uniforms.current.u_portalRadius2.value = v)
+      value: 0.06
     },
-    portalRadius3: {
+    u_portalRadius3: {
       min: 0,
       max: 1,
       step: 0.01,
-      value: 0.14,
-      onChange: (v) => (uniforms.current.u_portalRadius3.value = v)
+      value: 0.14
     },
+    'Noise 1': folder({
+      u_noise1: {
+        min: 0,
+        max: 800,
+        step: 2,
+        value: 300
+      },
+      u_noise1_time: { value: 0, min: 0, max: 100, step: 2 }
+    }),
+    'Noise 2': folder({
+      u_noise2: {
+        min: 0,
+        max: 800,
+        step: 2,
+        value: 200
+      },
+      u_noise2_time: { value: 0, min: 0, max: 100, step: 2 }
+    }),
+    'Noise 3': folder({
+      u_noise3: {
+        min: 0,
+        max: 800,
+        step: 2,
+        value: 6
+      },
+      u_noise3_time: { value: 50, min: 0, max: 100, step: 2 }
+    }),
+    'Noise 4': folder({
+      u_noise4: {
+        min: 0,
+        max: 800,
+        step: 2,
+        value: 2
+      },
+      u_noise4_time: { value: 50, min: 0, max: 100, step: 2 }
+    }),
     'Show portal on center': button(() => {
       if (ref.current) {
         ref.current.material.uniforms.u_mouse.value.x = 0
@@ -152,10 +194,58 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
     },
 
     /* Config */
-    u_portalRadius1: { value: config.portalRadius1 },
-    u_portalRadius2: { value: config.portalRadius2 },
-    u_portalRadius3: { value: config.portalRadius3 }
+    u_portalRadius1: { value: config.u_portalRadius1 },
+    u_portalRadius2: { value: config.u_portalRadius2 },
+    u_portalRadius3: { value: config.u_portalRadius3 },
+
+    u_noise1: { value: config.u_noise1 },
+    u_noise2: { value: config.u_noise2 },
+    u_noise3: { value: config.u_noise3 },
+    u_noise4: { value: config.u_noise4 },
+
+    u_noise1_time: { value: config.u_noise1_time },
+    u_noise2_time: { value: config.u_noise2_time },
+    u_noise3_time: { value: config.u_noise3_time },
+    u_noise4_time: { value: config.u_noise4_time }
   })
+
+  useEffect(() => {
+    /* Update Uniforms */
+    const middlewares = {
+      uFogNearColor: (curr, input) => {
+        curr?.set(input)
+      },
+      uFogCenter: (_, input) => {
+        uniforms.current['uFogCenterX'].value = input.x
+        uniforms.current['uFogCenterZ'].value = input.z
+      }
+    }
+    const uniformKeys = Object.keys(uniforms.current)
+    const middlewareMissingKeys = Object.keys(middlewares).filter(
+      (k) => !uniformKeys.includes(k)
+    )
+
+    const include = [...uniformKeys, ...middlewareMissingKeys]
+    const exclude = []
+
+    Object.keys(config)
+      .filter((key) => !exclude.includes(key))
+      .filter((key) => include.includes(key))
+      .map((key) => {
+        if (middlewares[key]) {
+          const res = middlewares[key](
+            uniforms.current[key]?.value,
+            config[key]
+          )
+
+          if (res != undefined) {
+            uniforms.current[key].value = res
+          }
+        } else if (config[key]) {
+          uniforms.current[key].value = config[key]
+        }
+      })
+  }, [config])
 
   useEffect(() => {
     if (!imageRef?.current || !ref?.current) return
