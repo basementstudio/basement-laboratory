@@ -10,7 +10,7 @@ import { button, folder, useControls } from 'leva'
 import cloneDeep from 'lodash/cloneDeep'
 import set from 'lodash/set'
 import Image from 'next/future/image'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Vector2 } from 'three/src/math/Vector2'
 
 import sampleImage from '../../public/images/face-hover.jpg'
