@@ -32,7 +32,7 @@ export const Meta = (props: MetaProps) => {
         url: props.ogImage ?? defaultMeta.ogImage,
         alt: props.title ?? defaultMeta.title,
         width: 1200,
-        height: 630
+        height: 642
       },
       twitter: {
         cardType: 'summary_large_image',

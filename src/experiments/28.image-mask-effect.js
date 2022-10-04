@@ -152,14 +152,7 @@ const fragment = glsl/* glsl */ `
 const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
   const ref = useRef()
   const texture = useTexture(src, onLoad)
-
-  const showPortalsOnCenter = useCallback(() => {
-    if (ref.current) {
-      ref.current.material.uniforms.u_mouse.value.x = 0
-      ref.current.material.uniforms.u_mouse.value.y = 0
-      ref.current.material.uniforms.u_progressHover.value = 1
-    }
-  }, [])
+  const configRef = useRef({})
 
   const config = useControls(
     fillInitialState({
@@ -217,7 +210,26 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
         },
         u_noise4_time: { value: 50, min: 0, max: 100, step: 2 }
       }),
-      'Show portal on center': button(showPortalsOnCenter)
+      'Show portal on center': button(() => {
+        if (ref.current) {
+          ref.current.material.uniforms.u_mouse.value.x = 0
+          ref.current.material.uniforms.u_mouse.value.y = 0
+          ref.current.material.uniforms.u_progressHover.value = 1
+        }
+      }),
+      'Copy to clipboard': button(() => {
+        const el = document.createElement('textarea')
+
+        el.value = JSON.stringify(configRef.current)
+        el.setAttribute('readonly', '')
+        el.style.position = 'absolute'
+        el.style.left = '-9999px'
+
+        document.body.appendChild(el)
+        el.select()
+        document.execCommand('copy')
+        document.body.removeChild(el)
+      })
     })
   )
 
@@ -277,6 +289,10 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
           uniforms.current[key].value = config[key]
         }
       })
+  }, [config])
+
+  useEffect(() => {
+    configRef.current = config
   }, [config])
 
   useEffect(() => {
