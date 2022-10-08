@@ -6,14 +6,12 @@ import {
   useGLTF
 } from '@react-three/drei'
 import { button, Leva, useControls } from 'leva'
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
-import { MeshBasicMaterial } from 'three'
+import { useEffect, useMemo, useRef } from 'react'
 import { Color } from 'three/src/math/Color'
 
 import { Loader, useLoader } from '~/components/common/loader'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 import { useUniforms } from '~/hooks/use-uniforms'
-import { isClient } from '~/lib/constants'
 import { DURATION, gsap } from '~/lib/gsap'
 
 const vertex = /* glsl */ `
