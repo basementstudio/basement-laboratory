@@ -55,7 +55,7 @@ void main() {
 }
 `
 
-const WireframeReveal = () => {
+const WireframeReveal = ({ src, reachObj, ...rest }) => {
   const animationRef = useRef(null)
   const wireframeRef = useRef(null)
   const groupRef = useRef(null)
@@ -122,19 +122,14 @@ const WireframeReveal = () => {
     }
   )
 
-  const dagger = useGLTF(
-    `/models/dagger.glb`,
-    undefined,
-    undefined,
-    (loader) => {
-      loader.manager.onLoad = () => {
-        setLoaded()
-      }
+  const model = useGLTF(src, undefined, undefined, (loader) => {
+    loader.manager.onLoad = () => {
+      setLoaded()
     }
-  )
+  })
 
   const objRef = useMemo(() => {
-    const trgt = dagger.scene.children[0].children[0].children[0]
+    const trgt = reachObj(model)
 
     const patch = (shader) => {
       shader.vertexShader = shader.vertexShader.replace(
@@ -204,7 +199,7 @@ const WireframeReveal = () => {
     trgt.material.onBeforeCompile = patch
 
     return trgt
-  }, [dagger])
+  }, [model])
 
   useEffect(() => {
     if (!loading) {
@@ -244,18 +239,18 @@ const WireframeReveal = () => {
   const isWireframe = config.show === 'wireframe'
   const isModel = config.show === 'model'
 
-  const rotation = [0, 0, Math.PI / 2]
-
   return (
     <>
-      <Environment preset="sunset" />
-      <OrbitControls />
-      {/* <axesHelper args={[5]} />
-      <gridHelper args={[100, 100]} /> */}
-      <Center scale={0.2} ref={groupRef}>
-        {(isBoth || isModel) && <Clone rotation={rotation} object={objRef} />}
+      <Center {...rest} ref={groupRef}>
+        {(isBoth || isModel) && (
+          <Clone rotation={rest['rotation']} object={objRef} />
+        )}
         {(isBoth || isWireframe) && (
-          <lineSegments rotation={rotation} ref={wireframeRef}>
+          <lineSegments
+            rotation={rest['rotation']}
+            scale={objRef.scale}
+            ref={wireframeRef}
+          >
             <wireframeGeometry args={[objRef.geometry]} />
             <shaderMaterial
               transparent
@@ -270,15 +265,49 @@ const WireframeReveal = () => {
   )
 }
 
-WireframeReveal.Layout = (props) => (
+const WireframeRevealMain = () => {
+  const scale = 1.5
+
+  return (
+    <>
+      <Environment preset="sunset" />
+      <OrbitControls />
+      {/* <axesHelper args={[5]} />
+      <gridHelper args={[100, 100]} /> */}
+      <WireframeReveal
+        rotation={[0, 0, Math.PI / 4]}
+        position={[0, 1 * scale, 0]}
+        scale={0.15 * scale}
+        src={'/models/dagger.glb'}
+        reachObj={(m) => {
+          const o = m.scene.children[0].children[0].children[0]
+
+          return o
+        }}
+      />
+      <WireframeReveal
+        rotation={[Math.PI / 4, 0, 0]}
+        position={[0, -1 * scale, 0]}
+        scale={0.3 * scale}
+        src={'/models/ring.glb'}
+        reachObj={(m) => {
+          const o = m.scene.children[0]
+          return o
+        }}
+      />
+    </>
+  )
+}
+
+WireframeRevealMain.Layout = (props) => (
   <>
     <Leva />
     <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
   </>
 )
 
-WireframeReveal.Title = 'Wireframe model reveal'
-WireframeReveal.Description = ''
-WireframeReveal.Tags = 'shaders,private'
+WireframeRevealMain.Title = 'Wireframe model reveal'
+WireframeRevealMain.Description = ''
+WireframeRevealMain.Tags = 'shaders,private'
 
-export default WireframeReveal
+export default WireframeRevealMain
