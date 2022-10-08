@@ -1,11 +1,19 @@
-import { Center, Environment, OrbitControls, useGLTF } from '@react-three/drei'
+import {
+  Center,
+  Clone,
+  Environment,
+  OrbitControls,
+  useGLTF
+} from '@react-three/drei'
 import { Leva, useControls } from 'leva'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { MeshBasicMaterial } from 'three'
 import { Color } from 'three/src/math/Color'
 
 import { Loader, useLoader } from '~/components/common/loader'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 import { useUniforms } from '~/hooks/use-uniforms'
+import { isClient } from '~/lib/constants'
 import { DURATION, gsap } from '~/lib/gsap'
 
 const vertex = /* glsl */ `
@@ -34,8 +42,8 @@ float xMin = -5.;
 float xMax = 5.;
 
 void main() {
-  float centerPos = xMin + (
-    (abs(xMax - xMin) + (uAlphaFar * 2.0)) * uProgress) -
+  float centerPos = xMin +
+   ((abs(xMax - xMin) + (uAlphaFar * 2.0)) * uProgress) -
     uAlphaFar
   ;
 
@@ -62,12 +70,17 @@ const WireframeReveal = () => {
     uAlphaNear: {
       min: 0,
       max: 10,
-      value: 1.4
+      value: 0
     },
     uAlphaFar: {
       min: 0,
       max: 10,
-      value: 8
+      value: 3
+    },
+    uWireframeTextureOffset: {
+      min: 0,
+      max: 10,
+      value: 2
     },
     uColor: {
       value: '#FFBE18'
@@ -77,6 +90,7 @@ const WireframeReveal = () => {
   const uniforms = useUniforms(
     {
       uColor: { value: new Color(config.uColor) },
+      uWireframeTextureOffset: { value: config.uWireframeTextureOffset },
       uProgress: { value: config.uProgress },
       uAlphaNear: { value: config.uAlphaNear },
       uAlphaFar: { value: config.uAlphaFar }
@@ -96,9 +110,86 @@ const WireframeReveal = () => {
     undefined,
     undefined,
     (loader) => {
-      loader.manager.onLoad = () => setLoaded()
+      loader.manager.onLoad = () => {
+        setLoaded()
+      }
     }
   )
+
+  const objRef = useMemo(() => {
+    console.log({ isClient, dagger })
+
+    const trgt = dagger.scene.children[0].children[0].children[0]
+
+    // trgt.material = new MeshBasicMaterial({ color: 'red' })
+
+    const patch = (shader) => {
+      shader.vertexShader = shader.vertexShader.replace(
+        `#include <clipping_planes_pars_vertex>`,
+        `
+          #include <clipping_planes_pars_vertex>
+
+          varying vec4 vPosition;
+        `
+      )
+
+      shader.vertexShader = shader.vertexShader.replace(
+        `#include <fog_vertex>`,
+        `
+          #include <fog_vertex>
+
+          vPosition = modelMatrix * vec4(position, 1.0);
+        `
+      )
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        `#include <clipping_planes_pars_fragment>`,
+        `
+          #include <clipping_planes_pars_fragment>
+
+          uniform float uProgress;
+          uniform float uAlphaNear;
+          uniform float uAlphaFar;
+          uniform vec3 uColor;
+          uniform vec3 uWireframeTextureOffset;
+          
+          varying vec4 vPosition;
+
+
+          float xMin = -5.;
+          float xMax = 5.;
+        `
+      )
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        `#include <dithering_fragment>`,
+        `
+          #include <dithering_fragment>
+
+          float diff = uAlphaFar - uAlphaNear;
+
+          float centerPos = xMin - diff;
+
+          float depth = distance(centerPos, vPosition.x);
+
+          float revealProgress = abs(xMax - centerPos) * uProgress;
+
+          float alpha = 1. - smoothstep(revealProgress, revealProgress + diff, depth);
+
+          gl_FragColor = vec4(gl_FragColor.rgb, alpha);
+        `
+      )
+
+      Object.keys(uniforms.current).map((key) => {
+        shader.uniforms[key] = uniforms.current[key]
+      })
+    }
+
+    trgt.material.transparent = true
+    trgt.material.onBeforeCompile = patch
+
+    return trgt
+  }, [dagger])
 
   useEffect(() => {
     if (!loading) {
@@ -109,7 +200,7 @@ const WireframeReveal = () => {
         delay: 2,
         duration: DURATION * 6,
         ease: 'power2.inOut',
-        repeat: -1,
+        repeat: 0,
         repeatDelay: 1,
         onUpdate: () => {
           set({ uProgress: progress.value })
@@ -124,18 +215,15 @@ const WireframeReveal = () => {
 
   return (
     <>
-      {/* <Box /> */}
       <Environment preset="apartment" />
       <OrbitControls />
       <axesHelper />
       {/* <gridHelper args={[100, 100]} /> */}
       <Center>
         <group rotation={[0, 0, Math.PI / 2]} scale={0.2}>
-          <primitive object={dagger.scene} />
+          <Clone object={objRef} />
           <lineSegments>
-            <wireframeGeometry
-              args={[dagger.scene.children[0].children[0].children[0].geometry]}
-            />
+            <wireframeGeometry args={[objRef.geometry]} />
             <shaderMaterial
               transparent
               uniforms={uniforms.current}
