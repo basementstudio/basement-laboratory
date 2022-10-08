@@ -1,6 +1,7 @@
 import { Center, Environment, OrbitControls, useGLTF } from '@react-three/drei'
 import { Leva, useControls } from 'leva'
 import { useEffect } from 'react'
+import { Color } from 'three/src/math/Color'
 
 import { Loader, useLoader } from '~/components/common/loader'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
@@ -25,6 +26,7 @@ const fragment = /* glsl */ `
 uniform float uProgress;
 uniform float uAlphaNear;
 uniform float uAlphaFar;
+uniform vec3 uColor;
 
 varying vec4 vPosition;
 
@@ -41,7 +43,7 @@ void main() {
 
   float alpha = 1. - smoothstep(uAlphaNear, uAlphaFar, depth);
 
-  gl_FragColor = vec4(1., 1., 1., alpha);
+  gl_FragColor = vec4(uColor, alpha);
 }
 `
 
@@ -66,16 +68,27 @@ const WireframeReveal = () => {
       min: 0,
       max: 10,
       value: 8
+    },
+    uColor: {
+      value: '#FFBE18'
     }
   }))
 
   const uniforms = useUniforms(
     {
+      uColor: { value: new Color(config.uColor) },
       uProgress: { value: config.uProgress },
       uAlphaNear: { value: config.uAlphaNear },
       uAlphaFar: { value: config.uAlphaFar }
     },
-    config
+    config,
+    {
+      middlewares: {
+        uColor: (curr, input) => {
+          curr?.set(input)
+        }
+      }
+    }
   )
 
   const dagger = useGLTF(
@@ -91,15 +104,21 @@ const WireframeReveal = () => {
     if (!loading) {
       const progress = { value: 0 }
 
-      gsap.to(progress, {
+      const tween = gsap.to(progress, {
         value: 1,
         delay: 2,
         duration: DURATION * 6,
         ease: 'power2.inOut',
+        repeat: -1,
+        repeatDelay: 1,
         onUpdate: () => {
           set({ uProgress: progress.value })
         }
       })
+
+      return () => {
+        tween.kill()
+      }
     }
   }, [loading, set])
 
@@ -112,7 +131,7 @@ const WireframeReveal = () => {
       {/* <gridHelper args={[100, 100]} /> */}
       <Center>
         <group rotation={[0, 0, Math.PI / 2]} scale={0.2}>
-          {/* <primitive object={dagger.scene} /> */}
+          <primitive object={dagger.scene} />
           <lineSegments>
             <wireframeGeometry
               args={[dagger.scene.children[0].children[0].children[0].geometry]}
@@ -139,6 +158,6 @@ WireframeReveal.Layout = (props) => (
 
 WireframeReveal.Title = 'Wireframe model reveal'
 WireframeReveal.Description = ''
-WireframeReveal.Tags = 'shaders'
+WireframeReveal.Tags = 'shaders,private'
 
 export default WireframeReveal

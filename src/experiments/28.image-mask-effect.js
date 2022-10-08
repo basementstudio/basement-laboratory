@@ -161,7 +161,7 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
   const texture = useTexture(src, onLoad)
   const configRef = useRef({})
 
-  const config = useControls(
+  const [config, , get] = useControls(() =>
     fillInitialState({
       u_portalRadius1: {
         min: 0,
@@ -225,9 +225,15 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
         }
       }),
       'Copy to clipboard': button(() => {
+        const copy = {}
+
+        Object.keys(config).forEach((k) => {
+          copy[k] = get(k)
+        })
+
         const el = document.createElement('textarea')
 
-        el.value = JSON.stringify(configRef.current)
+        el.value = JSON.stringify(copy)
         el.setAttribute('readonly', '')
         el.style.position = 'absolute'
         el.style.left = '-9999px'
@@ -269,36 +275,6 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
     },
     config
   )
-
-  useEffect(() => {
-    /* Update Uniforms */
-    const middlewares = {}
-    const uniformKeys = Object.keys(uniforms.current)
-    const middlewareMissingKeys = Object.keys(middlewares).filter(
-      (k) => !uniformKeys.includes(k)
-    )
-
-    const include = [...uniformKeys, ...middlewareMissingKeys]
-    const exclude = []
-
-    Object.keys(config)
-      .filter((key) => !exclude.includes(key))
-      .filter((key) => include.includes(key))
-      .map((key) => {
-        if (middlewares[key]) {
-          const res = middlewares[key](
-            uniforms.current[key]?.value,
-            config[key]
-          )
-
-          if (res != undefined) {
-            uniforms.current[key].value = res
-          }
-        } else if (config[key] != undefined) {
-          uniforms.current[key].value = config[key]
-        }
-      })
-  }, [config])
 
   useEffect(() => {
     configRef.current = config
