@@ -7,6 +7,7 @@ import {
 } from '@react-three/drei'
 import { button, Leva } from 'leva'
 import { useEffect, useMemo, useRef } from 'react'
+import { Box3, Vector3 } from 'three'
 import { Color } from 'three/src/math/Color'
 
 import { Loader, useLoader } from '~/components/common/loader'
@@ -30,39 +31,46 @@ void main() {
 `
 
 const fragment = /* glsl */ `
+uniform float uAlpha;
 uniform float uProgress;
 uniform float uAlphaNear;
 uniform float uAlphaFar;
 uniform vec3 uColor;
+uniform vec3 uBoundingMin;
+uniform vec3 uBoundingMax;
 
 varying vec4 vPosition;
 
-float xMin = -5.;
-float xMax = 5.;
-
 void main() {
-  float centerPos = xMin +
-   ((abs(xMax - xMin) + (uAlphaFar * 2.0)) * uProgress) -
+  float centerPos = uBoundingMin.x +
+   ((abs(uBoundingMax.x - uBoundingMin.x) + (uAlphaFar * 2.0)) * uProgress) -
     uAlphaFar
   ;
 
   float depth = distance(centerPos, vPosition.x);
 
-  float alpha = 1. - smoothstep(uAlphaNear, uAlphaFar, depth);
+  float alpha = max(0., uAlpha - smoothstep(uAlphaNear, uAlphaFar, depth));
 
   gl_FragColor = vec4(uColor, alpha);
 }
 `
 
 const WireframeReveal = () => {
+  const animationRef = useRef(null)
+  const wireframeRef = useRef(null)
+  const groupRef = useRef(null)
+
   const { loading, setLoaded } = useLoader(({ loading, setLoaded }) => ({
     loading,
     setLoaded
   }))
-  const animationRef = useRef(null)
 
   const [config, set] = useReproducibleControls(() => {
     return {
+      show: {
+        value: 'both',
+        options: ['wireframe', 'model', 'both']
+      },
       uProgress: {
         min: 0,
         max: 1,
@@ -76,7 +84,7 @@ const WireframeReveal = () => {
       uAlphaFar: {
         min: 0,
         max: 10,
-        value: 3
+        value: 1.5
       },
       // TODO: Control offset
       // uWireframeTextureOffset: {
@@ -95,11 +103,14 @@ const WireframeReveal = () => {
 
   const uniforms = useUniforms(
     {
+      uAlpha: { value: 0 },
       uColor: { value: new Color(config.uColor) },
       uWireframeTextureOffset: { value: config.uWireframeTextureOffset },
       uProgress: { value: config.uProgress },
       uAlphaNear: { value: config.uAlphaNear },
-      uAlphaFar: { value: config.uAlphaFar }
+      uAlphaFar: { value: config.uAlphaFar },
+      uBoundingMin: { value: new Vector3(0, 0, 0) },
+      uBoundingMax: { value: new Vector3(0, 0, 0) }
     },
     config,
     {
@@ -149,17 +160,16 @@ const WireframeReveal = () => {
         `
           #include <clipping_planes_pars_fragment>
 
+          uniform float uAlpha;
           uniform float uProgress;
           uniform float uAlphaNear;
           uniform float uAlphaFar;
           uniform vec3 uColor;
           uniform vec3 uWireframeTextureOffset;
+          uniform vec3 uBoundingMin;
+          uniform vec3 uBoundingMax;
           
           varying vec4 vPosition;
-
-
-          float xMin = -5.;
-          float xMax = 5.;
         `
       )
 
@@ -170,15 +180,18 @@ const WireframeReveal = () => {
 
           float diff = uAlphaFar - uAlphaNear;
 
-          float centerPos = xMin - diff;
+          float centerPos = uBoundingMin.x - diff;
 
           float depth = distance(centerPos, vPosition.x);
 
-          float revealProgress = abs(xMax - centerPos) * uProgress;
+          float revealProgress = abs(uBoundingMax.x - centerPos) * uProgress;
 
-          float alpha = 1. - smoothstep(revealProgress, revealProgress + diff, depth);
+          float alphaFactor = smoothstep(revealProgress, revealProgress + diff, depth);
 
-          gl_FragColor = vec4(gl_FragColor.rgb, alpha);
+          /* Limits it to 0 */
+          float alpha = max(0., uAlpha - alphaFactor);
+
+          gl_FragColor = vec4(mix(gl_FragColor.rgb, uColor, alphaFactor), alpha);
         `
       )
 
@@ -195,6 +208,11 @@ const WireframeReveal = () => {
 
   useEffect(() => {
     if (!loading) {
+      const boundingBox = new Box3().setFromObject(groupRef.current)
+
+      uniforms.current['uBoundingMin'].value.copy(boundingBox.min)
+      uniforms.current['uBoundingMax'].value.copy(boundingBox.max)
+
       const progress = { value: 0 }
 
       const tween = gsap.fromTo(
@@ -202,8 +220,12 @@ const WireframeReveal = () => {
         { value: 0 },
         {
           value: 1,
+          delay: 0.2,
           duration: DURATION * 6,
           ease: 'power2.inOut',
+          onStart: () => {
+            uniforms.current['uAlpha'].value = 1
+          },
           onUpdate: () => {
             set({ uProgress: progress.value })
           }
@@ -218,14 +240,22 @@ const WireframeReveal = () => {
     }
   }, [loading, set])
 
+  const isBoth = config.show === 'both'
+  const isWireframe = config.show === 'wireframe'
+  const isModel = config.show === 'model'
+
+  const rotation = [0, 0, Math.PI / 2]
+
   return (
     <>
-      <Environment preset="apartment" />
+      <Environment preset="sunset" />
       <OrbitControls />
-      <Center>
-        <group rotation={[0, 0, Math.PI / 2]} scale={0.2}>
-          <Clone object={objRef} />
-          <lineSegments>
+      {/* <axesHelper args={[5]} />
+      <gridHelper args={[100, 100]} /> */}
+      <Center scale={0.2} ref={groupRef}>
+        {(isBoth || isModel) && <Clone rotation={rotation} object={objRef} />}
+        {(isBoth || isWireframe) && (
+          <lineSegments rotation={rotation} ref={wireframeRef}>
             <wireframeGeometry args={[objRef.geometry]} />
             <shaderMaterial
               transparent
@@ -234,7 +264,7 @@ const WireframeReveal = () => {
               fragmentShader={fragment}
             />
           </lineSegments>
-        </group>
+        )}
       </Center>
     </>
   )
