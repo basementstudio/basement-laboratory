@@ -5,7 +5,7 @@ import {
   OrbitControls,
   useGLTF
 } from '@react-three/drei'
-import { Leva, useControls } from 'leva'
+import { button, Leva, useControls } from 'leva'
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { MeshBasicMaterial } from 'three'
 import { Color } from 'three/src/math/Color'
@@ -60,6 +60,7 @@ const WireframeReveal = () => {
     loading,
     setLoaded
   }))
+  const animationRef = useRef(null)
 
   const [config, set] = useControls(() => ({
     uProgress: {
@@ -84,7 +85,10 @@ const WireframeReveal = () => {
     },
     uColor: {
       value: '#FFBE18'
-    }
+    },
+    'Repeat Animation': button(() => {
+      animationRef.current?.restart()
+    })
   }))
 
   const uniforms = useUniforms(
@@ -117,11 +121,7 @@ const WireframeReveal = () => {
   )
 
   const objRef = useMemo(() => {
-    console.log({ isClient, dagger })
-
     const trgt = dagger.scene.children[0].children[0].children[0]
-
-    // trgt.material = new MeshBasicMaterial({ color: 'red' })
 
     const patch = (shader) => {
       shader.vertexShader = shader.vertexShader.replace(
@@ -195,17 +195,20 @@ const WireframeReveal = () => {
     if (!loading) {
       const progress = { value: 0 }
 
-      const tween = gsap.to(progress, {
-        value: 1,
-        delay: 2,
-        duration: DURATION * 6,
-        ease: 'power2.inOut',
-        repeat: 0,
-        repeatDelay: 1,
-        onUpdate: () => {
-          set({ uProgress: progress.value })
+      const tween = gsap.fromTo(
+        progress,
+        { value: 0 },
+        {
+          value: 1,
+          duration: DURATION * 6,
+          ease: 'power2.inOut',
+          onUpdate: () => {
+            set({ uProgress: progress.value })
+          }
         }
-      })
+      )
+
+      animationRef.current = tween
 
       return () => {
         tween.kill()
@@ -217,7 +220,7 @@ const WireframeReveal = () => {
     <>
       <Environment preset="apartment" />
       <OrbitControls />
-      <axesHelper />
+      {/* <axesHelper /> */}
       {/* <gridHelper args={[100, 100]} /> */}
       <Center>
         <group rotation={[0, 0, Math.PI / 2]} scale={0.2}>
