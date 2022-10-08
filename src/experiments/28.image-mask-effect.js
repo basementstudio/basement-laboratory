@@ -26,26 +26,31 @@ const fillInitialState = (_config) => {
   const configParam = params.get('_config')
 
   if (configParam) {
-    /* Gen routes to values */
-    const routes = {}
-    Object.entries(config).forEach(([k, v]) => {
-      const type = v.type
+    try {
+      /* Gen routes to values */
+      const routes = {}
+      Object.entries(config).forEach(([k, v]) => {
+        const type = v.type
 
-      if (type === 'FOLDER') {
-        Object.entries(v.schema).forEach(([_k]) => {
-          routes[_k] = `${k}.schema.${_k}.value`
-        })
+        if (type === 'FOLDER') {
+          Object.entries(v.schema).forEach(([_k]) => {
+            routes[_k] = `${k}.schema.${_k}.value`
+          })
 
-        return
-      }
+          return
+        }
 
-      routes[k] = `${k}.value`
-    })
+        routes[k] = `${k}.value`
+      })
 
-    /* Set based on params */
-    Object.entries(JSON.parse(configParam)).forEach(([k, v]) => {
-      config = set(config, routes[k], v)
-    })
+      /* Set based on params */
+      Object.entries(JSON.parse(configParam)).forEach(([k, v]) => {
+        config = set(config, routes[k], v)
+      })
+    } catch (err) {
+      console.error(err)
+      return _config
+    }
   }
 
   return config
@@ -322,7 +327,7 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
         gsap.ticker.remove(updateCallbackId)
       }
 
-      if (trackCursor) {
+      if (mouseTracker) {
         mouseTracker?.destroy()
       }
 

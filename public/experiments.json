@@ -633,8 +633,7 @@
     "title": "Circular Fog Shader",
     "href": "/experiments/29.circular-fog.js",
     "tags": [
-      "shaders",
-      "private"
+      "shaders"
     ],
     "number": 29,
     "contributors": [
@@ -647,5 +646,15 @@
         "company": "@basementstudio"
       }
     ]
+  },
+  {
+    "filename": "30.wireframe-reveal.js",
+    "title": "Wireframe model reveal",
+    "href": "/experiments/30.wireframe-reveal.js",
+    "tags": [
+      "shaders"
+    ],
+    "number": 30,
+    "contributors": []
   }
 ]

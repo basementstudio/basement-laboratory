@@ -33,6 +33,10 @@ const links = [
   {
     href: 'https://webrtc.github.io/samples/',
     label: 'Examples | WebRTC code examples'
+  },
+  {
+    href: 'https://github.com/mrdoob/three.js/tree/master/src/renderers/shaders',
+    label: 'Source | ThreeJS core shader chunks'
   }
 ]
 
