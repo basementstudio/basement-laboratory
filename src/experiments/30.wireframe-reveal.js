@@ -5,12 +5,13 @@ import {
   OrbitControls,
   useGLTF
 } from '@react-three/drei'
-import { button, Leva, useControls } from 'leva'
+import { button, Leva } from 'leva'
 import { useEffect, useMemo, useRef } from 'react'
 import { Color } from 'three/src/math/Color'
 
 import { Loader, useLoader } from '~/components/common/loader'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
+import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 import { useUniforms } from '~/hooks/use-uniforms'
 import { DURATION, gsap } from '~/lib/gsap'
 
@@ -60,34 +61,37 @@ const WireframeReveal = () => {
   }))
   const animationRef = useRef(null)
 
-  const [config, set] = useControls(() => ({
-    uProgress: {
-      min: 0,
-      max: 1,
-      value: 0
-    },
-    uAlphaNear: {
-      min: 0,
-      max: 10,
-      value: 0
-    },
-    uAlphaFar: {
-      min: 0,
-      max: 10,
-      value: 3
-    },
-    uWireframeTextureOffset: {
-      min: 0,
-      max: 10,
-      value: 2
-    },
-    uColor: {
-      value: '#FFBE18'
-    },
-    'Repeat Animation': button(() => {
-      animationRef.current?.restart()
-    })
-  }))
+  const [config, set] = useReproducibleControls(() => {
+    return {
+      uProgress: {
+        min: 0,
+        max: 1,
+        value: 0
+      },
+      uAlphaNear: {
+        min: 0,
+        max: 10,
+        value: 0
+      },
+      uAlphaFar: {
+        min: 0,
+        max: 10,
+        value: 3
+      },
+      // TODO: Control offset
+      // uWireframeTextureOffset: {
+      //   min: 0,
+      //   max: 10,
+      //   value: 2
+      // },
+      uColor: {
+        value: '#FFBE18'
+      },
+      'Repeat Animation': button(() => {
+        animationRef.current?.restart()
+      })
+    }
+  })
 
   const uniforms = useUniforms(
     {
@@ -218,8 +222,6 @@ const WireframeReveal = () => {
     <>
       <Environment preset="apartment" />
       <OrbitControls />
-      {/* <axesHelper /> */}
-      {/* <gridHelper args={[100, 100]} /> */}
       <Center>
         <group rotation={[0, 0, Math.PI / 2]} scale={0.2}>
           <Clone object={objRef} />

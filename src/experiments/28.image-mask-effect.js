@@ -6,57 +6,18 @@ import {
 } from '@basementstudio/definitive-scroll/three'
 import { useTexture } from '@react-three/drei'
 import glsl from 'glslify'
-import { button, folder, useControls } from 'leva'
-import cloneDeep from 'lodash/cloneDeep'
-import set from 'lodash/set'
+import { button, folder } from 'leva'
 import Image from 'next/future/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Vector2 } from 'three/src/math/Vector2'
 
+import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 import { useUniforms } from '~/hooks/use-uniforms'
 
 import sampleImage from '../../public/images/face-hover.jpg'
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
 import { DURATION, gsap } from '../lib/gsap'
 import { trackCursor } from '../lib/three'
-import { getHrefWithQuery } from '../lib/utils/router'
-
-const fillInitialState = (_config) => {
-  let config = cloneDeep(_config)
-  const params = new URLSearchParams(window.location.search)
-
-  const configParam = params.get('_config')
-
-  if (configParam) {
-    try {
-      /* Gen routes to values */
-      const routes = {}
-      Object.entries(config).forEach(([k, v]) => {
-        const type = v.type
-
-        if (type === 'FOLDER') {
-          Object.entries(v.schema).forEach(([_k]) => {
-            routes[_k] = `${k}.schema.${_k}.value`
-          })
-
-          return
-        }
-
-        routes[k] = `${k}.value`
-      })
-
-      /* Set based on params */
-      Object.entries(JSON.parse(configParam)).forEach(([k, v]) => {
-        config = set(config, routes[k], v)
-      })
-    } catch (err) {
-      console.error(err)
-      return _config
-    }
-  }
-
-  return config
-}
 
 const vertex = glsl/* glsl */ `
   varying vec2 v_uv;
@@ -159,92 +120,70 @@ const fragment = glsl/* glsl */ `
 const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
   const ref = useRef()
   const texture = useTexture(src, onLoad)
-  const configRef = useRef({})
 
-  const [config, , get] = useControls(() =>
-    fillInitialState({
-      u_portalRadius1: {
+  const config = useReproducibleControls({
+    u_portalRadius1: {
+      min: 0,
+      max: 1,
+      step: 0.01,
+      value: 0.03
+    },
+    u_portalRadius2: {
+      min: 0,
+      max: 1,
+      step: 0.01,
+      value: 0.06
+    },
+    u_portalRadius3: {
+      min: 0,
+      max: 1,
+      step: 0.01,
+      value: 0.1
+    },
+    'Noise 1': folder({
+      u_noise1: {
         min: 0,
-        max: 1,
-        step: 0.01,
-        value: 0.03
+        max: 800,
+        step: 2,
+        value: 206
       },
-      u_portalRadius2: {
+      u_noise1_time: { value: 0, min: 0, max: 100, step: 2 }
+    }),
+    'Noise 2': folder({
+      u_noise2: {
         min: 0,
-        max: 1,
-        step: 0.01,
-        value: 0.06
+        max: 800,
+        step: 2,
+        value: 90
       },
-      u_portalRadius3: {
+      u_noise2_time: { value: 0, min: 0, max: 100, step: 2 }
+    }),
+    'Noise 3': folder({
+      u_noise3: {
         min: 0,
-        max: 1,
-        step: 0.01,
-        value: 0.1
+        max: 800,
+        step: 2,
+        value: 6
       },
-      'Noise 1': folder({
-        u_noise1: {
-          min: 0,
-          max: 800,
-          step: 2,
-          value: 206
-        },
-        u_noise1_time: { value: 0, min: 0, max: 100, step: 2 }
-      }),
-      'Noise 2': folder({
-        u_noise2: {
-          min: 0,
-          max: 800,
-          step: 2,
-          value: 90
-        },
-        u_noise2_time: { value: 0, min: 0, max: 100, step: 2 }
-      }),
-      'Noise 3': folder({
-        u_noise3: {
-          min: 0,
-          max: 800,
-          step: 2,
-          value: 6
-        },
-        u_noise3_time: { value: 16, min: 0, max: 100, step: 2 }
-      }),
-      'Noise 4': folder({
-        u_noise4: {
-          min: 0,
-          max: 800,
-          step: 2,
-          value: 18
-        },
-        u_noise4_time: { value: 28, min: 0, max: 100, step: 2 }
-      }),
-      'Show portal on center': button(() => {
-        if (ref.current) {
-          ref.current.material.uniforms.u_mouse.value.x = 0
-          ref.current.material.uniforms.u_mouse.value.y = 0
-          ref.current.material.uniforms.u_progressHover.value = 1
-        }
-      }),
-      'Copy to clipboard': button(() => {
-        const copy = {}
-
-        Object.keys(config).forEach((k) => {
-          copy[k] = get(k)
-        })
-
-        const el = document.createElement('textarea')
-
-        el.value = JSON.stringify(copy)
-        el.setAttribute('readonly', '')
-        el.style.position = 'absolute'
-        el.style.left = '-9999px'
-
-        document.body.appendChild(el)
-        el.select()
-        document.execCommand('copy')
-        document.body.removeChild(el)
-      })
+      u_noise3_time: { value: 16, min: 0, max: 100, step: 2 }
+    }),
+    'Noise 4': folder({
+      u_noise4: {
+        min: 0,
+        max: 800,
+        step: 2,
+        value: 18
+      },
+      u_noise4_time: { value: 28, min: 0, max: 100, step: 2 }
+    }),
+    'Show portal on center': button(() => {
+      if (ref.current) {
+        ref.current.material.uniforms.u_mouse.value.x = 0
+        ref.current.material.uniforms.u_mouse.value.y = 0
+        ref.current.material.uniforms.u_progressHover.value = 1
+      }
     })
-  )
+  })
 
   const uniforms = useUniforms(
     {
@@ -275,21 +214,6 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
     },
     config
   )
-
-  useEffect(() => {
-    configRef.current = config
-  }, [config])
-
-  useEffect(() => {
-    const trget = getHrefWithQuery(
-      window.location.protocol +
-        '//' +
-        window.location.host +
-        window.location.pathname,
-      { _config: JSON.stringify(config) }
-    )
-    window.history.pushState({ path: trget }, '', trget)
-  }, [config])
 
   useEffect(() => {
     if (!imageRef?.current || !ref?.current) return

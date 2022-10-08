@@ -652,7 +652,8 @@
     "title": "Wireframe model reveal",
     "href": "/experiments/30.wireframe-reveal.js",
     "tags": [
-      "shaders"
+      "shaders",
+      "private"
     ],
     "number": 30,
     "contributors": [
