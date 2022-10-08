@@ -13,6 +13,8 @@ import Image from 'next/future/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Vector2 } from 'three/src/math/Vector2'
 
+import { useUniforms } from '~/hooks/use-uniforms'
+
 import sampleImage from '../../public/images/face-hover.jpg'
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
 import { DURATION, gsap } from '../lib/gsap'
@@ -238,33 +240,35 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
     })
   )
 
-  const uniforms = useRef({
-    u_image: { value: texture },
-    u_imagehover: { value: texture },
-    u_mouse: { value: { x: 0, y: 0 } },
-    u_time: { value: 0 },
-    u_dtime: { value: 0 },
-    u_multipliers: { value: { x: 0, y: 0, z: 0 } },
-    u_progressHover: { value: 0 },
-    u_res: {
-      value: new Vector2(window.innerWidth, window.innerHeight)
+  const uniforms = useUniforms(
+    {
+      u_image: { value: texture },
+      u_imagehover: { value: texture },
+      u_mouse: { value: { x: 0, y: 0 } },
+      u_time: { value: 0 },
+      u_multipliers: { value: { x: 0, y: 0, z: 0 } },
+      u_progressHover: { value: 0 },
+      u_res: {
+        value: new Vector2(window.innerWidth, window.innerHeight)
+      },
+
+      /* Config */
+      u_portalRadius1: { value: config.u_portalRadius1 },
+      u_portalRadius2: { value: config.u_portalRadius2 },
+      u_portalRadius3: { value: config.u_portalRadius3 },
+
+      u_noise1: { value: config.u_noise1 },
+      u_noise2: { value: config.u_noise2 },
+      u_noise3: { value: config.u_noise3 },
+      u_noise4: { value: config.u_noise4 },
+
+      u_noise1_time: { value: config.u_noise1_time },
+      u_noise2_time: { value: config.u_noise2_time },
+      u_noise3_time: { value: config.u_noise3_time },
+      u_noise4_time: { value: config.u_noise4_time }
     },
-
-    /* Config */
-    u_portalRadius1: { value: config.u_portalRadius1 },
-    u_portalRadius2: { value: config.u_portalRadius2 },
-    u_portalRadius3: { value: config.u_portalRadius3 },
-
-    u_noise1: { value: config.u_noise1 },
-    u_noise2: { value: config.u_noise2 },
-    u_noise3: { value: config.u_noise3 },
-    u_noise4: { value: config.u_noise4 },
-
-    u_noise1_time: { value: config.u_noise1_time },
-    u_noise2_time: { value: config.u_noise2_time },
-    u_noise3_time: { value: config.u_noise3_time },
-    u_noise4_time: { value: config.u_noise4_time }
-  })
+    config
+  )
 
   useEffect(() => {
     /* Update Uniforms */

@@ -6,6 +6,7 @@ import * as THREE from 'three'
 
 import { Loader, useLoader } from '~/components/common/loader'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
+import { useUniforms } from '~/hooks/use-uniforms'
 
 import { DURATION, gsap } from '../lib/gsap'
 import { trackCursor } from '../lib/three'
@@ -124,11 +125,26 @@ const KarlBg = () => {
     })
   })
 
-  const uniforms = useRef({
-    uFogNearColor: { value: new THREE.Color(config.uFogNearColor) },
-    uFogCenterX: { value: config.uFogCenter.x },
-    uFogCenterZ: { value: config.uFogCenter.z }
-  })
+  const uniforms = useUniforms(
+    {
+      uFogNearColor: { value: new THREE.Color(config.uFogNearColor) },
+      uFogCenterX: { value: config.uFogCenter.x },
+      uFogCenterZ: { value: config.uFogCenter.z }
+    },
+    config,
+    {
+      middlewares: {
+        uFogNearColor: (curr, input) => {
+          curr?.set(input)
+        },
+        uFogCenter: (_, input) => {
+          uniforms.current['uFogCenterX'].value = input.x
+          uniforms.current['uFogCenterZ'].value = input.z
+        }
+      },
+      exclude: ['uFogHorizonColor', 'uFogCenterX', 'uFogCenterZ']
+    }
+  )
 
   const model = useGLTF(
     `/models/${MODEL_NAME}`,
@@ -225,42 +241,6 @@ const KarlBg = () => {
         ease: 'power2.out'
       })
     }, gl.domElement)
-
-    /* Update Uniforms */
-    const middlewares = {
-      uFogNearColor: (curr, input) => {
-        curr?.set(input)
-      },
-      uFogCenter: (_, input) => {
-        uniforms.current['uFogCenterX'].value = input.x
-        uniforms.current['uFogCenterZ'].value = input.z
-      }
-    }
-    const uniformKeys = Object.keys(uniforms.current)
-    const middlewareMissingKeys = Object.keys(middlewares).filter(
-      (k) => !uniformKeys.includes(k)
-    )
-
-    const include = [...uniformKeys, ...middlewareMissingKeys]
-    const exclude = ['uFogHorizonColor', 'uFogCenterX', 'uFogCenterZ']
-
-    Object.keys(config)
-      .filter((key) => !exclude.includes(key))
-      .filter((key) => include.includes(key))
-      .map((key) => {
-        if (middlewares[key]) {
-          const res = middlewares[key](
-            uniforms.current[key]?.value,
-            config[key]
-          )
-
-          if (res != undefined) {
-            uniforms.current[key].value = res
-          }
-        } else if (config[key]) {
-          uniforms.current[key].value = config[key]
-        }
-      })
 
     return () => {
       mouseTracker.destroy()

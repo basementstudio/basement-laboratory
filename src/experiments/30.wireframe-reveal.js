@@ -1,9 +1,10 @@
 import { Center, Environment, OrbitControls, useGLTF } from '@react-three/drei'
 import { Leva, useControls } from 'leva'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 import { Loader, useLoader } from '~/components/common/loader'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
+import { useUniforms } from '~/hooks/use-uniforms'
 import { DURATION, gsap } from '~/lib/gsap'
 
 const vertex = /* glsl */ `
@@ -49,6 +50,7 @@ const WireframeReveal = () => {
     loading,
     setLoaded
   }))
+
   const [config, set] = useControls(() => ({
     uProgress: {
       min: 0,
@@ -67,11 +69,14 @@ const WireframeReveal = () => {
     }
   }))
 
-  const uniforms = useRef({
-    uProgress: { value: config.uProgress },
-    uAlphaNear: { value: config.uAlphaNear },
-    uAlphaFar: { value: config.uAlphaFar }
-  })
+  const uniforms = useUniforms(
+    {
+      uProgress: { value: config.uProgress },
+      uAlphaNear: { value: config.uAlphaNear },
+      uAlphaFar: { value: config.uAlphaFar }
+    },
+    config
+  )
 
   const dagger = useGLTF(
     `/models/dagger.glb`,
@@ -96,37 +101,7 @@ const WireframeReveal = () => {
         }
       })
     }
-  }, [loading])
-
-  useEffect(() => {
-    /* Update Uniforms */
-    const middlewares = {}
-    const uniformKeys = Object.keys(uniforms.current)
-    const middlewareMissingKeys = Object.keys(middlewares).filter(
-      (k) => !uniformKeys.includes(k)
-    )
-
-    const include = [...uniformKeys, ...middlewareMissingKeys]
-    const exclude = []
-
-    Object.keys(config)
-      .filter((key) => !exclude.includes(key))
-      .filter((key) => include.includes(key))
-      .map((key) => {
-        if (middlewares[key]) {
-          const res = middlewares[key](
-            uniforms.current[key]?.value,
-            config[key]
-          )
-
-          if (res != undefined) {
-            uniforms.current[key].value = res
-          }
-        } else if (config[key] != undefined) {
-          uniforms.current[key].value = config[key]
-        }
-      })
-  }, [config])
+  }, [loading, set])
 
   return (
     <>
