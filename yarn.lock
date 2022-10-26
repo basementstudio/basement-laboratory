@@ -881,6 +881,14 @@
   resolved "https://registry.yarnpkg.com/@stitches/react/-/react-1.2.8.tgz#954f8008be8d9c65c4e58efa0937f32388ce3a38"
   integrity sha512-9g9dWI4gsSVe8bNLlb+lMkBYsnIKCZTmvqvDG+Avnn69XfmHZKiaMrx7cgTaddq7aTPPmXiTsbFcUy0xgI4+wA==
 
+"@studio-freight/lenis@^0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@studio-freight/lenis/-/lenis-0.2.19.tgz#3d9e9233977dc553b03ff05e5b1150d3958481c0"
+  integrity sha512-1xy7MfJ1rKtx0QdAc1J3YvTp/GzU9d6GjbuS5vyWGDvEkGE+FE0eQ41i9hN26aNEQTIH6fwIm4vsOeJIGNjysw==
+  dependencies:
+    tiny-emitter "^2.1.0"
+    virtual-scroll "^2.2.1"
+
 "@swc/helpers@0.4.11":
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/@swc/helpers/-/helpers-0.4.11.tgz#db23a376761b3d31c26502122f349a21b592c8de"

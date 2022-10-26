@@ -23,6 +23,7 @@
     "@react-three/fiber": "^8.8.7",
     "@react-three/gltfjsx": "^4.3.4",
     "@react-three/postprocessing": "^2.3.2",
+    "@studio-freight/lenis": "^0.2.19",
     "babel-plugin-glsl": "^1.0.0",
     "clsx": "1.1.1",
     "glsl-noise": "^0.0.0",

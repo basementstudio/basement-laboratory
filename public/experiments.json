@@ -666,5 +666,13 @@
         "company": "@basementstudio"
       }
     ]
+  },
+  {
+    "filename": "31.footer-trigger.js",
+    "title": "Footer trigger",
+    "href": "/experiments/31.footer-trigger.js",
+    "tags": [],
+    "number": 31,
+    "contributors": []
   }
 ]
