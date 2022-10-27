@@ -64,6 +64,7 @@ const FooterTrigger = () => {
         translateY: '0%',
         duration: 0.5,
         paused: true,
+        ease: 'power2.inOut',
         onReverseComplete: () => {
           setProgressVisible(true)
         }
