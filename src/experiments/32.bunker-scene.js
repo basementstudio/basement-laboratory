@@ -130,7 +130,7 @@ const BunkerScene = () => {
 }
 
 BunkerScene.Title = 'Bunker Scene'
-BunkerScene.Tags = ['three', 'private']
+BunkerScene.Tags = 'three,private'
 BunkerScene.Layout = ({ title, description, slug }) => {
   const canvasRef = useRef()
 
