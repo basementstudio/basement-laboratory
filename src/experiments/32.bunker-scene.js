@@ -1,5 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { createRoot, events, extend, useThree } from '@react-three/fiber'
+import { useControls } from 'leva'
 import { DURATION, gsap } from 'lib/gsap'
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
@@ -42,6 +43,20 @@ const BunkerScene = () => {
       loader.manager.onLoad = () => setLoaded()
     }
   )
+
+  const controls = useControls({
+    /* Fog */
+    fogColor: { value: '#1d1d1d' },
+    // fogDensity: { min: 0, max: 0.1, value: 0.05, step: 0.0001 },
+    fogNear: { min: 0, max: 100, value: 8.8, step: 0.1 },
+    fogFar: { min: 0, max: 100, value: 9.6, step: 0.1 },
+
+    /* Light */
+    hemisphereLightTop: { value: '#ffffff' },
+    hemisphereLightBottom: { value: '#ffffff' },
+    hemisphereLightIntensity: { value: 1, min: 0, max: 10, step: 0.1 },
+    ambientLightIntensity: { value: 0.8, min: 0, max: 1, step: 0.01 }
+  })
 
   const updateCam = useMemo(() => {
     const target = new THREE.Vector3(0.1, 0.55, 0)
@@ -104,20 +119,34 @@ const BunkerScene = () => {
   }, [camera, gl])
 
   useLayoutEffect(() => {
+    // return
+
     updateCam({ immediate: true })
 
     const mouseTracker = trackCursor((cursor) => {
       updateCam({ x: cursor.x, y: cursor.y })
     }, gl.domElement)
 
-    return () => {
-      mouseTracker.destroy()
-    }
+    return mouseTracker.destroy
   }, [updateCam, gl.domElement])
 
   return (
     <>
-      <ambientLight intensity={0.8} />
+      <fog
+        attach="fog"
+        args={[controls.fogColor, controls.fogNear, controls.fogFar]}
+      />
+      {/* <fogExp2 attach="fog" args={[controls.fogColor, controls.fogDensity]} /> */}
+      {/* <OrbitControls /> */}
+      {/* <color attach="background" args={['red']} /> */}
+      <ambientLight intensity={controls.ambientLightIntensity} />
+      {/* <hemisphereLight
+        args={[
+          controls.hemisphereLightTop,
+          controls.hemisphereLightBottom,
+          controls.hemisphereLightIntensity
+        ]}
+      /> */}
       <group
         position={[0, -3, 0]}
         rotation={[0, -Math.PI / 5.5, 0]}
@@ -133,6 +162,7 @@ BunkerScene.Title = 'Bunker Scene'
 BunkerScene.Tags = 'three,private'
 BunkerScene.Layout = ({ title, description, slug }) => {
   const canvasRef = useRef()
+  const aspectBoxRef = useRef()
 
   useEffect(() => {
     const root = createRoot(canvasRef.current)
@@ -148,9 +178,14 @@ BunkerScene.Layout = ({ title, description, slug }) => {
 
     window.addEventListener('resize', () => {
       root.configure({
-        size: { width: window.innerWidth, height: window.innerHeight }
+        size: {
+          width: aspectBoxRef.current.clientWidth,
+          height: aspectBoxRef.current.clientHeight
+        }
       })
     })
+
+    window.dispatchEvent(new Event('resize'))
 
     root.render(<BunkerScene />)
 
@@ -159,9 +194,19 @@ BunkerScene.Layout = ({ title, description, slug }) => {
 
   return (
     <NavigationLayout title={title} description={description} slug={slug}>
-      <div style={{ display: 'flex', height: '100vh', alignItems: 'center' }}>
-        <AspectBox style={{ width: '100%' }} ratio={21 / 9}>
-          <canvas style={{ width: '100%', height: '100%' }} ref={canvasRef} />
+      <div
+        style={{
+          display: 'flex',
+          height: '100vh',
+          alignItems: 'center'
+        }}
+      >
+        <AspectBox
+          style={{ position: 'relative', width: '100%' }}
+          ratio={21 / 9}
+          ref={aspectBoxRef}
+        >
+          <canvas style={{ position: 'absolute', inset: 0 }} ref={canvasRef} />
         </AspectBox>
       </div>
     </NavigationLayout>
