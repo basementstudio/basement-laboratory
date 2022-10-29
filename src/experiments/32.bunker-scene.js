@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { createRoot, events, extend, useThree } from '@react-three/fiber'
-import { folder, useControls } from 'leva'
+import { folder } from 'leva'
 import { DURATION, gsap } from 'lib/gsap'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -8,6 +8,7 @@ import * as THREE from 'three'
 import { AspectBox } from '~/components/common/aspect-box'
 import { useLoader } from '~/components/common/loader'
 import { useGsapContext } from '~/hooks/use-gsap-context'
+import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 import { useUniforms } from '~/hooks/use-uniforms'
 
 import { NavigationLayout } from '../components/layout/navigation-layout'
@@ -109,7 +110,7 @@ const BunkerScene = () => {
     }
   )
 
-  const controls = useControls({
+  const controls = useReproducibleControls({
     /* Camera focus */
     focus: {
       value: 0,
