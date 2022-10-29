@@ -2,16 +2,55 @@ import { useGLTF } from '@react-three/drei'
 import { createRoot, events, extend, useThree } from '@react-three/fiber'
 import { useControls } from 'leva'
 import { DURATION, gsap } from 'lib/gsap'
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 import { AspectBox } from '~/components/common/aspect-box'
 import { useLoader } from '~/components/common/loader'
+import { useGsapContext } from '~/hooks/use-gsap-context'
 
 import { NavigationLayout } from '../components/layout/navigation-layout'
 import { trackCursor } from '../lib/three'
 
 extend(THREE)
+
+const fogParsVert = `
+#ifdef USE_FOG
+	varying float vFogDepth;
+#endif
+`
+
+const fogVert = `
+#ifdef USE_FOG
+	vFogDepth = - mvPosition.z;
+#endif
+`
+
+const fogParsFrag = `
+#ifdef USE_FOG
+	uniform vec3 fogColor;
+	varying float vFogDepth;
+
+	#ifdef FOG_EXP2
+		uniform float fogDensity;
+	#else
+		uniform float fogNear;
+		uniform float fogFar;
+  #endif
+#endif
+`
+
+const fogFrag = `
+#ifdef USE_FOG
+	#ifdef FOG_EXP2
+		float fogFactor = 1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth );
+	#else
+		float fogFactor = smoothstep( fogNear, fogFar, vFogDepth );
+	#endif
+
+	gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
+#endif
+`
 
 const config = {
   modelSrc: 'bunker.glb',
@@ -30,9 +69,11 @@ const config = {
 }
 
 const BunkerScene = () => {
-  const { gl, camera } = useThree((state) => ({
+  const [autoMove, setAutoMove] = useState(true)
+  const { gl, camera, scene } = useThree((state) => ({
     gl: state.gl,
-    camera: state.camera
+    camera: state.camera,
+    scene: state.scene
   }))
   const setLoaded = useLoader((s) => s.setLoaded)
   const model = useGLTF(
@@ -45,6 +86,12 @@ const BunkerScene = () => {
   )
 
   const controls = useControls({
+    /* Camera focus */
+    focus: {
+      value: 0,
+      min: 0,
+      max: 10
+    },
     /* Fog */
     fogColor: { value: '#1d1d1d' },
     // fogDensity: { min: 0, max: 0.1, value: 0.05, step: 0.0001 },
@@ -119,16 +166,89 @@ const BunkerScene = () => {
   }, [camera, gl])
 
   useLayoutEffect(() => {
-    // return
+    const TIMEOUT_DURATION = 2500
+    let timeoutId
 
     updateCam({ immediate: true })
 
     const mouseTracker = trackCursor((cursor) => {
+      setAutoMove(false)
+
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+
+      timeoutId = setTimeout(() => {
+        setAutoMove(true)
+        clearTimeout(timeoutId)
+      }, TIMEOUT_DURATION)
+
       updateCam({ x: cursor.x, y: cursor.y })
     }, gl.domElement)
 
     return mouseTracker.destroy
   }, [updateCam, gl.domElement])
+
+  useLayoutEffect(() => {
+    const patch = (shader) => {
+      shader.vertexShader = shader.vertexShader.replace(
+        `#include <fog_pars_vertex>`,
+        fogParsVert
+      )
+      shader.vertexShader = shader.vertexShader.replace(
+        `#include <fog_vertex>`,
+        fogVert
+      )
+      shader.fragmentShader = shader.fragmentShader.replace(
+        `#include <fog_pars_fragment>`,
+        fogParsFrag
+      )
+      shader.fragmentShader = shader.fragmentShader.replace(
+        `#include <fog_fragment>`,
+        fogFrag
+      )
+
+      // Object.keys(uniforms.current).map((key) => {
+      //   shader.uniforms[key] = uniforms.current[key]
+      // })
+    }
+
+    /* Patch all scene materials */
+    scene.traverse((e) => {
+      if (e.material) {
+        e.material.onBeforeCompile = patch
+      }
+    })
+  }, [scene])
+
+  useGsapContext(() => {
+    if (!autoMove) return
+
+    const trgt = { x: 0, y: 0 }
+
+    gsap.timeline().fromTo(
+      trgt,
+      { x: 0, y: 0 },
+      {
+        duration: DURATION * 80,
+        x: Math.PI * 2,
+        y: Math.PI * 2,
+        // yoyo: true,
+        repeat: -1,
+        ease: 'none',
+        onUpdate: () => {
+          const resX = Math.sin(trgt.x)
+          const resY = Math.cos(trgt.y)
+
+          updateCam({
+            x: resX,
+            y: resY,
+            immediate: true
+          })
+        }
+      }
+    )
+  }, [updateCam, autoMove])
 
   return (
     <>
