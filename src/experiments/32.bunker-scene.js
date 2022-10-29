@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { createRoot, events, extend, useThree } from '@react-three/fiber'
-import { useControls } from 'leva'
+import { folder, useControls } from 'leva'
 import { DURATION, gsap } from 'lib/gsap'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -8,35 +8,20 @@ import * as THREE from 'three'
 import { AspectBox } from '~/components/common/aspect-box'
 import { useLoader } from '~/components/common/loader'
 import { useGsapContext } from '~/hooks/use-gsap-context'
+import { useUniforms } from '~/hooks/use-uniforms'
 
 import { NavigationLayout } from '../components/layout/navigation-layout'
 import { trackCursor } from '../lib/three'
 
 extend(THREE)
 
-const fogParsVert = `
-#ifdef USE_FOG
-	varying float vFogDepth;
-#endif
-`
+/* START OF SHADERS */
+
+/* ----------- FOG SHADER ------------ */
 
 const fogVert = `
 #ifdef USE_FOG
 	vFogDepth = - mvPosition.z;
-#endif
-`
-
-const fogParsFrag = `
-#ifdef USE_FOG
-	uniform vec3 fogColor;
-	varying float vFogDepth;
-
-	#ifdef FOG_EXP2
-		uniform float fogDensity;
-	#else
-		uniform float fogNear;
-		uniform float fogFar;
-  #endif
 #endif
 `
 
@@ -51,6 +36,45 @@ const fogFrag = `
 	gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
 #endif
 `
+
+/* ----------- PARTICLES SHADER ------------ */
+
+const particlesVert = `
+uniform float uTime;
+uniform float uPixelRatio;
+uniform float uSize;
+
+attribute float aScale;
+
+void main()
+{
+    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+    modelPosition.y += sin(uTime + modelPosition.x * 100.0) * aScale * 0.2;
+
+    vec4 viewPosition = viewMatrix * modelPosition;
+    vec4 projectionPosition = projectionMatrix * viewPosition;
+
+    gl_Position = projectionPosition;
+    
+    gl_PointSize = uSize * aScale * uPixelRatio;
+    gl_PointSize *= (1.0 / - viewPosition.z);
+}
+`
+
+const particlesFrag = `
+uniform vec3 uColor;
+uniform float uAlpha;
+
+void main()
+{
+  float distanceToCenter = distance(gl_PointCoord, vec2(0.5));
+  float strength = min(0.05 / distanceToCenter - 0.1, uAlpha);
+
+  gl_FragColor = vec4(uColor, strength);
+}
+`
+
+/* END OF SHADERS */
 
 const config = {
   modelSrc: 'bunker.glb',
@@ -102,7 +126,14 @@ const BunkerScene = () => {
     hemisphereLightTop: { value: '#ffffff' },
     hemisphereLightBottom: { value: '#ffffff' },
     hemisphereLightIntensity: { value: 1, min: 0, max: 10, step: 0.1 },
-    ambientLightIntensity: { value: 0.8, min: 0, max: 1, step: 0.01 }
+    ambientLightIntensity: { value: 0.8, min: 0, max: 1, step: 0.01 },
+
+    /* Particles */
+    Particles: folder({
+      uSize: { value: 50, min: 0, max: 300, step: 1 },
+      uColor: { value: '#fff' },
+      uAlpha: { value: 0.25, min: 0, max: 1, step: 0.01 }
+    })
   })
 
   const updateCam = useMemo(() => {
@@ -192,16 +223,8 @@ const BunkerScene = () => {
   useLayoutEffect(() => {
     const patch = (shader) => {
       shader.vertexShader = shader.vertexShader.replace(
-        `#include <fog_pars_vertex>`,
-        fogParsVert
-      )
-      shader.vertexShader = shader.vertexShader.replace(
         `#include <fog_vertex>`,
         fogVert
-      )
-      shader.fragmentShader = shader.fragmentShader.replace(
-        `#include <fog_pars_fragment>`,
-        fogParsFrag
       )
       shader.fragmentShader = shader.fragmentShader.replace(
         `#include <fog_fragment>`,
@@ -250,23 +273,53 @@ const BunkerScene = () => {
     )
   }, [updateCam, autoMove])
 
+  const dustParticlesGeometry = useMemo(() => {
+    const geometry = new THREE.BufferGeometry()
+
+    const count = 1000
+
+    const positions = new Float32Array(count * 3)
+    const scale = new Float32Array(count)
+
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 10
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 10
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 10
+
+      scale[i] = 1
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    geometry.setAttribute('aScale', new THREE.BufferAttribute(scale, 1))
+
+    return geometry
+  }, [])
+
+  const particleUniforms = useUniforms(
+    {
+      uTime: { value: 0 },
+      uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+      uSize: { value: controls.particleSize },
+      uColor: { value: new THREE.Color(controls.particleColor) },
+      uAlpha: { value: controls.uAlpha }
+    },
+    controls,
+    {
+      middlewares: {
+        uColor: (curr, input) => {
+          curr?.set(input)
+        }
+      }
+    }
+  )
+
   return (
     <>
       <fog
         attach="fog"
         args={[controls.fogColor, controls.fogNear, controls.fogFar]}
       />
-      {/* <fogExp2 attach="fog" args={[controls.fogColor, controls.fogDensity]} /> */}
-      {/* <OrbitControls /> */}
-      {/* <color attach="background" args={['red']} /> */}
       <ambientLight intensity={controls.ambientLightIntensity} />
-      {/* <hemisphereLight
-        args={[
-          controls.hemisphereLightTop,
-          controls.hemisphereLightBottom,
-          controls.hemisphereLightIntensity
-        ]}
-      /> */}
       <group
         position={[0, -3, 0]}
         rotation={[0, -Math.PI / 5.5, 0]}
@@ -274,6 +327,17 @@ const BunkerScene = () => {
       >
         <primitive object={model.scene} />
       </group>
+      <points geometry={dustParticlesGeometry} dispose={null}>
+        {/* <pointsMaterial args={[{ color: 'red', sizeAttenuation: true }]} /> */}
+        <shaderMaterial
+          uniforms={particleUniforms.current}
+          vertexShader={particlesVert}
+          fragmentShader={particlesFrag}
+          transparent={true}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </points>
     </>
   )
 }
