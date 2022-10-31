@@ -1,4 +1,4 @@
-import { OrbitControls, useGLTF } from '@react-three/drei'
+import { useGLTF } from '@react-three/drei'
 import { createRoot, events, extend, useThree } from '@react-three/fiber'
 import { EffectComposer, GodRays } from '@react-three/postprocessing'
 import { folder } from 'leva'
