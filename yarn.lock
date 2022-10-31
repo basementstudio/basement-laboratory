@@ -861,12 +861,12 @@
     three "0.122.0"
     use-error-boundary "2.0.6"
 
-"@react-three/postprocessing@^2.3.2":
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/@react-three/postprocessing/-/postprocessing-2.6.2.tgz#fe1484a51ccc0577f67280307a0fc3a9ecb0e070"
-  integrity sha512-YvU3oH5Vb2UT+ekhhzHwMTvEYo50VoW8EYMQxmh9TzWaTohSB0GGDanJw5peUMDUgYS1gNjj9cpsk0w/z/7Qpg==
+"@react-three/postprocessing@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@react-three/postprocessing/-/postprocessing-2.7.0.tgz#bae6be248bdb43cbab3d125b23ba5b0de4d934d2"
+  integrity sha512-lJfV8GYp+L1SlGRcl8QPUg9QMdO+8ojW2kfaEc/MuvoI4rX3TRhVd3qFjjF++0bBmzt8LeQpDHCOHFAaT3MNYA==
   dependencies:
-    postprocessing "^6.28.5"
+    postprocessing "^6.29.0"
     react-merge-refs "^1.1.0"
     screen-space-reflections "2.5.0"
     three-stdlib "^2.8.11"
@@ -4499,10 +4499,10 @@ postcss@^8.4.6:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-postprocessing@^6.28.5:
-  version "6.28.7"
-  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.28.7.tgz#ab1104585c3372e576ccf1910a4ea577be379266"
-  integrity sha512-norsBlNIhDoNG2R0nki9C0bNEARIunE/s5W/4qH/Ozlg3m0dOOmBoY8JZhnmPild/+Jvq/UFEeHQRBvTc11WUg==
+postprocessing@^6.29.0:
+  version "6.29.1"
+  resolved "https://registry.yarnpkg.com/postprocessing/-/postprocessing-6.29.1.tgz#169b48cca498a52d3ee4b8960645b089cc7f64b3"
+  integrity sha512-w+XoL2Z7YpVDsHbIeg6sldMMmDqZS4Hul1FDq3TjOeXZ0Wnp0Qy1EvR7QmYJxyWBux1cKQx/k3XO7LxfvPsZyg==
 
 potpack@^1.0.1:
   version "1.0.2"

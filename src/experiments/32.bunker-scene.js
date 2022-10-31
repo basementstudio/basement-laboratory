@@ -1,8 +1,17 @@
 import { useGLTF } from '@react-three/drei'
 import { createRoot, events, extend, useThree } from '@react-three/fiber'
+import { EffectComposer, GodRays } from '@react-three/postprocessing'
 import { folder } from 'leva'
 import { DURATION, gsap } from 'lib/gsap'
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { BlendFunction, KernelSize, Resizer } from 'postprocessing'
+import {
+  forwardRef,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import * as THREE from 'three'
 
 import { AspectBox } from '~/components/common/aspect-box'
@@ -17,26 +26,6 @@ import { trackCursor } from '../lib/three'
 extend(THREE)
 
 /* START OF SHADERS */
-
-/* ----------- FOG SHADER ------------ */
-
-const fogVert = `
-#ifdef USE_FOG
-	vFogDepth = - mvPosition.z;
-#endif
-`
-
-const fogFrag = `
-#ifdef USE_FOG
-	#ifdef FOG_EXP2
-		float fogFactor = 1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth );
-	#else
-		float fogFactor = smoothstep( fogNear, fogFar, vFogDepth );
-	#endif
-
-	gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
-#endif
-`
 
 /* ----------- PARTICLES SHADER ------------ */
 
@@ -93,15 +82,11 @@ const config = {
   }
 }
 
-const BunkerScene = () => {
-  const [autoMove, setAutoMove] = useState(true)
-  const { gl, camera, scene } = useThree((state) => ({
-    gl: state.gl,
-    camera: state.camera,
-    scene: state.scene
-  }))
+const Bunker = (props) => {
   const setLoaded = useLoader((s) => s.setLoaded)
-  const model = useGLTF(
+  const scene = useThree((s) => s.scene)
+
+  const { nodes, materials } = useGLTF(
     `/models/${config.modelSrc}`,
     undefined,
     undefined,
@@ -110,32 +95,157 @@ const BunkerScene = () => {
     }
   )
 
+  useLayoutEffect(() => {
+    materials.Mat_in.fog = false
+  }, [materials.Mat_in, scene])
+
+  return (
+    <group {...props} dispose={null}>
+      <mesh
+        geometry={nodes.B.geometry}
+        material={materials.LIGHT}
+        position={[6.00127411, 16.34449577, 4.43831205]}
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={[0.005795, 0.00223818, 0.005795]}
+      />
+      <mesh
+        geometry={nodes.E.geometry}
+        material={materials.LIGHT}
+        position={[6.00127411, 16.34449577, 4.43831205]}
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={[0.005795, 0.00223818, 0.005795]}
+      />
+      <mesh
+        geometry={nodes.K.geometry}
+        material={materials.LIGHT}
+        position={[6.00127411, 16.34449577, 4.43831205]}
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={[0.005795, 0.00223818, 0.005795]}
+      />
+      <mesh
+        geometry={nodes.N.geometry}
+        material={materials.LIGHT}
+        position={[6.00127411, 16.34449577, 4.43831205]}
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={[0.005795, 0.00223818, 0.005795]}
+      />
+      <mesh
+        geometry={nodes.R.geometry}
+        material={materials.LIGHT}
+        position={[6.00127411, 16.34449577, 4.43831205]}
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={[0.005795, 0.00223818, 0.005795]}
+      />
+      <mesh
+        geometry={nodes.U.geometry}
+        material={materials.LIGHT}
+        position={[6.00127411, 16.34449577, 4.43831205]}
+        rotation={[Math.PI / 2, 0, 0]}
+        scale={[0.005795, 0.00223818, 0.005795]}
+      />
+      <mesh
+        geometry={nodes.EDF.geometry}
+        material={materials.Mat_Edf}
+        position={[6.00127506, 16.34449387, 4.43831062]}
+        rotation={[Math.PI / 2, -1.2e-7, -Math.PI / 2]}
+        scale={0.01}
+      />
+      <mesh
+        geometry={nodes.IN.geometry}
+        material={materials.Mat_in}
+        position={[6.00127506, 16.34449387, 4.43831062]}
+        rotation={[Math.PI / 2, -1.2e-7, -Math.PI / 2]}
+        scale={0.01}
+      />
+    </group>
+  )
+}
+
+const Sun = forwardRef(function Sun(props, forwardRef) {
+  const [visible, setVisible] = useState(false)
   const controls = useReproducibleControls({
-    /* Camera focus */
-    focus: {
-      value: 0,
-      min: 0,
-      max: 10
-    },
-    /* Fog */
-    fogColor: { value: '#1d1d1d' },
-    // fogDensity: { min: 0, max: 0.1, value: 0.05, step: 0.0001 },
-    fogNear: { min: 0, max: 100, value: 8.8, step: 0.1 },
-    fogFar: { min: 0, max: 100, value: 9.6, step: 0.1 },
-
-    /* Light */
-    hemisphereLightTop: { value: '#ffffff' },
-    hemisphereLightBottom: { value: '#ffffff' },
-    hemisphereLightIntensity: { value: 1, min: 0, max: 10, step: 0.1 },
-    ambientLightIntensity: { value: 0.8, min: 0, max: 1, step: 0.01 },
-
-    /* Particles */
-    Particles: folder({
-      uSize: { value: 50, min: 0, max: 300, step: 1 },
-      uColor: { value: '#fff' },
-      uAlpha: { value: 0.25, min: 0, max: 1, step: 0.01 }
+    Sun: folder({
+      color: { value: '#ff3535' },
+      position: { value: [-0.55, -0.15, 0.55] },
+      rotation: { value: [0, -Math.PI / 5.5, 0] }
     })
   })
+
+  useGsapContext(() => {
+    setVisible(false)
+
+    gsap
+      .timeline()
+      .to({}, { duration: 2.5 })
+      .call(() => {
+        setVisible(true)
+      })
+      .to({}, { duration: 0.05 })
+      .call(() => {
+        setVisible(false)
+      })
+      .to({}, { duration: 0.05 })
+      .call(() => {
+        setVisible(true)
+      })
+      .to({}, { duration: 0.05 })
+      .call(() => {
+        setVisible(false)
+      })
+      .to({}, { duration: 0.2 })
+      .call(() => {
+        setVisible(true)
+      })
+  }, [])
+
+  return (
+    <mesh
+      ref={forwardRef}
+      position={controls.position}
+      rotation={controls.rotation}
+      visible={visible}
+    >
+      <planeGeometry args={[2.55, 1]} />
+      <meshBasicMaterial color={controls.color} side={THREE.DoubleSide} />
+    </mesh>
+  )
+})
+
+function Effects() {
+  const [material, set] = useState()
+
+  return (
+    <>
+      <Sun ref={set} />
+      {material && (
+        <EffectComposer multisampling={0}>
+          <GodRays
+            sun={material}
+            blendFunction={BlendFunction.Screen}
+            samples={100}
+            density={0.9}
+            decay={0.92}
+            weight={0.4}
+            exposure={0.4}
+            clampMax={1}
+            width={Resizer.AUTO_SIZE}
+            height={Resizer.AUTO_SIZE}
+            kernelSize={KernelSize.MEDIUM}
+            blur={true}
+          />
+        </EffectComposer>
+      )}
+    </>
+  )
+}
+
+const CamAnimation = () => {
+  const [autoMove, setAutoMove] = useState(true)
+
+  const { gl, camera } = useThree((state) => ({
+    gl: state.gl,
+    camera: state.camera
+  }))
 
   const updateCam = useMemo(() => {
     const target = new THREE.Vector3(0.1, 0.55, 0)
@@ -197,6 +307,35 @@ const BunkerScene = () => {
     }
   }, [camera, gl])
 
+  useGsapContext(() => {
+    if (!autoMove) return
+
+    const trgt = { x: 0, y: 0 }
+
+    gsap.timeline().fromTo(
+      trgt,
+      { x: 0, y: 0 },
+      {
+        duration: DURATION * 80,
+        x: Math.PI * 2,
+        y: Math.PI * 2,
+
+        repeat: -1,
+        ease: 'none',
+        onUpdate: () => {
+          const resX = Math.sin(trgt.x)
+          const resY = Math.cos(trgt.y)
+
+          updateCam({
+            x: resX,
+            y: resY,
+            immediate: true
+          })
+        }
+      }
+    )
+  }, [updateCam, autoMove])
+
   useLayoutEffect(() => {
     const TIMEOUT_DURATION = 2500
     let timeoutId
@@ -221,58 +360,27 @@ const BunkerScene = () => {
     return mouseTracker.destroy
   }, [updateCam, gl.domElement])
 
-  useLayoutEffect(() => {
-    const patch = (shader) => {
-      shader.vertexShader = shader.vertexShader.replace(
-        `#include <fog_vertex>`,
-        fogVert
-      )
-      shader.fragmentShader = shader.fragmentShader.replace(
-        `#include <fog_fragment>`,
-        fogFrag
-      )
+  return <></>
+}
 
-      // Object.keys(uniforms.current).map((key) => {
-      //   shader.uniforms[key] = uniforms.current[key]
-      // })
-    }
+const BunkerScene = () => {
+  const controls = useReproducibleControls({
+    /* Fog */
+    fogColor: { value: '#000' },
+    // fogDensity: { min: 0, max: 0.1, value: 0.05, step: 0.0001 },
+    fogNear: { min: 0, max: 100, value: 8.8, step: 0.1 },
+    fogFar: { min: 0, max: 100, value: 9.6, step: 0.1 },
 
-    /* Patch all scene materials */
-    scene.traverse((e) => {
-      if (e.material) {
-        e.material.onBeforeCompile = patch
-      }
+    /* Light */
+    ambientLightIntensity: { value: 0.8, min: 0, max: 1, step: 0.01 },
+
+    /* Particles */
+    Particles: folder({
+      uSize: { value: 25, min: 0, max: 300, step: 1 },
+      uColor: { value: '#fff' },
+      uAlpha: { value: 0.25, min: 0, max: 1, step: 0.01 }
     })
-  }, [scene])
-
-  useGsapContext(() => {
-    if (!autoMove) return
-
-    const trgt = { x: 0, y: 0 }
-
-    gsap.timeline().fromTo(
-      trgt,
-      { x: 0, y: 0 },
-      {
-        duration: DURATION * 80,
-        x: Math.PI * 2,
-        y: Math.PI * 2,
-        // yoyo: true,
-        repeat: -1,
-        ease: 'none',
-        onUpdate: () => {
-          const resX = Math.sin(trgt.x)
-          const resY = Math.cos(trgt.y)
-
-          updateCam({
-            x: resX,
-            y: resY,
-            immediate: true
-          })
-        }
-      }
-    )
-  }, [updateCam, autoMove])
+  })
 
   const dustParticlesGeometry = useMemo(() => {
     const geometry = new THREE.BufferGeometry()
@@ -316,20 +424,26 @@ const BunkerScene = () => {
 
   return (
     <>
+      {/* Ambient */}
       <fog
         attach="fog"
         args={[controls.fogColor, controls.fogNear, controls.fogFar]}
       />
       <ambientLight intensity={controls.ambientLightIntensity} />
-      <group
+
+      {/* Dev */}
+      {/* <OrbitControls /> */}
+      <CamAnimation />
+
+      {/* Model */}
+      <Bunker
         position={[0, -3, 0]}
         rotation={[0, -Math.PI / 5.5, 0]}
         scale={0.2}
-      >
-        <primitive object={model.scene} />
-      </group>
+      />
+
+      {/* Particles */}
       <points geometry={dustParticlesGeometry} dispose={null}>
-        {/* <pointsMaterial args={[{ color: 'red', sizeAttenuation: true }]} /> */}
         <shaderMaterial
           uniforms={particleUniforms.current}
           vertexShader={particlesVert}
@@ -339,6 +453,9 @@ const BunkerScene = () => {
           depthWrite={false}
         />
       </points>
+
+      {/* Post Processing */}
+      <Effects />
     </>
   )
 }
