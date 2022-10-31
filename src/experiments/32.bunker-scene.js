@@ -363,7 +363,7 @@ const CamAnimation = () => {
 
     const timeline = gsap.timeline()
 
-    if (prevAutoMove.current === 'undefined') {
+    if (prevAutoMove.current !== undefined) {
       timeline.to(camera.position, {
         duration: FULL_ROTATION_DURATION / 4,
         ease: 'none',
@@ -496,7 +496,7 @@ const BunkerScene = () => {
       </points>
 
       {/* Post Processing */}
-      <Effects />
+      {/* <Effects /> */}
     </>
   )
 }
