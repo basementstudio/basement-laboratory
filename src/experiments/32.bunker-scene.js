@@ -208,7 +208,7 @@ const Sun = forwardRef(function Sun(props, forwardRef) {
   return (
     <mesh position={controls.position} rotation={controls.rotation} ref={ref}>
       <boxGeometry args={[width, height, width]} />
-      <meshBasicMaterial color={controls.color} side={THREE.DoubleSide} />
+      <meshBasicMaterial color={controls.color} />
     </mesh>
   )
 })
