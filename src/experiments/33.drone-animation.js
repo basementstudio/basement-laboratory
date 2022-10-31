@@ -80,6 +80,7 @@ const Drone = forwardRef((props, ref) => {
 
 const DroneAnimation = () => {
   const droneRef = React.useRef()
+  const locked = React.useRef(true)
 
   const pointer = useThree((state) => state.pointer)
 
@@ -87,7 +88,10 @@ const DroneAnimation = () => {
     const drone = droneRef.current
     const timeline = gsap.timeline()
 
+    locked.current = true
+
     timeline.set(drone.position, { x: 0, y: 0, z: 0 })
+    timeline.set(drone.rotation, { x: 0, y: 0, z: 0 })
 
     timeline.to({}, { duration: 3 })
 
@@ -109,7 +113,10 @@ const DroneAnimation = () => {
         },
         {
           y: 2,
-          duration: 1.5
+          duration: 1.5,
+          onComplete: () => {
+            locked.current = false
+          }
         }
       )
       .fromTo(
@@ -128,6 +135,8 @@ const DroneAnimation = () => {
   }, [])
 
   useFrame(() => {
+    if (locked.current) return
+
     const drone = droneRef.current
     const { x, y } = pointer
     const speed = 0.2
@@ -141,6 +150,7 @@ const DroneAnimation = () => {
 
   return (
     <>
+      <fog attach="fog" near={20} far={40} color="#f2f2f5" />
       <OrbitControls />
       <color attach="background" args={['#f2f2f5']} />
       <Environment preset="apartment" />
