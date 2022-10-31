@@ -8,6 +8,7 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -163,50 +164,50 @@ const Bunker = (props) => {
 }
 
 const Sun = forwardRef(function Sun(props, forwardRef) {
-  const [visible, setVisible] = useState(false)
+  const ref = useRef(null)
   const controls = useReproducibleControls({
     Sun: folder({
       color: { value: '#ff0000' },
-      position: { value: [-0.55, -0.15, 0.55] },
+      position: { value: [0.15, -0.15, -0.4] },
       rotation: { value: [0, -Math.PI / 5.5, 0] }
     })
   })
 
   useGsapContext(() => {
-    setVisible(false)
+    ref.current.visible = false
 
     gsap
       .timeline()
       .to({}, { duration: 2.5 })
       .call(() => {
-        setVisible(true)
+        ref.current.visible = true
       })
       .to({}, { duration: 0.05 })
       .call(() => {
-        setVisible(false)
+        ref.current.visible = false
       })
       .to({}, { duration: 0.05 })
       .call(() => {
-        setVisible(true)
+        ref.current.visible = true
       })
       .to({}, { duration: 0.05 })
       .call(() => {
-        setVisible(false)
+        ref.current.visible = false
       })
       .to({}, { duration: 0.2 })
       .call(() => {
-        setVisible(true)
+        ref.current.visible = true
       })
   }, [])
 
+  useImperativeHandle(forwardRef, () => ref.current, [])
+
+  const width = 2.55
+  const height = 1
+
   return (
-    <mesh
-      ref={forwardRef}
-      position={controls.position}
-      rotation={controls.rotation}
-      visible={visible}
-    >
-      <planeGeometry args={[2.55, 1]} />
+    <mesh position={controls.position} rotation={controls.rotation} ref={ref}>
+      <boxGeometry args={[width, height, width]} />
       <meshBasicMaterial color={controls.color} side={THREE.DoubleSide} />
     </mesh>
   )
@@ -496,7 +497,7 @@ const BunkerScene = () => {
       </points>
 
       {/* Post Processing */}
-      {/* <Effects /> */}
+      <Effects />
     </>
   )
 }
