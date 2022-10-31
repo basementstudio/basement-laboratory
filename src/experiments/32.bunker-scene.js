@@ -1,4 +1,4 @@
-import { useGLTF } from '@react-three/drei'
+import { OrbitControls, useGLTF } from '@react-three/drei'
 import { createRoot, events, extend, useThree } from '@react-three/fiber'
 import { EffectComposer, GodRays } from '@react-three/postprocessing'
 import { folder } from 'leva'
@@ -168,8 +168,7 @@ const Sun = forwardRef(function Sun(props, forwardRef) {
   const controls = useReproducibleControls({
     Sun: folder({
       color: { value: '#ff0000' },
-      position: { value: [0.15, -0.15, -0.4] },
-      rotation: { value: [0, -Math.PI / 5.5, 0] }
+      position: { value: [-0.1, -0.15, -0.45] }
     })
   })
 
@@ -473,16 +472,16 @@ const BunkerScene = () => {
       />
       <ambientLight intensity={controls.ambientLightIntensity} />
 
-      {/* Dev */}
       {/* <OrbitControls /> */}
       <CamAnimation />
 
       {/* Model */}
-      <Bunker
-        position={[0, -3, 0]}
-        rotation={[0, -Math.PI / 5.5, 0]}
-        scale={0.2}
-      />
+      <group rotation={[0, -Math.PI / 5.5, 0]}>
+        <Bunker position={[0, -3, 0]} scale={0.2} />
+
+        {/* Effects contains the God Lights sun, thats why it's inside de main rotation group */}
+        <Effects />
+      </group>
 
       {/* Particles */}
       <points geometry={dustParticlesGeometry} dispose={null}>
@@ -497,7 +496,6 @@ const BunkerScene = () => {
       </points>
 
       {/* Post Processing */}
-      <Effects />
     </>
   )
 }
