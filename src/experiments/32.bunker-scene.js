@@ -6,6 +6,7 @@ import { DURATION, gsap } from 'lib/gsap'
 import { BlendFunction, KernelSize, Resizer } from 'postprocessing'
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -165,7 +166,7 @@ const Sun = forwardRef(function Sun(props, forwardRef) {
   const [visible, setVisible] = useState(false)
   const controls = useReproducibleControls({
     Sun: folder({
-      color: { value: '#ff3535' },
+      color: { value: '#ff0000' },
       position: { value: [-0.55, -0.15, 0.55] },
       rotation: { value: [0, -Math.PI / 5.5, 0] }
     })
@@ -240,6 +241,7 @@ function Effects() {
 }
 
 const CamAnimation = () => {
+  const prevAutoMove = useRef()
   const [autoMove, setAutoMove] = useState(true)
 
   const { gl, camera } = useThree((state) => ({
@@ -247,7 +249,8 @@ const CamAnimation = () => {
     camera: state.camera
   }))
 
-  const updateCam = useMemo(() => {
+  const calculateCamPosOnSphericalCoords = useMemo(() => {
+    /* Target is the point where the cam should be looking at. AKA the center if the sphere. */
     const target = new THREE.Vector3(0.1, 0.55, 0)
     const offset = new THREE.Vector3()
 
@@ -262,7 +265,7 @@ const CamAnimation = () => {
     const spherical = new THREE.Spherical()
     const sphericalDelta = new THREE.Spherical()
 
-    return ({ x = 0, y = 0, immediate = false }) => {
+    return ({ x = 0, y = 0 }) => {
       // This takes the mouse position and converts it to spherical coordinates -1 to 1 is a complete circunference
       sphericalDelta.theta =
         (gl.domElement.clientHeight * Math.PI * x) /
@@ -291,6 +294,17 @@ const CamAnimation = () => {
 
       offset.applyQuaternion(quatInverse)
 
+      /* Reset Delta */
+      sphericalDelta.set(0, 0, 0)
+
+      return { target, offset }
+    }
+  }, [camera, gl])
+
+  const updateCam = useCallback(
+    ({ x = 0, y = 0, immediate = false }) => {
+      const { offset, target } = calculateCamPosOnSphericalCoords({ x, y })
+
       gsap[immediate ? 'set' : 'to'](camera.position, {
         overwrite: true,
         duration: DURATION,
@@ -302,45 +316,16 @@ const CamAnimation = () => {
           camera.lookAt(target)
         }
       })
+    },
+    [calculateCamPosOnSphericalCoords, camera]
+  )
 
-      sphericalDelta.set(0, 0, 0)
-    }
-  }, [camera, gl])
-
-  useGsapContext(() => {
-    if (!autoMove) return
-
-    const trgt = { x: 0, y: 0 }
-
-    gsap.timeline().fromTo(
-      trgt,
-      { x: 0, y: 0 },
-      {
-        duration: DURATION * 80,
-        x: Math.PI * 2,
-        y: Math.PI * 2,
-
-        repeat: -1,
-        ease: 'none',
-        onUpdate: () => {
-          const resX = Math.sin(trgt.x)
-          const resY = Math.cos(trgt.y)
-
-          updateCam({
-            x: resX,
-            y: resY,
-            immediate: true
-          })
-        }
-      }
-    )
-  }, [updateCam, autoMove])
-
+  /* Mouse animation */
   useLayoutEffect(() => {
     const TIMEOUT_DURATION = 2500
     let timeoutId
 
-    updateCam({ immediate: true })
+    updateCam({ x: Math.sin(0), y: Math.cos(0), immediate: true })
 
     const mouseTracker = trackCursor((cursor) => {
       setAutoMove(false)
@@ -359,6 +344,62 @@ const CamAnimation = () => {
 
     return mouseTracker.destroy
   }, [updateCam, gl.domElement])
+
+  /* Automatic animation */
+  useGsapContext(() => {
+    if (!autoMove) {
+      return () => {
+        prevAutoMove.current = autoMove
+      }
+    }
+
+    const { offset, target } = calculateCamPosOnSphericalCoords({
+      x: Math.sin(0),
+      y: Math.cos(0)
+    })
+    const trgt = { x: 0, y: 0 }
+
+    const FULL_ROTATION_DURATION = DURATION * 80
+
+    const timeline = gsap.timeline()
+
+    if (prevAutoMove.current === 'undefined') {
+      timeline.to(camera.position, {
+        duration: FULL_ROTATION_DURATION / 4,
+        ease: 'none',
+        z: offset.z,
+        x: offset.x,
+        y: offset.y,
+        onUpdate: () => {
+          camera.lookAt(target)
+        }
+      })
+    }
+
+    timeline.to(trgt, {
+      duration: FULL_ROTATION_DURATION,
+      repeat: -1,
+      ease: 'none',
+
+      x: Math.PI * 2,
+      y: Math.PI * 2,
+
+      onUpdate: () => {
+        const resX = Math.sin(trgt.x)
+        const resY = Math.cos(trgt.y)
+
+        updateCam({
+          x: resX,
+          y: resY,
+          immediate: true
+        })
+      }
+    })
+
+    return () => {
+      prevAutoMove.current = autoMove
+    }
+  }, [updateCam, autoMove, camera])
 
   return <></>
 }
