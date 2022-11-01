@@ -1,6 +1,13 @@
 import { useGLTF } from '@react-three/drei'
-import { createRoot, events, extend, useThree } from '@react-three/fiber'
+import {
+  createRoot,
+  events,
+  extend,
+  useFrame,
+  useThree
+} from '@react-three/fiber'
 import { EffectComposer, GodRays, Noise } from '@react-three/postprocessing'
+import glsl from 'glslify'
 import { folder } from 'leva'
 import { DURATION, gsap } from 'lib/gsap'
 import { BlendFunction, KernelSize, Resizer } from 'postprocessing'
@@ -31,17 +38,32 @@ extend(THREE)
 
 /* ----------- PARTICLES SHADER ------------ */
 
-const particlesVert = `
+const particlesVert = glsl/* glsl */ `
+#pragma glslify: snoise2 = require('glsl-noise/simplex/2d')
+
 uniform float uTime;
 uniform float uPixelRatio;
 uniform float uSize;
+uniform float uParticleVelocity;
+uniform float uParticleDisplaceFactor;
 
 attribute float aScale;
 
 void main()
 {
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-    modelPosition.y += sin(uTime + modelPosition.x * 100.0) * aScale * 0.2;
+
+    /* Add noise movement */
+    float noiseX = snoise2(vec2(position.x, uTime * uParticleVelocity)) * uParticleDisplaceFactor;
+    float noiseY = snoise2(vec2(position.y, uTime * uParticleVelocity)) * uParticleDisplaceFactor;
+    float noiseZ = snoise2(vec2(position.z, uTime * uParticleVelocity)) * uParticleDisplaceFactor;
+
+    modelPosition = vec4(
+      modelPosition.x + noiseX,
+      modelPosition.y + noiseY,
+      modelPosition.z + noiseZ,
+      modelPosition.w
+    );
 
     vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectionPosition = projectionMatrix * viewPosition;
@@ -53,7 +75,7 @@ void main()
 }
 `
 
-const particlesFrag = `
+const particlesFrag = glsl/* glsl */ `
 uniform vec3 uColor;
 uniform float uAlpha;
 
@@ -433,7 +455,9 @@ const BunkerScene = () => {
     Particles: folder({
       uSize: { value: 25, min: 0, max: 300, step: 1 },
       uColor: { value: '#fff' },
-      uAlpha: { value: 0.25, min: 0, max: 1, step: 0.01 }
+      uAlpha: { value: 0.25, min: 0, max: 1, step: 0.01 },
+      uParticleVelocity: { value: 0.1, min: 0, max: 1, step: 0.01 },
+      uParticleDisplaceFactor: { value: 0.5, min: 0, max: 1, step: 0.01 }
     })
   })
 
@@ -462,6 +486,8 @@ const BunkerScene = () => {
   const particleUniforms = useUniforms(
     {
       uTime: { value: 0 },
+      uParticleVelocity: { value: 0.1 },
+      uParticleDisplaceFactor: { value: 0.5 },
       uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
       uSize: { value: controls.particleSize },
       uColor: { value: new THREE.Color(controls.particleColor) },
@@ -476,6 +502,10 @@ const BunkerScene = () => {
       }
     }
   )
+
+  useFrame((state) => {
+    particleUniforms.current.uTime.value = state.clock.getElapsedTime()
+  })
 
   return (
     <>
