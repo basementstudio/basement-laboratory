@@ -242,7 +242,7 @@ function Effects() {
         value: true
       },
       noiseOpacity: {
-        value: 0.4,
+        value: 0.75,
         min: 0,
         max: 1,
         step: 0.01
