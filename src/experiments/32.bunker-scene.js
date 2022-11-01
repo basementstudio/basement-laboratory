@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { createRoot, events, extend, useThree } from '@react-three/fiber'
-import { EffectComposer, GodRays } from '@react-three/postprocessing'
+import { EffectComposer, GodRays, Noise } from '@react-three/postprocessing'
 import { folder } from 'leva'
 import { DURATION, gsap } from 'lib/gsap'
 import { BlendFunction, KernelSize, Resizer } from 'postprocessing'
@@ -214,6 +214,19 @@ const Sun = forwardRef(function Sun(props, forwardRef) {
 
 function Effects() {
   const [material, set] = useState()
+  const controls = useReproducibleControls({
+    'Post Processing': folder({
+      noise: {
+        value: true
+      },
+      noiseOpacity: {
+        value: 0.4,
+        min: 0,
+        max: 1,
+        step: 0.01
+      }
+    })
+  })
 
   return (
     <>
@@ -234,6 +247,7 @@ function Effects() {
             kernelSize={KernelSize.MEDIUM}
             blur={true}
           />
+          {controls.noise && <Noise opacity={controls.noiseOpacity} />}
         </EffectComposer>
       )}
     </>
@@ -494,8 +508,6 @@ const BunkerScene = () => {
           depthWrite={false}
         />
       </points>
-
-      {/* Post Processing */}
     </>
   )
 }
