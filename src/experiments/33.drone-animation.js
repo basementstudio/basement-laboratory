@@ -1,15 +1,66 @@
-import {
-  Environment,
-  Instance,
-  Instances,
-  OrbitControls,
-  useGLTF
-} from '@react-three/drei'
+import { Environment, Instance, Instances, useGLTF } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
+// import { useControls } from 'leva'
 import { gsap } from 'lib/gsap'
-import React, { forwardRef } from 'react'
+import React, {
+  forwardRef,
+  /* useCallback,  */ useLayoutEffect /* useMemo */
+} from 'react'
 
+// import { Vector2 } from 'three'
 import { useGsapContext } from '~/hooks/use-gsap-context'
+
+// import { plot } from '../lib/plugins/leva/plot'
+
+class SecondOrderDynamics {
+  PI = Math.PI
+  /*  */
+  xp
+  /*  */
+  y
+  yd
+  /*  */
+  k1
+  k2
+  k3
+
+  constructor(f, z, r, x0) {
+    this.setConfig(f, z, r, x0)
+  }
+
+  setConfig(f, z, r, x0) {
+    this.k1 = z / (this.PI * f)
+    this.k2 = 1 / (2 * this.PI * f * (2 * this.PI * f))
+    this.k3 = (r * z) / (2 * this.PI * f)
+
+    this.xp = x0
+    this.y = x0
+    this.yd = 0
+  }
+
+  Update(T, x, xd = null) {
+    if (xd == null) {
+      xd = (x - this.xp) / T
+      this.xp = x
+    }
+
+    // const k2_stable = Math.max(
+    //   this.k2,
+    //   T * (T / 2) + (T * this.k1) / 2,
+    //   T * this.k1
+    // )
+    this.y = this.y + T * this.yd
+    this.yd =
+      this.yd + T * ((x + this.k3 * xd - this.y - this.k1 * this.yd) / this.k2)
+
+    return this.y
+  }
+}
+
+const SecondOrderDynamicsInstance = new SecondOrderDynamics(2, 0.5, 1, 0)
+const SecondOrderDynamicsInstance2 = new SecondOrderDynamics(2, 0.5, 1, 0)
+const SecondOrderDynamicsInstance3 = new SecondOrderDynamics(2, 0.5, 2, 0)
+const SecondOrderDynamicsInstance4 = new SecondOrderDynamics(2, 0.5, 2, 0)
 
 const Grid = ({ number = 23, lineWidth = 0.026, height = 0.5 }) => (
   // Renders a grid and crosses as instances
@@ -81,8 +132,43 @@ const Drone = forwardRef((props, ref) => {
 const DroneAnimation = () => {
   const droneRef = React.useRef()
   const locked = React.useRef(true)
+  const camera = useThree((state) => state.camera)
 
-  const pointer = useThree((state) => state.pointer)
+  // const pointer = useThree((state) => state.pointer)
+
+  // const TRGT = 1
+
+  // const values = useControls({
+  //   w: 1,
+  //   f: 0.2,
+  //   z: -1,
+  //   r: -1,
+  //   x0: 1,
+  //   y1: plot({
+  //     expression: (x) => {
+  //       const res = SecondOrderDynamicsInstance.Update(0.016, TRGT)
+
+  //       console.log(res)
+
+  //       return res - TRGT
+  //     },
+  //     boundsX: [0, 10],
+  //     boundsY: [-1, 1]
+  //   })
+  // })
+
+  useLayoutEffect(() => {
+    camera.position.set(
+      -2.686254998281318,
+      4.787375502400528,
+      3.964893809990995
+    )
+    camera.rotation.set(
+      -0.8064363865450014,
+      -0.4717243090276139,
+      -0.44259724605415995
+    )
+  }, [camera])
 
   useGsapContext(() => {
     const drone = droneRef.current
@@ -93,7 +179,7 @@ const DroneAnimation = () => {
     timeline.set(drone.position, { x: 0, y: 0, z: 0 })
     timeline.set(drone.rotation, { x: 0, y: 0, z: 0 })
 
-    timeline.to({}, { duration: 3 })
+    timeline.to({}, { duration: 0 })
 
     drone.traverse((e) => {
       if (/(N_Lf*)|(H_Rt*)|(H_Lf*)|(N_Rt*)/.test(e.name)) {
@@ -134,16 +220,28 @@ const DroneAnimation = () => {
       )
   }, [])
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     if (locked.current) return
 
+    console.log(delta)
+
     const drone = droneRef.current
-    const { x, y } = pointer
-    const speed = 0.2
-    const targetX = x * speed
-    const targetY = y * speed
-    drone.rotation.z = -targetX
-    drone.rotation.x = -targetY
+    // const { x, y } = pointer
+    // const speed = 0.2
+    // const targetX = x * speed
+    // const targetY = y * speed
+
+    drone.rotation.z = SecondOrderDynamicsInstance3.Update(delta, 0)
+    drone.rotation.x = SecondOrderDynamicsInstance4.Update(delta, 0)
+
+    drone.position.x = SecondOrderDynamicsInstance.Update(
+      delta,
+      state.pointer.x
+    )
+    drone.position.z = SecondOrderDynamicsInstance2.Update(
+      delta,
+      -state.pointer.y
+    )
 
     /* Make interpolation logic w/position */
   })
@@ -151,7 +249,7 @@ const DroneAnimation = () => {
   return (
     <>
       <fog attach="fog" near={20} far={40} color="#f2f2f5" />
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       <color attach="background" args={['#f2f2f5']} />
       <Environment preset="apartment" />
       <Grid />
