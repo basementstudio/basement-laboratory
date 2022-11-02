@@ -64,7 +64,7 @@ const gliphSvgs = [
   ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg', '1.svg'],
   ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
   ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg'],
-  ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
+  ['l.svg', 'q-stroke.svg', '1.svg', 'n.svg', 'T.svg'],
   ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg', '1.svg'],
   ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
   ['l.svg', 'q-stroke.svg', '1.svg', 'n.svg', 'T.svg'],
@@ -81,9 +81,9 @@ const FLOOR_SIZE = 10 * largestRow
 
 const config = {
   camera: {
-    position: [0, 13.5, 15],
-    near: 0.001,
-    zoom: 26.65
+    position: [0, 7.5, 0],
+    near: 0.001
+    // zoom: 48
   },
   orthographic: true
 }
@@ -112,6 +112,8 @@ const FallingSVGsRow = ({ srcs, height = 2 }) => {
 }
 
 const Constraints = ({ tightenWallsBy }) => {
+  const constraintsThinkness = 1
+
   return (
     <>
       {/* Floor */}
@@ -122,7 +124,9 @@ const Constraints = ({ tightenWallsBy }) => {
         position={[0, -0.5, 0]}
       >
         <mesh>
-          <boxBufferGeometry args={[FLOOR_SIZE, FLOOR_SIZE, 1]} />
+          <boxBufferGeometry
+            args={[FLOOR_SIZE, FLOOR_SIZE, constraintsThinkness]}
+          />
           <meshBasicMaterial color="red" opacity={0} transparent />
         </mesh>
       </RigidBody>
@@ -132,10 +136,16 @@ const Constraints = ({ tightenWallsBy }) => {
         colliders="cuboid"
         type="fixed"
         rotation={[-Math.PI / 2, 0, 0]}
-        position={[FLOOR_SIZE / 2 - tightenWallsBy, FLOOR_SIZE / 2, 0]}
+        position={[
+          FLOOR_SIZE / 2 - tightenWallsBy + constraintsThinkness / 2,
+          FLOOR_SIZE / 2,
+          0
+        ]}
       >
         <mesh>
-          <boxBufferGeometry args={[1, FLOOR_SIZE, FLOOR_SIZE]} />
+          <boxBufferGeometry
+            args={[constraintsThinkness, FLOOR_SIZE, FLOOR_SIZE]}
+          />
           <meshBasicMaterial color="red" opacity={0} transparent />
         </mesh>
       </RigidBody>
@@ -145,10 +155,16 @@ const Constraints = ({ tightenWallsBy }) => {
         colliders="cuboid"
         type="fixed"
         rotation={[-Math.PI / 2, 0, 0]}
-        position={[-FLOOR_SIZE / 2 + tightenWallsBy, FLOOR_SIZE / 2, 0]}
+        position={[
+          -FLOOR_SIZE / 2 + tightenWallsBy - constraintsThinkness / 2,
+          FLOOR_SIZE / 2,
+          0
+        ]}
       >
         <mesh>
-          <boxBufferGeometry args={[1, FLOOR_SIZE, FLOOR_SIZE]} />
+          <boxBufferGeometry
+            args={[constraintsThinkness, FLOOR_SIZE, FLOOR_SIZE]}
+          />
           <meshBasicMaterial color="red" opacity={0} transparent />
         </mesh>
       </RigidBody>
@@ -162,11 +178,23 @@ const SVGRain = () => {
     camera: state.camera
   }))
 
-  useLayoutEffect(() => {
-    state.camera.lookAt(0, config.camera.position[1], 0)
-  }, [state.camera])
+  const TIGHTEN_WALLS_BY = 7
+  const midFloor = (FLOOR_SIZE - TIGHTEN_WALLS_BY * 2) / 2
+  const arcAspect = state.viewport.height / state.viewport.width
+  const targetY = midFloor * arcAspect
 
-  // const aspect = state.viewport.aspect
+  useLayoutEffect(() => {
+    state.camera.position.y = targetY
+    state.camera.position.z = 5
+    state.camera.lookAt(0, targetY, 0)
+
+    state.camera.top = midFloor * arcAspect
+    state.camera.bottom = -midFloor * arcAspect
+    state.camera.left = -midFloor
+    state.camera.right = midFloor
+
+    state.camera.updateProjectionMatrix()
+  }, [state.camera, arcAspect, midFloor, targetY])
 
   return (
     <>
@@ -174,13 +202,11 @@ const SVGRain = () => {
 
       <color attach="background" args={['#000']} />
 
-      <OrbitControls
-        enableRotate={false}
-        target={[0, config.camera.position[1], 0]}
-      />
+      {/* <OrbitControls enableRotate={false} target={[0, targetY, 0]} /> */}
 
       <Physics timeStep="vary" colliders="hull" gravity={[0, -50, 0]}>
-        <Constraints tightenWallsBy={7} />
+        {/* <Debug /> */}
+        <Constraints tightenWallsBy={TIGHTEN_WALLS_BY} />
 
         {gliphSvgs.map((srcs, i) => (
           <FallingSVGsRow srcs={srcs} height={(i + 1) * 10} key={i} />
