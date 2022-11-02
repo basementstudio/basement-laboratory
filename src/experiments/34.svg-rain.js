@@ -46,10 +46,11 @@ const SVGRain = () => {
   return (
     <>
       <OrbitControls />
+      <ambientLight intensity={0.8} />
+
       <Physics colliders="hull" gravity={[0, -9.8, 0]}>
         <Debug />
 
-        <ambientLight intensity={0.8} />
         <RigidBody rotation={[0, 0, Math.PI]} position={[0, 8, 0]}>
           <Model />
         </RigidBody>
