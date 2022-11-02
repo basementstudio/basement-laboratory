@@ -2,8 +2,7 @@ import { OrbitControls, useGLTF } from '@react-three/drei'
 import { Physics, RigidBody } from '@react-three/rapier'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
-
-import { HTMLLayout } from '../components/layout/html-layout'
+import { HTMLLayout } from '~/components/layout/html-layout'
 
 export function Model(props) {
   const { nodes, materials } = useGLTF('/models/cupcake.glb')
