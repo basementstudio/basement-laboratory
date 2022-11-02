@@ -1,4 +1,4 @@
-import { OrbitControls, Stats } from '@react-three/drei'
+import { Stats } from '@react-three/drei'
 import { useLoader, useThree } from '@react-three/fiber'
 import { Physics, RigidBody } from '@react-three/rapier'
 import { useLayoutEffect, useMemo } from 'react'
