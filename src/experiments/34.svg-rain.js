@@ -63,6 +63,10 @@ const SVGExtrudedModel = ({ src, ...config }) => {
 const gliphSvgs = [
   ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg', '1.svg'],
   ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
+  ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg'],
+  ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
+  ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg', '1.svg'],
+  ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
   ['l.svg', 'q-stroke.svg', '1.svg', 'n.svg', 'T.svg'],
   ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg'],
   ['l.svg', 'q-stroke.svg', '1.svg', 'n.svg', 'T.svg'],
@@ -167,16 +171,15 @@ const SVGRain = () => {
   return (
     <>
       <Stats />
-      {/* <fog attach="fog" near={20} far={40} color="#f2f2f5" /> */}
-      {/* <axesHelper /> */}
+
       <color attach="background" args={['#000']} />
-      {/* <ambientLight intensity={0.8} /> */}
 
-      <OrbitControls target={[0, config.camera.position[1], 0]} />
+      <OrbitControls
+        enableRotate={false}
+        target={[0, config.camera.position[1], 0]}
+      />
 
-      {/* <CoolGrid /> */}
-
-      <Physics timeStep="vary" colliders="hull" gravity={[0, -25, 0]}>
+      <Physics timeStep="vary" colliders="hull" gravity={[0, -50, 0]}>
         <Constraints tightenWallsBy={7} />
 
         {gliphSvgs.map((srcs, i) => (
