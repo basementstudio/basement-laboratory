@@ -72,7 +72,34 @@ const gliphSvgs = [
   'n.svg'
 ]
 
+const randomReorder = (arr) => {
+  return arr.sort(() => Math.random() - 0.5)
+}
+
 const FLOOR_SIZE = 10 * gliphSvgs.length
+
+const FallingSVGsRow = ({ height = 2 }) => {
+  return randomReorder(gliphSvgs).map((src, i) => {
+    const letterContainer = 5.5
+    const xPos = i * letterContainer
+    const xDisplace = (gliphSvgs.length * letterContainer) / 2
+
+    return (
+      <RigidBody
+        // colliders="trimesh"
+        friction={0.4}
+        enabledRotations={[false, false, true]}
+        enabledTranslations={[true, true, false]}
+        type="dynamic"
+        rotation={[-Math.PI, 0, 0]}
+        position={[xPos - xDisplace, height, 0]}
+        key={src}
+      >
+        <SVGExtrudedModel src={src} depth={20} />
+      </RigidBody>
+    )
+  })
+}
 
 const SVGRain = () => {
   return (
@@ -83,33 +110,22 @@ const SVGRain = () => {
       <color attach="background" args={['#f2f2f5']} />
       <ambientLight intensity={0.8} />
 
-      <OrbitControls />
+      <OrbitControls target={[0, 9, 0]} />
 
       <CoolGrid />
 
-      <Physics timeStep="vary" colliders="hull" gravity={[0, -9.8, 0]}>
+      <Physics timeStep="vary" colliders="hull" gravity={[0, -25, 0]}>
         {/* <Debug /> */}
-        {gliphSvgs.map((src, i) => {
-          const letterContainer = 5
-          const xPos = i * letterContainer
-          const xDisplace = (gliphSvgs.length * 4.5) / 2
-
-          return (
-            <RigidBody
-              // colliders="trimesh"
-              rotation={[-Math.PI, 0, 0]}
-              position={[xPos - xDisplace, 8, 0]}
-              key={src}
-            >
-              <SVGExtrudedModel src={src} depth={20} />
-            </RigidBody>
-          )
-        })}
+        <FallingSVGsRow height={10} />
+        <FallingSVGsRow height={20} />
+        <FallingSVGsRow height={30} />
+        <FallingSVGsRow height={40} />
+        <FallingSVGsRow height={50} />
+        <FallingSVGsRow height={60} />
 
         <RigidBody
           colliders="cuboid"
-          enabledRotations={[false, false, false]}
-          enabledTranslations={[false, false, false]}
+          type="fixed"
           rotation={[-Math.PI / 2, 0, 0]}
           position={[0, -0.5, 0]}
         >
@@ -131,7 +147,7 @@ SVGRain.Layout = ({ children, ...props }) => (
       aspect={21 / 9}
       config={{
         camera: {
-          position: [0, 4, 15],
+          position: [0, 10, 15],
           near: 0.001
           // fov: 40
           // zoom: 45
