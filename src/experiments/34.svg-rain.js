@@ -1,64 +1,121 @@
-import { OrbitControls, useGLTF } from '@react-three/drei'
-import { Debug, Physics, RigidBody } from '@react-three/rapier'
+import { OrbitControls, Stats } from '@react-three/drei'
+import { useLoader } from '@react-three/fiber'
+import { Physics, RigidBody } from '@react-three/rapier'
+import { useMemo } from 'react'
+import * as THREE from 'three'
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
+import { CoolGrid } from '~/components/common/cool-grid'
 import { HTMLLayout } from '~/components/layout/html-layout'
 
-export function Model(props) {
-  const { nodes, materials } = useGLTF('/models/cupcake.glb')
+const SVGExtrudedModel = ({ src, ...config }) => {
+  const svg = useLoader(SVGLoader, `/images/${src}`)
+
+  const shapes = useMemo(() => {
+    return svg.paths.map((path) => {
+      return path.toShapes(true)
+    })
+  }, [svg])
+
+  const scale = 0.02
 
   return (
-    <group {...props} dispose={null}>
-      <group
-        position={[0.12, 1.12, 0.15]}
-        rotation={[Math.PI / 2, 0, 0]}
-        scale={0.01}
-      >
-        <mesh
-          geometry={nodes.Cone_low.geometry}
-          material={materials.CupCake_mtl}
-          position={[50.07, -49.87, -76.58]}
-          rotation={[2.11, 0.21, -3.14]}
-        />
-        <mesh
-          geometry={nodes.Cream_low.geometry}
-          material={materials.CupCake_mtl}
-          position={[9.41, 3.45, 44.91]}
-        />
-        <mesh
-          geometry={nodes.Cup_low.geometry}
-          material={materials.CupCake_mtl}
-          position={[13.18, 7.6, 123.25]}
-          rotation={[-Math.PI / 2, 0, 0]}
-        />
-        <mesh
-          geometry={nodes.Torus_low.geometry}
-          material={materials.CupCake_mtl}
-          position={[-72.13, 37.58, -90]}
-          rotation={[0.09, -1.07, 0.16]}
-        />
-      </group>
+    <group>
+      {shapes.map((shape, i) => {
+        return (
+          <mesh scale={scale} position={[0, 0, 0]} key={i}>
+            <extrudeGeometry
+              args={[shape[0], { depth: 5, bevelEnabled: false, ...config }]}
+            />
+            <meshNormalMaterial side={THREE.DoubleSide} />
+          </mesh>
+        )
+      })}
     </group>
   )
 }
 
+// const SVGModel = ({ src }) => {
+//   const svg = useLoader(SVGLoader, `/images/${src}`)
+
+//   const scale = 0.02
+
+//   const shapes = useMemo(() => {
+//     return svg.paths.map((path) => {
+//       return path.toShapes(true)
+//     })
+//   }, [svg])
+
+//   return (
+//     <group>
+//       {shapes.map((shape, i) => {
+//         return (
+//           <mesh scale={scale} position={[0, 0, 0]} key={i}>
+//             <shapeGeometry args={[shape]} />
+//             <meshNormalMaterial side={THREE.DoubleSide} />
+//           </mesh>
+//         )
+//       })}
+//     </group>
+//   )
+// }
+
+const gliphSvgs = [
+  '2.svg',
+  'l.svg',
+  'q-stroke.svg',
+  'n-adhesion.svg',
+  'm.svg',
+  'question-mark.svg',
+  '1.svg',
+  'n.svg'
+]
+
+const FLOOR_SIZE = 10 * gliphSvgs.length
+
 const SVGRain = () => {
   return (
     <>
-      <OrbitControls />
+      <Stats />
+      <fog attach="fog" near={20} far={40} color="#f2f2f5" />
+      <axesHelper />
+      <color attach="background" args={['#f2f2f5']} />
       <ambientLight intensity={0.8} />
 
-      <Physics colliders="hull" gravity={[0, -9.8, 0]}>
-        <Debug />
+      <OrbitControls />
 
-        <RigidBody rotation={[0, 0, Math.PI]} position={[0, 8, 0]}>
-          <Model />
-        </RigidBody>
+      <CoolGrid />
 
-        <RigidBody rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
+      <Physics timeStep="vary" colliders="hull" gravity={[0, -9.8, 0]}>
+        {/* <Debug /> */}
+        {gliphSvgs.map((src, i) => {
+          const letterContainer = 5
+          const xPos = i * letterContainer
+          const xDisplace = (gliphSvgs.length * 4.5) / 2
+
+          return (
+            <RigidBody
+              // colliders="trimesh"
+              rotation={[-Math.PI, 0, 0]}
+              position={[xPos - xDisplace, 8, 0]}
+              key={src}
+            >
+              <SVGExtrudedModel src={src} depth={20} />
+            </RigidBody>
+          )
+        })}
+
+        <RigidBody
+          colliders="cuboid"
+          enabledRotations={[false, false, false]}
+          enabledTranslations={[false, false, false]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, -0.5, 0]}
+        >
           <mesh>
-            <planeBufferGeometry args={[15, 15]} />
-            <meshNormalMaterial />
+            <boxBufferGeometry args={[FLOOR_SIZE, FLOOR_SIZE, 1]} />
+            <meshBasicMaterial color="red" opacity={0} transparent />
           </mesh>
         </RigidBody>
       </Physics>
@@ -72,7 +129,15 @@ SVGRain.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
     <AspectCanvas
       aspect={21 / 9}
-      config={{ camera: { position: [0, 10, -10] } }}
+      config={{
+        camera: {
+          position: [0, 4, 15],
+          near: 0.001
+          // fov: 40
+          // zoom: 45
+        }
+        // orthographic: true
+      }}
     >
       {children}
     </AspectCanvas>

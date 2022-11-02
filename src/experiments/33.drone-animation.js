@@ -1,4 +1,4 @@
-import { Environment, Instance, Instances, useGLTF } from '@react-three/drei'
+import { Environment, useGLTF } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 // import { useControls } from 'leva'
 import { gsap } from 'lib/gsap'
@@ -7,6 +7,7 @@ import React, {
   /* useCallback,  */ useLayoutEffect /* useMemo */
 } from 'react'
 
+import { CoolGrid } from '~/components/common/cool-grid'
 // import { Vector2 } from 'three'
 import { useGsapContext } from '~/hooks/use-gsap-context'
 
@@ -61,30 +62,6 @@ const SecondOrderDynamicsInstance = new SecondOrderDynamics(2, 0.5, 1, 0)
 const SecondOrderDynamicsInstance2 = new SecondOrderDynamics(2, 0.5, 1, 0)
 const SecondOrderDynamicsInstance3 = new SecondOrderDynamics(2, 0.5, 2, 0)
 const SecondOrderDynamicsInstance4 = new SecondOrderDynamics(2, 0.5, 2, 0)
-
-const Grid = ({ number = 23, lineWidth = 0.026, height = 0.5 }) => (
-  // Renders a grid and crosses as instances
-  <Instances position={[0, -0.26, 0]}>
-    <planeGeometry args={[lineWidth, height]} />
-    <meshBasicMaterial color="#999" />
-    {Array.from({ length: number }, (_, y) =>
-      Array.from({ length: number }, (_, x) => (
-        <group
-          key={x + ':' + y}
-          position={[
-            x * 2 - Math.floor(number / 2) * 2,
-            -0.01,
-            y * 2 - Math.floor(number / 2) * 2
-          ]}
-        >
-          <Instance rotation={[-Math.PI / 2, 0, 0]} />
-          <Instance rotation={[-Math.PI / 2, 0, Math.PI / 2]} />
-        </group>
-      ))
-    )}
-    <gridHelper args={[100, 100, '#bbb', '#bbb']} position={[0, 0, 0]} />
-  </Instances>
-)
 
 const Drone = forwardRef((props, ref) => {
   const { nodes } = useGLTF('/models/drone.glb')
@@ -252,7 +229,7 @@ const DroneAnimation = () => {
       {/* <OrbitControls /> */}
       <color attach="background" args={['#f2f2f5']} />
       <Environment preset="apartment" />
-      <Grid />
+      <CoolGrid />
       <Drone ref={droneRef} />
     </>
   )
