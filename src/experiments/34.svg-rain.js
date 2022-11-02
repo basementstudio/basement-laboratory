@@ -1,12 +1,11 @@
 import { OrbitControls, Stats } from '@react-three/drei'
-import { useLoader } from '@react-three/fiber'
+import { useLoader, useThree } from '@react-three/fiber'
 import { Physics, RigidBody } from '@react-three/rapier'
-import { useMemo } from 'react'
+import { useLayoutEffect, useMemo } from 'react'
 import * as THREE from 'three'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
-import { CoolGrid } from '~/components/common/cool-grid'
 import { HTMLLayout } from '~/components/layout/html-layout'
 
 const SVGExtrudedModel = ({ src, ...config }) => {
@@ -28,7 +27,7 @@ const SVGExtrudedModel = ({ src, ...config }) => {
             <extrudeGeometry
               args={[shape[0], { depth: 5, bevelEnabled: false, ...config }]}
             />
-            <meshNormalMaterial side={THREE.DoubleSide} />
+            <meshBasicMaterial side={THREE.DoubleSide} />
           </mesh>
         )
       })}
@@ -62,27 +61,34 @@ const SVGExtrudedModel = ({ src, ...config }) => {
 // }
 
 const gliphSvgs = [
-  '2.svg',
-  'l.svg',
-  'q-stroke.svg',
-  'n-adhesion.svg',
-  'm.svg',
-  'question-mark.svg',
-  '1.svg',
-  'n.svg'
+  ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg', '1.svg'],
+  ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
+  ['l.svg', 'q-stroke.svg', '1.svg', 'n.svg', 'T.svg'],
+  ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg'],
+  ['l.svg', 'q-stroke.svg', '1.svg', 'n.svg', 'T.svg'],
+  ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg']
 ]
 
-const randomReorder = (arr) => {
-  return arr.sort(() => Math.random() - 0.5)
+const largestRow = gliphSvgs.reduce((acc, row) => {
+  return row.length > acc ? row.length : acc
+}, 0)
+
+const FLOOR_SIZE = 10 * largestRow
+
+const config = {
+  camera: {
+    position: [0, 13.5, 15],
+    near: 0.001,
+    zoom: 26.65
+  },
+  orthographic: true
 }
 
-const FLOOR_SIZE = 10 * gliphSvgs.length
-
-const FallingSVGsRow = ({ height = 2 }) => {
-  return randomReorder(gliphSvgs).map((src, i) => {
-    const letterContainer = 5.5
+const FallingSVGsRow = ({ srcs, height = 2 }) => {
+  return srcs.map((src, i) => {
+    const letterContainer = 6
     const xPos = i * letterContainer
-    const xDisplace = (gliphSvgs.length * letterContainer) / 2
+    const xDisplace = (largestRow * letterContainer) / 2
 
     return (
       <RigidBody
@@ -95,45 +101,87 @@ const FallingSVGsRow = ({ height = 2 }) => {
         position={[xPos - xDisplace, height, 0]}
         key={src}
       >
-        <SVGExtrudedModel src={src} depth={20} />
+        <SVGExtrudedModel src={src} depth={100} />
       </RigidBody>
     )
   })
 }
 
+const Constraints = ({ tightenWallsBy }) => {
+  return (
+    <>
+      {/* Floor */}
+      <RigidBody
+        colliders="cuboid"
+        type="fixed"
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.5, 0]}
+      >
+        <mesh>
+          <boxBufferGeometry args={[FLOOR_SIZE, FLOOR_SIZE, 1]} />
+          <meshBasicMaterial color="red" opacity={0} transparent />
+        </mesh>
+      </RigidBody>
+
+      {/* Right Wall */}
+      <RigidBody
+        colliders="cuboid"
+        type="fixed"
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[FLOOR_SIZE / 2 - tightenWallsBy, FLOOR_SIZE / 2, 0]}
+      >
+        <mesh>
+          <boxBufferGeometry args={[1, FLOOR_SIZE, FLOOR_SIZE]} />
+          <meshBasicMaterial color="red" opacity={0} transparent />
+        </mesh>
+      </RigidBody>
+
+      {/* Left Wall */}
+      <RigidBody
+        colliders="cuboid"
+        type="fixed"
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[-FLOOR_SIZE / 2 + tightenWallsBy, FLOOR_SIZE / 2, 0]}
+      >
+        <mesh>
+          <boxBufferGeometry args={[1, FLOOR_SIZE, FLOOR_SIZE]} />
+          <meshBasicMaterial color="red" opacity={0} transparent />
+        </mesh>
+      </RigidBody>
+    </>
+  )
+}
+
 const SVGRain = () => {
+  const state = useThree((state) => ({
+    viewport: state.viewport,
+    camera: state.camera
+  }))
+
+  useLayoutEffect(() => {
+    state.camera.lookAt(0, config.camera.position[1], 0)
+  }, [state.camera])
+
+  // const aspect = state.viewport.aspect
+
   return (
     <>
       <Stats />
-      <fog attach="fog" near={20} far={40} color="#f2f2f5" />
-      <axesHelper />
-      <color attach="background" args={['#f2f2f5']} />
-      <ambientLight intensity={0.8} />
+      {/* <fog attach="fog" near={20} far={40} color="#f2f2f5" /> */}
+      {/* <axesHelper /> */}
+      <color attach="background" args={['#000']} />
+      {/* <ambientLight intensity={0.8} /> */}
 
-      <OrbitControls target={[0, 9, 0]} />
+      <OrbitControls target={[0, config.camera.position[1], 0]} />
 
-      <CoolGrid />
+      {/* <CoolGrid /> */}
 
       <Physics timeStep="vary" colliders="hull" gravity={[0, -25, 0]}>
-        {/* <Debug /> */}
-        <FallingSVGsRow height={10} />
-        <FallingSVGsRow height={20} />
-        <FallingSVGsRow height={30} />
-        <FallingSVGsRow height={40} />
-        <FallingSVGsRow height={50} />
-        <FallingSVGsRow height={60} />
+        <Constraints tightenWallsBy={7} />
 
-        <RigidBody
-          colliders="cuboid"
-          type="fixed"
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, -0.5, 0]}
-        >
-          <mesh>
-            <boxBufferGeometry args={[FLOOR_SIZE, FLOOR_SIZE, 1]} />
-            <meshBasicMaterial color="red" opacity={0} transparent />
-          </mesh>
-        </RigidBody>
+        {gliphSvgs.map((srcs, i) => (
+          <FallingSVGsRow srcs={srcs} height={(i + 1) * 10} key={i} />
+        ))}
       </Physics>
     </>
   )
@@ -143,18 +191,7 @@ SVGRain.Title = 'SVG Rain'
 SVGRain.Tags = 'animation, private'
 SVGRain.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
-    <AspectCanvas
-      aspect={21 / 9}
-      config={{
-        camera: {
-          position: [0, 10, 15],
-          near: 0.001
-          // fov: 40
-          // zoom: 45
-        }
-        // orthographic: true
-      }}
-    >
+    <AspectCanvas aspect={21 / 9} config={config}>
       {children}
     </AspectCanvas>
   </HTMLLayout>
