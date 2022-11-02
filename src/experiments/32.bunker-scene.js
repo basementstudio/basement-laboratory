@@ -1,11 +1,5 @@
 import { useGLTF } from '@react-three/drei'
-import {
-  createRoot,
-  events,
-  extend,
-  useFrame,
-  useThree
-} from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { EffectComposer, GodRays, Noise } from '@react-three/postprocessing'
 import glsl from 'glslify'
 import { folder } from 'leva'
@@ -14,7 +8,6 @@ import { BlendFunction, KernelSize, Resizer } from 'postprocessing'
 import {
   forwardRef,
   useCallback,
-  useEffect,
   useImperativeHandle,
   useLayoutEffect,
   useMemo,
@@ -23,16 +16,14 @@ import {
 } from 'react'
 import * as THREE from 'three'
 
-import { AspectBox } from '~/components/common/aspect-box'
+import { AspectCanvas } from '~/components/common/aspect-canvas'
 import { useLoader } from '~/components/common/loader'
 import { useGsapContext } from '~/hooks/use-gsap-context'
 import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 import { useUniforms } from '~/hooks/use-uniforms'
 
-import { NavigationLayout } from '../components/layout/navigation-layout'
+import { HTMLLayout } from '../components/layout/html-layout'
 import { trackCursor } from '../lib/three'
-
-extend(THREE)
 
 /* START OF SHADERS */
 
@@ -99,6 +90,7 @@ const config = {
       0.06208526103691726,
       -0.023915566989092085
     ),
+    fov: 10,
     rotationMultiplier: {
       x: 0.001,
       y: 0.001
@@ -544,57 +536,21 @@ const BunkerScene = () => {
 
 BunkerScene.Title = 'Bunker Scene'
 BunkerScene.Tags = 'three,private'
-BunkerScene.Layout = ({ title, description, slug }) => {
-  const canvasRef = useRef()
-  const aspectBoxRef = useRef()
-
-  useEffect(() => {
-    const root = createRoot(canvasRef.current)
-
-    root.configure({
-      events,
-      camera: {
-        position: new THREE.Vector3().copy(config.camera.position),
-        rotation: new THREE.Euler().copy(config.camera.rotation),
-        fov: 10
-      }
-    })
-
-    window.addEventListener('resize', () => {
-      root.configure({
-        size: {
-          width: aspectBoxRef.current.clientWidth,
-          height: aspectBoxRef.current.clientHeight
+BunkerScene.Layout = ({ children, ...props }) => (
+  <HTMLLayout {...props}>
+    <AspectCanvas
+      aspect={21 / 9}
+      config={{
+        camera: {
+          position: config.camera.position,
+          rotation: config.camera.rotation,
+          fov: config.camera.fov
         }
-      })
-    })
-
-    window.dispatchEvent(new Event('resize'))
-
-    root.render(<BunkerScene />)
-
-    return root.unmount
-  }, [])
-
-  return (
-    <NavigationLayout title={title} description={description} slug={slug}>
-      <div
-        style={{
-          display: 'flex',
-          height: '100vh',
-          alignItems: 'center'
-        }}
-      >
-        <AspectBox
-          style={{ position: 'relative', width: '100%' }}
-          ratio={21 / 9}
-          ref={aspectBoxRef}
-        >
-          <canvas style={{ position: 'absolute', inset: 0 }} ref={canvasRef} />
-        </AspectBox>
-      </div>
-    </NavigationLayout>
-  )
-}
+      }}
+    >
+      {children}
+    </AspectCanvas>
+  </HTMLLayout>
+)
 
 export default BunkerScene

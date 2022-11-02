@@ -1,6 +1,4 @@
-import React from 'react'
-
-import { NavigationLayout } from '../components/layout/navigation-layout'
+import { HTMLLayout } from '../components/layout/html-layout'
 
 const JustATest = () => {
   return (
@@ -18,15 +16,7 @@ const JustATest = () => {
   )
 }
 
-JustATest.getLayout = ({ Component, title, description, slug }) => {
-  return (
-    <>
-      <NavigationLayout title={title} description={description} slug={slug}>
-        <Component />
-      </NavigationLayout>
-    </>
-  )
-}
+JustATest.Layout = HTMLLayout
 
 JustATest.Title = 'Just an HTML (example)'
 JustATest.Tags = 'example'
