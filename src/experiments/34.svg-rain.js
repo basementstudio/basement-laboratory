@@ -1,14 +1,16 @@
 import { Stats } from '@react-three/drei'
 import { useLoader, useThree } from '@react-three/fiber'
 import { Physics, RigidBody } from '@react-three/rapier'
-import { useLayoutEffect, useMemo } from 'react'
-import * as THREE from 'three'
+import { folder } from 'leva'
+import { useLayoutEffect, useMemo, useRef } from 'react'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
 import { HTMLLayout } from '~/components/layout/html-layout'
+import { useMousetrap } from '~/hooks/use-mousetrap'
+import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 
-const SVGExtrudedModel = ({ src, ...config }) => {
+const SVGExtrudedModel = ({ src, config = {} }) => {
   const svg = useLoader(SVGLoader, `/images/${src}`)
 
   const shapes = useMemo(() => {
@@ -23,11 +25,20 @@ const SVGExtrudedModel = ({ src, ...config }) => {
     <group>
       {shapes.map((shape, i) => {
         return (
-          <mesh scale={scale} position={[0, 0, 0]} key={i}>
+          <mesh
+            castShadow
+            receiveShadow
+            scale={scale}
+            position={[0, 0, 0]}
+            key={i}
+          >
             <extrudeGeometry
-              args={[shape[0], { depth: 5, bevelEnabled: false, ...config }]}
+              args={[
+                shape[0],
+                { depth: 5, bevelEnabled: false, ...config.geometry }
+              ]}
             />
-            <meshBasicMaterial side={THREE.DoubleSide} />
+            <meshStandardMaterial args={[config.material]} />
           </mesh>
         )
       })}
@@ -62,14 +73,14 @@ const SVGExtrudedModel = ({ src, ...config }) => {
 
 const gliphSvgs = [
   ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg', '1.svg'],
-  ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
+  ['n.svg', 'T.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
   ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg'],
-  ['l.svg', 'q-stroke.svg', '1.svg', 'n.svg', 'T.svg'],
+  ['l.svg', 'l.svg', '1.svg', 'l.svg', 'T.svg'],
   ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg', '1.svg'],
-  ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
-  ['l.svg', 'q-stroke.svg', '1.svg', 'n.svg', 'T.svg'],
+  ['l.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg'],
+  ['l.svg', 'l.svg', '1.svg', 'l.svg', 'T.svg'],
   ['n-adhesion.svg', 'm.svg', 'question-mark.svg', 'T.svg'],
-  ['l.svg', 'q-stroke.svg', '1.svg', 'n.svg', 'T.svg'],
+  ['l.svg', 'n.svg', '1.svg', 'n.svg', 'T.svg'],
   ['n.svg', '1.svg', 'T.svg', 'm.svg', 'question-mark.svg']
 ]
 
@@ -79,16 +90,15 @@ const largestRow = gliphSvgs.reduce((acc, row) => {
 
 const FLOOR_SIZE = 10 * largestRow
 
-const config = {
-  camera: {
-    position: [0, 7.5, 0],
-    near: 0.001
-    // zoom: 48
-  },
-  orthographic: true
-}
-
 const FallingSVGsRow = ({ srcs, height = 2 }) => {
+  const controls = useReproducibleControls({
+    Material: folder({
+      color: {
+        value: '#ff6000'
+      }
+    })
+  })
+
   return srcs.map((src, i) => {
     const letterContainer = 6
     const xPos = i * letterContainer
@@ -105,7 +115,15 @@ const FallingSVGsRow = ({ srcs, height = 2 }) => {
         position={[xPos - xDisplace, height, 0]}
         key={src}
       >
-        <SVGExtrudedModel src={src} depth={100} />
+        <SVGExtrudedModel
+          src={src}
+          config={{
+            geometry: { depth: 100 },
+            material: {
+              color: controls.color
+            }
+          }}
+        />
       </RigidBody>
     )
   })
@@ -173,6 +191,41 @@ const Constraints = ({ tightenWallsBy }) => {
 }
 
 const SVGRain = () => {
+  const orbitControlsRef = useRef()
+  const controls = useReproducibleControls({
+    Lights: folder({
+      ambientIntensity: {
+        value: 0.3,
+        min: 0,
+        max: 1
+      },
+      pointIntensity: {
+        value: 1,
+        min: 0,
+        max: 1
+      }
+    }),
+    Cam: folder({
+      focusDistance: {
+        value: 0,
+        min: 0,
+        max: 1,
+        step: 0.01
+      },
+      focalLength: {
+        value: 0.1,
+        min: 0,
+        max: 1,
+        step: 0.01
+      },
+      bokehScale: {
+        value: 2,
+        min: 0,
+        max: 10
+      }
+    })
+  })
+  const pointLightRef = useRef()
   const state = useThree((state) => ({
     viewport: state.viewport,
     camera: state.camera
@@ -183,35 +236,69 @@ const SVGRain = () => {
   const arcAspect = state.viewport.height / state.viewport.width
   const targetY = midFloor * arcAspect
 
+  // useHelper(pointLightRef, THREE.PointLightHelper)
+
   useLayoutEffect(() => {
-    state.camera.position.y = targetY
-    state.camera.position.z = 5
-    state.camera.lookAt(0, targetY, 0)
+    state.camera.position.set(-9.488126713044938, 1.2, 4.846289517333027)
 
-    state.camera.top = midFloor * arcAspect
-    state.camera.bottom = -midFloor * arcAspect
-    state.camera.left = -midFloor
-    state.camera.right = midFloor
-
-    state.camera.updateProjectionMatrix()
+    state.camera.rotation.set(
+      0.5779031050017579,
+      -0.3159115182293035,
+      0.19991339367841848
+    )
   }, [state.camera, arcAspect, midFloor, targetY])
+
+  useMousetrap([
+    {
+      keys: 'o',
+      callback: () => {
+        console.log({ cam: state.camera, light: pointLightRef.current })
+      }
+    },
+    {
+      keys: 'l',
+      callback: () => {
+        console.log('Toggle orbit enabled')
+        orbitControlsRef.current.enabled = !orbitControlsRef.current.enabled
+      }
+    }
+  ])
 
   return (
     <>
       <Stats />
 
       <color attach="background" args={['#000']} />
+      <ambientLight intensity={controls.ambientIntensity} />
 
-      {/* <OrbitControls enableRotate={false} target={[0, targetY, 0]} /> */}
+      {/* <spotLightHelper > */}
+      {/* <spotLight /> */}
+      {/* </spotLightHelper> */}
+
+      {/* <TransformControls
+        position={[1.6628776902174405, 10.116898784310333, 7.405612556979726]}
+      > */}
+      <pointLight
+        position={[1.6628776902174405, 10.116898784310333, 7.405612556979726]}
+        castShadow
+        intensity={controls.pointIntensity}
+        ref={pointLightRef}
+      />
+      {/* </TransformControls> */}
+
+      {/* <OrbitControls target={[0, targetY, 0]} ref={orbitControlsRef} /> */}
 
       <Physics timeStep="vary" colliders="hull" gravity={[0, -50, 0]}>
-        {/* <Debug /> */}
         <Constraints tightenWallsBy={TIGHTEN_WALLS_BY} />
 
         {gliphSvgs.map((srcs, i) => (
           <FallingSVGsRow srcs={srcs} height={(i + 1) * 10} key={i} />
         ))}
       </Physics>
+
+      {/* <EffectComposer multisampling={0}>
+        
+      </EffectComposer> */}
     </>
   )
 }
@@ -220,7 +307,16 @@ SVGRain.Title = 'SVG Rain'
 SVGRain.Tags = 'animation, private'
 SVGRain.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
-    <AspectCanvas aspect={21 / 9} config={config}>
+    <AspectCanvas
+      aspect={21 / 9}
+      config={{
+        camera: {
+          position: [0, 7.5, 0],
+          near: 0.001
+        },
+        shadows: true
+      }}
+    >
       {children}
     </AspectCanvas>
   </HTMLLayout>
