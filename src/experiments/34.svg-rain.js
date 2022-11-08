@@ -243,7 +243,9 @@ const SVGRain = () => {
     gsap.to(cocMaterial.uniforms.focusDistance, {
       overwrite: true,
       value: dist,
-      duration: 0.5
+      duration: 0.5,
+      delay: 0,
+      ease: 'power2.out'
     })
   }, [])
 
