@@ -1,9 +1,13 @@
-import { OrbitControls, Stats, useGLTF } from '@react-three/drei'
+import { Stats, useGLTF } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { DepthOfField, EffectComposer } from '@react-three/postprocessing'
+import {
+  DepthOfField,
+  EffectComposer,
+  Vignette
+} from '@react-three/postprocessing'
 import { Physics, RigidBody } from '@react-three/rapier'
 import { button, folder } from 'leva'
-import { gsap } from 'lib/gsap'
+import { DURATION, gsap } from 'lib/gsap'
 import { useCallback, useLayoutEffect, useRef } from 'react'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
@@ -11,6 +15,7 @@ import { HTMLLayout } from '~/components/layout/html-layout'
 import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 import { useToggleState } from '~/hooks/use-toggle-state'
+import { trackCursor } from '~/lib/three'
 
 const gliphSvgs = [
   ['R00', '?', 'S', '4', 'F01', 'R01', 'N01', '4'],
@@ -32,7 +37,7 @@ const FLOOR_SIZE = 2.5 * largestRow
 
 const threshold = 800
 
-const PhysicBody = ({ focus, height, xPos, xDisplace, name }) => {
+const PhysicBody = ({ color, focus, height, xPos, xDisplace, name }) => {
   const { nodes } = useGLTF('/models/glyphs.glb')
 
   const scale = 0.05
@@ -54,13 +59,13 @@ const PhysicBody = ({ focus, height, xPos, xDisplace, name }) => {
       key={name}
     >
       <mesh onPointerMove={focus} geometry={nodes[name].geometry}>
-        <meshStandardMaterial args={[{ color: 'red' }]} />
+        <meshPhongMaterial args={[{ color: color || 'white' }]} />
       </mesh>
     </RigidBody>
   )
 }
 
-const FallingSVGsRow = ({ focus, names, height = 2 }) => {
+const FallingSVGsRow = ({ color, focus, names, height = 2 }) => {
   return names.map((name, i) => {
     const letterContainer = 1.85
     const xPos = i * letterContainer
@@ -68,6 +73,7 @@ const FallingSVGsRow = ({ focus, names, height = 2 }) => {
 
     return (
       <PhysicBody
+        color={color}
         focus={focus}
         height={height}
         xPos={xPos}
@@ -96,7 +102,7 @@ const Constraints = ({ tightenWallsBy }) => {
           <boxBufferGeometry
             args={[FLOOR_SIZE, FLOOR_SIZE, constraintsThinkness]}
           />
-          <meshBasicMaterial color="red" opacity={0} transparent />
+          <meshBasicMaterial color="red" />
         </mesh>
       </RigidBody>
 
@@ -116,7 +122,7 @@ const Constraints = ({ tightenWallsBy }) => {
           <boxBufferGeometry
             args={[constraintsThinkness, FLOOR_SIZE, FLOOR_SIZE]}
           />
-          <meshBasicMaterial color="red" opacity={0} transparent />
+          <meshBasicMaterial color="red" />
         </mesh>
       </RigidBody>
 
@@ -136,11 +142,18 @@ const Constraints = ({ tightenWallsBy }) => {
           <boxBufferGeometry
             args={[constraintsThinkness, FLOOR_SIZE, FLOOR_SIZE]}
           />
-          <meshBasicMaterial color="red" opacity={0} transparent />
+          <meshBasicMaterial color="red" />
         </mesh>
       </RigidBody>
     </>
   )
+}
+
+const config = {
+  cam: {
+    position: [-11.096288834783838, 2.2768999336644313, 6.823361968481603],
+    rotation: [0.13246581561348966, -0.83895665434904, 0.09880515357623164]
+  }
 }
 
 const SVGRain = () => {
@@ -173,7 +186,7 @@ const SVGRain = () => {
         step: 0.0001
       },
       focalLength: {
-        value: 0.006699999999999998,
+        value: 0.017499999999999998,
         min: 0,
         max: 0.1,
         step: 0.0001
@@ -182,6 +195,33 @@ const SVGRain = () => {
         value: 10,
         min: 0,
         max: 20
+      },
+      blur: {
+        value: 10,
+        min: 0,
+        max: 20
+      }
+    }),
+    Vignette: folder({
+      offset: {
+        value: 0.3,
+        min: 0,
+        max: 1
+      },
+      darkness: {
+        value: 0.6,
+        min: 0,
+        max: 1
+      },
+      opacity: {
+        value: 1,
+        min: 0,
+        max: 1
+      }
+    }),
+    Material: folder({
+      materialColor: {
+        value: '#ff6000'
       }
     }),
     World: folder({
@@ -199,25 +239,30 @@ const SVGRain = () => {
   }))
 
   const TIGHTEN_WALLS_BY = 1.5
-  const midFloor = (FLOOR_SIZE - TIGHTEN_WALLS_BY * 2) / 2
-  const arcAspect = state.viewport.height / state.viewport.width
-  const targetY = midFloor * arcAspect
+  // const midFloor = (FLOOR_SIZE - TIGHTEN_WALLS_BY * 2) / 2
+  // const arcAspect = state.viewport.height / state.viewport.width
+  // const targetY = midFloor * arcAspect
 
   // useHelper(pointLightRef, THREE.PointLightHelper)
 
   useLayoutEffect(() => {
-    state.camera.position.set(
-      -8.164388759155946,
-      3.78843722719486,
-      5.752519991674297
-    )
+    state.camera.position.set(...config.cam.position)
+    state.camera.rotation.set(...config.cam.rotation)
 
-    state.camera.rotation.set(
-      -0.02530178380782242,
-      -0.95684791194353,
-      -0.020682629574103672
-    )
-  }, [state.camera])
+    const mouseTracker = trackCursor((cursor) => {
+      gsap.to(state.camera.rotation, {
+        overwrite: true,
+        duration: DURATION / 2.5,
+        // x: config.cam.rotation[0] + cursor.y * (Math.PI * 0.01),
+        y: config.cam.rotation[1] + -cursor.x * (Math.PI * 0.01),
+        ease: 'power2.out'
+      })
+    }, state.gl.domElement)
+
+    return () => {
+      mouseTracker.destroy()
+    }
+  }, [state.gl.domElement, state.camera])
 
   useMousetrap([
     {
@@ -235,19 +280,21 @@ const SVGRain = () => {
     }
   ])
 
-  const handleFocus = useCallback((e) => {
-    const dist = focusTargetRef.current.calculateFocusDistance(e.point)
-    const cocMaterial = focusTargetRef.current.circleOfConfusionMaterial
-    // cocMaterial.uniforms.focusDistance.value = dist
+  const handleFocus = useCallback(
+    (e) => {
+      const dist = focusTargetRef.current.calculateFocusDistance(e.point)
+      const cocMaterial = focusTargetRef.current.circleOfConfusionMaterial
 
-    gsap.to(cocMaterial.uniforms.focusDistance, {
-      overwrite: true,
-      value: dist,
-      duration: 0.5,
-      delay: 0,
-      ease: 'power2.out'
-    })
-  }, [])
+      gsap.to(cocMaterial.uniforms.focusDistance, {
+        overwrite: true,
+        value: dist,
+        duration: 0.5,
+        delay: 0,
+        ease: 'power2.out'
+      })
+    },
+    [state.camera]
+  )
 
   return (
     <>
@@ -268,7 +315,7 @@ const SVGRain = () => {
       />
       {/* </TransformControls> */}
 
-      <OrbitControls target={[0, targetY, 0]} ref={orbitControlsRef} />
+      {/* <OrbitControls target={[0, targetY, 0]} ref={orbitControlsRef} /> */}
 
       <Physics
         paused={isOn}
@@ -283,6 +330,7 @@ const SVGRain = () => {
 
         {gliphSvgs.map((names, i) => (
           <FallingSVGsRow
+            color={controls.materialColor}
             focus={handleFocus}
             names={names}
             height={(i + 1) * 3}
@@ -291,21 +339,27 @@ const SVGRain = () => {
         ))}
       </Physics>
 
-      <EffectComposer multisampling={0}>
+      <EffectComposer disableNormalPass multisampling={0}>
         <DepthOfField
           target={null}
           focusDistance={controls.focusDistance}
           focalLength={controls.focalLength}
           bokehScale={controls.bokehScale}
-          blur={controls.bokehScale}
+          blur={controls.blur}
           ref={focusTargetRef}
+          height={480}
+        />
+        <Vignette
+          opacity={controls.opacity}
+          darkness={controls.darkness}
+          offset={controls.offset}
         />
       </EffectComposer>
     </>
   )
 }
 
-SVGRain.Title = 'SVG Rain'
+SVGRain.Title = 'Glyph Rain'
 SVGRain.Tags = 'animation, private'
 SVGRain.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
