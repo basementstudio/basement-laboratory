@@ -32,7 +32,8 @@ export const AspectCanvas: FC<{
           height: aspectBoxRef.current.clientHeight,
           left: 0,
           top: 0
-        }
+        },
+        ...config
       })
     })
 
