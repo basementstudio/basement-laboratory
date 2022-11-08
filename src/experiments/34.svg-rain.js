@@ -151,8 +151,8 @@ const Constraints = ({ tightenWallsBy }) => {
 
 const config = {
   cam: {
-    position: [-11.096288834783838, 2.2768999336644313, 6.823361968481603],
-    rotation: [0.13246581561348966, -0.83895665434904, 0.09880515357623164]
+    position: [-11.096288834783838, 3.2768999336644313, 6.823361968481603],
+    rotation: [0, -0.83895665434904, 0]
   }
 }
 
@@ -253,7 +253,7 @@ const SVGRain = () => {
       gsap.to(state.camera.rotation, {
         overwrite: true,
         duration: DURATION / 2.5,
-        // x: config.cam.rotation[0] + cursor.y * (Math.PI * 0.01),
+        x: config.cam.rotation[0] + cursor.y * (Math.PI * 0.01),
         y: config.cam.rotation[1] + -cursor.x * (Math.PI * 0.01),
         ease: 'power2.out'
       })
