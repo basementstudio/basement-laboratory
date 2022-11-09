@@ -669,7 +669,7 @@
     "filename": "35.gradient-svg.js",
     "title": "SVG Gradient",
     "href": "/experiments/35.gradient-svg.js",
-    "tags": ["animation", "private"],
+    "tags": ["animation", "public"],
     "number": 35,
     "contributors": []
   }

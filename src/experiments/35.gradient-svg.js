@@ -173,7 +173,7 @@ const SVGGradient = () => {
 }
 
 SVGGradient.Title = 'SVG Gradient'
-SVGGradient.Tags = 'animation, private'
+SVGGradient.Tags = 'animation, public'
 SVGGradient.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>{children}</HTMLLayout>
 )
