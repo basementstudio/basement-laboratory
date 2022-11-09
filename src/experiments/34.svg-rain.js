@@ -1,14 +1,18 @@
-import { Stats, useGLTF } from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
 import {
-  DepthOfField,
-  EffectComposer,
-  Vignette
-} from '@react-three/postprocessing'
+  OrbitControls,
+  PerspectiveCamera,
+  shaderMaterial,
+  Stats,
+  Text,
+  useGLTF
+} from '@react-three/drei'
+import { extend, useThree } from '@react-three/fiber'
+import { EffectComposer, Vignette } from '@react-three/postprocessing'
 import { Physics, RigidBody } from '@react-three/rapier'
 import { button, folder } from 'leva'
 import { DURATION, gsap } from 'lib/gsap'
-import { useCallback, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
+import * as THREE from 'three'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
 import { HTMLLayout } from '~/components/layout/html-layout'
@@ -16,6 +20,137 @@ import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 import { useToggleState } from '~/hooks/use-toggle-state'
 import { trackCursor } from '~/lib/three'
+
+const MeshRefractionMaterialImpl = shaderMaterial(
+  {
+    uRefractPower: 0.3,
+    uSceneTex: null,
+    uTransparent: 0.5,
+    uNoise: 0.03,
+    uHue: 0.0,
+    uSat: 0.0,
+    winResolution: new THREE.Vector2()
+  },
+  `varying vec2 vUv;
+  varying vec3 vNormal;
+  varying vec3 vViewPos;
+  varying vec3 vWorldPos;
+  
+  void main() {
+    vec3 pos = position;
+    vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
+    vec4 mvPosition = viewMatrix * worldPos;
+    gl_Position = projectionMatrix * mvPosition;
+    vec3 transformedNormal = normalMatrix * normal;
+    vec3 normal = normalize( transformedNormal );
+    vUv = uv;
+    vNormal = normal;
+    vViewPos = -mvPosition.xyz;
+    vWorldPos = worldPos.xyz;
+  }`,
+  `uniform float uTransparent;
+  uniform vec2 winResolution;
+  uniform float uRefractPower;
+  uniform float uNoise;
+  uniform float uHue;
+  uniform float uSat;
+  
+  // uniform samplerCube uEnvMap;
+  uniform sampler2D uSceneTex;
+  
+  varying vec2 vUv;
+  varying vec3 vNormal;
+  varying vec3 vViewPos;
+  varying vec3 vWorldPos;
+  
+  float random(vec2 p){
+    return fract(sin(dot(p.xy ,vec2(12.9898,78.233))) * 43758.5453);
+  }
+
+  vec3 sat(vec3 rgb, float adjustment)
+{
+    // Algorithm from Chapter 16 of OpenGL Shading Language
+    const vec3 W = vec3(0.2125, 0.7154, 0.0721);
+    vec3 intensity = vec3(dot(rgb, W));
+    return mix(intensity, rgb, adjustment);
+}
+
+  vec3 hue( vec3 color, float hueAdjust ){
+
+    const vec3  kRGBToYPrime = vec3 (0.299, 0.587, 0.114);
+    const vec3  kRGBToI      = vec3 (0.596, -0.275, -0.321);
+    const vec3  kRGBToQ      = vec3 (0.212, -0.523, 0.311);
+
+    const vec3  kYIQToR     = vec3 (1.0, 0.956, 0.621);
+    const vec3  kYIQToG     = vec3 (1.0, -0.272, -0.647);
+    const vec3  kYIQToB     = vec3 (1.0, -1.107, 1.704);
+
+    float   YPrime  = dot (color, kRGBToYPrime);
+    float   I       = dot (color, kRGBToI);
+    float   Q       = dot (color, kRGBToQ);
+    float   hue     = atan (Q, I);
+    float   chroma  = sqrt (I * I + Q * Q);
+
+    hue += hueAdjust;
+
+    Q = chroma * sin (hue);
+    I = chroma * cos (hue);
+
+    vec3    yIQ   = vec3 (YPrime, I, Q);
+
+    return vec3( dot (yIQ, kYIQToR), dot (yIQ, kYIQToG), dot (yIQ, kYIQToB) );
+
+}
+  
+  struct Geometry {
+    vec3 pos;
+    vec3 posWorld;
+    vec3 viewDir;
+    vec3 viewDirWorld;
+    vec3 normal;
+    vec3 normalWorld;
+  };
+
+  void main() {
+    vec2 uv = gl_FragCoord.xy / winResolution.xy;
+    vec2 refractNormal = vNormal.xy * (1.0 - vNormal.z * 0.85);
+    vec3 refractCol = vec3( 0.0 );
+
+    float slide;
+    vec2 refractUvR;
+    vec2 refractUvG;
+    vec2 refractUvB;
+    #pragma unroll_loop_start
+    for ( int i = 0; i < 8; i ++ ) {
+      slide = float(UNROLLED_LOOP_INDEX) / float(8) * 0.1 + random(uv) * uNoise;
+      refractUvR = uv - refractNormal * ( uRefractPower + slide * 1.0 ) * uTransparent;
+      refractUvG = uv - refractNormal * ( uRefractPower + slide * 2.0 ) * uTransparent;
+      refractUvB = uv - refractNormal * ( uRefractPower + slide * 3.0 ) * uTransparent;
+      refractCol.r += texture2D( uSceneTex, refractUvR ).r;
+      refractCol.g += texture2D( uSceneTex, refractUvG ).g;
+      refractCol.b += texture2D( uSceneTex, refractUvB ).b;
+      refractCol = sat(refractCol, uSat);
+    }
+    #pragma unroll_loop_end
+
+    refractCol /= float( 8 );
+    gl_FragColor = vec4(hue(refractCol, uHue), 1.0);
+    //#include <tonemapping_fragment>
+    //#include <encodings_fragment>
+  }`
+)
+
+export function MeshRefractionMaterial(props) {
+  extend({ MeshRefractionMaterial: MeshRefractionMaterialImpl })
+  const size = useThree((state) => state.size)
+  const dpr = useThree((state) => state.viewport.dpr)
+  return (
+    <meshRefractionMaterial
+      winResolution={[size.width * dpr, size.height * dpr]}
+      {...props}
+    />
+  )
+}
 
 const gliphSvgs = [
   ['R00', '?', 'S', '4', 'F01', 'R01', 'N01', '4'],
@@ -37,7 +172,14 @@ const FLOOR_SIZE = 2.5 * largestRow
 
 const threshold = 800
 
-const PhysicBody = ({ color, focus, height, xPos, xDisplace, name }) => {
+const PhysicBody = ({
+  materialConfig,
+  focus,
+  height,
+  xPos,
+  xDisplace,
+  name
+}) => {
   const { nodes } = useGLTF('/models/glyphs.glb')
 
   const scale = 0.05
@@ -59,13 +201,13 @@ const PhysicBody = ({ color, focus, height, xPos, xDisplace, name }) => {
       key={name}
     >
       <mesh onPointerMove={focus} geometry={nodes[name].geometry}>
-        <meshPhongMaterial args={[{ color: color || 'white' }]} />
+        <MeshRefractionMaterial {...materialConfig} />
       </mesh>
     </RigidBody>
   )
 }
 
-const FallingSVGsRow = ({ color, focus, names, height = 2 }) => {
+const FallingSVGsRow = ({ materialConfig, focus, names, height = 2 }) => {
   return names.map((name, i) => {
     const letterContainer = 1.85
     const xPos = i * letterContainer
@@ -73,7 +215,7 @@ const FallingSVGsRow = ({ color, focus, names, height = 2 }) => {
 
     return (
       <PhysicBody
-        color={color}
+        materialConfig={materialConfig}
         focus={focus}
         height={height}
         xPos={xPos}
@@ -151,17 +293,23 @@ const Constraints = ({ tightenWallsBy }) => {
 
 const config = {
   cam: {
-    position: [-11.096288834783838, 3.2768999336644313, 6.823361968481603],
-    rotation: [0, -0.83895665434904, 0]
+    position: new THREE.Vector3(
+      -11.096288834783838,
+      3.2768999336644313,
+      6.823361968481603
+    ),
+    rotation: new THREE.Euler(0, -0.83895665434904, 0, 'YXZ'),
+    fov: 20
   }
 }
 
 const SVGRain = () => {
-  const focusTargetRef = useRef()
+  // const focusTargetRef = useRef()
+  const pointLightRef = useRef()
+  const orbitControlsRef = useRef()
   // const { nodes, materials } = useGLTF('/models/glyphs.glb')
 
   const { isOn, handleToggle } = useToggleState(false)
-  const orbitControlsRef = useRef()
   const controls = useReproducibleControls({
     Lights: folder({
       ambientIntensity: {
@@ -175,36 +323,10 @@ const SVGRain = () => {
         max: 1
       }
     }),
-    Cam: folder({
-      focusZ: {
-        value: 0
-      },
-      focusDistance: {
-        value: 0.011975014191862875,
-        min: 0,
-        max: 0.1,
-        step: 0.0001
-      },
-      focalLength: {
-        value: 0.017499999999999998,
-        min: 0,
-        max: 0.1,
-        step: 0.0001
-      },
-      bokehScale: {
-        value: 10,
-        min: 0,
-        max: 20
-      },
-      blur: {
-        value: 10,
-        min: 0,
-        max: 20
-      }
-    }),
+
     Vignette: folder({
       offset: {
-        value: 0.3,
+        value: 0.4,
         min: 0,
         max: 1
       },
@@ -220,9 +342,11 @@ const SVGRain = () => {
       }
     }),
     Material: folder({
-      materialColor: {
-        value: '#ff6000'
-      }
+      uRefractPower: { value: 0.1, min: 0, max: 1 },
+      uTransparent: { value: 0.5, min: 0, max: 1 },
+      uNoise: { value: 0.03, min: 0, max: 1, step: 0.01 },
+      uHue: { value: 0.0, min: 0, max: Math.PI * 2, step: 0.01 },
+      uSat: { value: 1.0, min: 1, max: 1.25, step: 0.01 }
     }),
     World: folder({
       'play/pause': button(() => {
@@ -230,7 +354,7 @@ const SVGRain = () => {
       })
     })
   })
-  const pointLightRef = useRef()
+
   const state = useThree((state) => ({
     gl: state.gl,
     scene: state.scene,
@@ -246,15 +370,15 @@ const SVGRain = () => {
   // useHelper(pointLightRef, THREE.PointLightHelper)
 
   useLayoutEffect(() => {
-    state.camera.position.set(...config.cam.position)
-    state.camera.rotation.set(...config.cam.rotation)
+    state.camera.position.copy(config.cam.position)
+    state.camera.rotation.copy(config.cam.rotation)
 
     const mouseTracker = trackCursor((cursor) => {
       gsap.to(state.camera.rotation, {
         overwrite: true,
         duration: DURATION / 2.5,
-        x: config.cam.rotation[0] + cursor.y * (Math.PI * 0.01),
-        y: config.cam.rotation[1] + -cursor.x * (Math.PI * 0.01),
+        x: config.cam.rotation.x + cursor.y * (Math.PI * 0.01),
+        y: config.cam.rotation.y + -cursor.x * (Math.PI * 0.01),
         ease: 'power2.out'
       })
     }, state.gl.domElement)
@@ -280,21 +404,18 @@ const SVGRain = () => {
     }
   ])
 
-  const handleFocus = useCallback(
-    (e) => {
-      const dist = focusTargetRef.current.calculateFocusDistance(e.point)
-      const cocMaterial = focusTargetRef.current.circleOfConfusionMaterial
+  // const handleFocus = useCallback((e) => {
+  //   const dist = focusTargetRef.current.calculateFocusDistance(e.point)
+  //   const cocMaterial = focusTargetRef.current.circleOfConfusionMaterial
 
-      gsap.to(cocMaterial.uniforms.focusDistance, {
-        overwrite: true,
-        value: dist,
-        duration: 0.5,
-        delay: 0,
-        ease: 'power2.out'
-      })
-    },
-    [state.camera]
-  )
+  //   gsap.to(cocMaterial.uniforms.focusDistance, {
+  //     overwrite: true,
+  //     value: dist,
+  //     duration: 0.5,
+  //     delay: 0,
+  //     ease: 'power2.out'
+  //   })
+  // }, [])
 
   return (
     <>
@@ -317,6 +438,19 @@ const SVGRain = () => {
 
       {/* <OrbitControls target={[0, targetY, 0]} ref={orbitControlsRef} /> */}
 
+      <Text
+        font="/Ki-Medium.ttf"
+        letterSpacing={-0.075}
+        lineHeight={0.8}
+        position={[0, 8, -4]}
+        fontSize={5}
+        color={'white'}
+      >
+        {`THE\nSEVENTY-TWO\nNAMES OF GOD.`}
+      </Text>
+
+      <OrbitControls ref={orbitControlsRef} />
+
       <Physics
         paused={isOn}
         colliders={'hull'}
@@ -327,28 +461,37 @@ const SVGRain = () => {
       >
         {/* <Debug /> */}
         <Constraints tightenWallsBy={TIGHTEN_WALLS_BY} />
-
-        {gliphSvgs.map((names, i) => (
-          <FallingSVGsRow
-            color={controls.materialColor}
-            focus={handleFocus}
-            names={names}
-            height={(i + 1) * 3}
-            key={i}
-          />
-        ))}
+        <PerspectiveCamera
+          makeDefault
+          position={config.cam.position}
+          rotation={config.cam.rotation}
+          fov={config.cam.fov}
+          resolution={1024}
+        >
+          {(texture) => (
+            <>
+              {gliphSvgs.map((names, i) => (
+                <FallingSVGsRow
+                  materialConfig={{
+                    uSceneTex: texture,
+                    uRefractPower: controls.uRefractPower,
+                    uTransparent: controls.uTransparent,
+                    uNoise: controls.uNoise,
+                    uHue: controls.uHue,
+                    uSat: controls.uSat
+                  }}
+                  color="red"
+                  names={names}
+                  height={(i + 1) * 3}
+                  key={i}
+                />
+              ))}
+            </>
+          )}
+        </PerspectiveCamera>
       </Physics>
 
       <EffectComposer disableNormalPass multisampling={0}>
-        <DepthOfField
-          target={null}
-          focusDistance={controls.focusDistance}
-          focalLength={controls.focalLength}
-          bokehScale={controls.bokehScale}
-          blur={controls.blur}
-          ref={focusTargetRef}
-          height={480}
-        />
         <Vignette
           opacity={controls.opacity}
           darkness={controls.darkness}
@@ -363,17 +506,7 @@ SVGRain.Title = 'Glyph Rain'
 SVGRain.Tags = 'animation, private'
 SVGRain.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
-    <AspectCanvas
-      aspect={21 / 9}
-      config={{
-        camera: {
-          position: [0, 90, 80],
-          fov: 20
-        }
-      }}
-    >
-      {children}
-    </AspectCanvas>
+    <AspectCanvas aspect={21 / 9}>{children}</AspectCanvas>
   </HTMLLayout>
 )
 
