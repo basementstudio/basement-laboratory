@@ -439,7 +439,6 @@ const SVGRain = () => {
       {/* <OrbitControls target={[0, targetY, 0]} ref={orbitControlsRef} /> */}
 
       <Text
-        font="/Ki-Medium.ttf"
         letterSpacing={-0.075}
         lineHeight={0.8}
         position={[0, 8, -4]}
