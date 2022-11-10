@@ -27,6 +27,7 @@
     "@studio-freight/lenis": "^0.2.19",
     "babel-plugin-glsl": "^1.0.0",
     "clsx": "1.1.1",
+    "glsl-dither": "^1.0.1",
     "glsl-noise": "^0.0.0",
     "glslify": "^7.1.1",
     "graphql": "^16.5.0",

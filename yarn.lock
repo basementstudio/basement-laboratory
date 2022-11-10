@@ -2906,6 +2906,13 @@ globjoin@^0.1.4:
   resolved "https://registry.yarnpkg.com/globjoin/-/globjoin-0.1.4.tgz#2f4494ac8919e3767c5cbb691e9f463324285d43"
   integrity sha512-xYfnw62CKG8nLkZBfWbhWwDw02CHty86jfPcc2cr3ZfeuK9ysoVPPEUxf21bAD/rWAgk52SuBrLJlefNy8mvFg==
 
+glsl-dither@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/glsl-dither/-/glsl-dither-1.0.1.tgz#64c7bb73cb758327884d83915daea78ae3fbf5d6"
+  integrity sha512-nG6ro055psNxujC8z7dd07gPLBqN0vFUnWvzTROMWlPZa/BRYUji1i9s374HnmoZc0KITIzTiKFvkdRHVh8dOg==
+  dependencies:
+    glsl-luma "^1.0.1"
+
 glsl-inject-defines@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/glsl-inject-defines/-/glsl-inject-defines-1.0.3.tgz#dd1aacc2c17fcb2bd3fc32411c6633d0d7b60fd4"
@@ -2914,6 +2921,11 @@ glsl-inject-defines@^1.0.1:
     glsl-token-inject-block "^1.0.0"
     glsl-token-string "^1.0.1"
     glsl-tokenizer "^2.0.2"
+
+glsl-luma@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/glsl-luma/-/glsl-luma-1.0.1.tgz#b5ec2ade6bae1ba68903870d8ca4483911c7b5f5"
+  integrity sha512-AlyhnJtylNOURO3Ptzo74e13SNFcV4KP+jy8INw07dk70FtMCnh/gMTrb5hUxLEupniEKX/rzT0EZxzKA3fCuQ==
 
 glsl-noise@^0.0.0:
   version "0.0.0"

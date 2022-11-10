@@ -1,17 +1,21 @@
 import {
-  OrbitControls,
-  PerspectiveCamera,
   shaderMaterial,
   Stats,
-  Text,
+  TransformControls,
   useGLTF
 } from '@react-three/drei'
 import { extend, useThree } from '@react-three/fiber'
 import { EffectComposer, Vignette } from '@react-three/postprocessing'
 import { Physics, RigidBody } from '@react-three/rapier'
+import glsl from 'glslify'
 import { button, folder } from 'leva'
-import { DURATION, gsap } from 'lib/gsap'
-import { useLayoutEffect, useRef } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef
+} from 'react'
 import * as THREE from 'three'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
@@ -19,138 +23,88 @@ import { HTMLLayout } from '~/components/layout/html-layout'
 import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 import { useToggleState } from '~/hooks/use-toggle-state'
+import { DURATION, gsap } from '~/lib/gsap'
 import { trackCursor } from '~/lib/three'
+
+const config = {
+  cam: {
+    position: new THREE.Vector3(
+      -11.096288834783838,
+      3.2768999336644313,
+      6.823361968481603
+    ),
+    rotation: new THREE.Euler(0, -0.83895665434904, 0, 'YXZ'),
+    fov: 20
+  },
+  light: {
+    position: new THREE.Vector3(
+      -7.984629070935935,
+      4.2702468181164335,
+      5.463079488712904
+    )
+  }
+}
 
 const MeshRefractionMaterialImpl = shaderMaterial(
   {
-    uRefractPower: 0.3,
-    uSceneTex: null,
-    uTransparent: 0.5,
-    uNoise: 0.03,
-    uHue: 0.0,
-    uSat: 0.0,
-    winResolution: new THREE.Vector2()
+    resolution: [900, 900],
+    time: 0,
+    color: new THREE.Color(1, 0, 0),
+    lightPosition: config.light.position.clone(),
+    ditherSize: 216
   },
-  `varying vec2 vUv;
-  varying vec3 vNormal;
-  varying vec3 vViewPos;
-  varying vec3 vWorldPos;
-  
-  void main() {
-    vec3 pos = position;
-    vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
-    vec4 mvPosition = viewMatrix * worldPos;
-    gl_Position = projectionMatrix * mvPosition;
-    vec3 transformedNormal = normalMatrix * normal;
-    vec3 normal = normalize( transformedNormal );
-    vUv = uv;
-    vNormal = normal;
-    vViewPos = -mvPosition.xyz;
-    vWorldPos = worldPos.xyz;
-  }`,
-  `uniform float uTransparent;
-  uniform vec2 winResolution;
-  uniform float uRefractPower;
-  uniform float uNoise;
-  uniform float uHue;
-  uniform float uSat;
-  
-  // uniform samplerCube uEnvMap;
-  uniform sampler2D uSceneTex;
-  
-  varying vec2 vUv;
-  varying vec3 vNormal;
-  varying vec3 vViewPos;
-  varying vec3 vWorldPos;
-  
-  float random(vec2 p){
-    return fract(sin(dot(p.xy ,vec2(12.9898,78.233))) * 43758.5453);
-  }
+  `
+    uniform vec3 lightPosition;
 
-  vec3 sat(vec3 rgb, float adjustment)
-{
-    // Algorithm from Chapter 16 of OpenGL Shading Language
-    const vec3 W = vec3(0.2125, 0.7154, 0.0721);
-    vec3 intensity = vec3(dot(rgb, W));
-    return mix(intensity, rgb, adjustment);
-}
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    varying vec3 vLightVec;
 
-  vec3 hue( vec3 color, float hueAdjust ){
+    void main() {
+      vec3 pos = position;
+      vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
+      vec4 mvPosition = viewMatrix * worldPos;
 
-    const vec3  kRGBToYPrime = vec3 (0.299, 0.587, 0.114);
-    const vec3  kRGBToI      = vec3 (0.596, -0.275, -0.321);
-    const vec3  kRGBToQ      = vec3 (0.212, -0.523, 0.311);
+      gl_Position = projectionMatrix * mvPosition;
 
-    const vec3  kYIQToR     = vec3 (1.0, 0.956, 0.621);
-    const vec3  kYIQToG     = vec3 (1.0, -0.272, -0.647);
-    const vec3  kYIQToB     = vec3 (1.0, -1.107, 1.704);
+      vNormal = normalMatrix * normal;
+      vPosition = worldPos.xyz;
 
-    float   YPrime  = dot (color, kRGBToYPrime);
-    float   I       = dot (color, kRGBToI);
-    float   Q       = dot (color, kRGBToQ);
-    float   hue     = atan (Q, I);
-    float   chroma  = sqrt (I * I + Q * Q);
+      vec4 viewPos = modelViewMatrix * vec4(position, 1.0);
+      vec4 viewLightPos = viewMatrix * vec4(lightPosition, 1.0);
 
-    hue += hueAdjust;
-
-    Q = chroma * sin (hue);
-    I = chroma * cos (hue);
-
-    vec3    yIQ   = vec3 (YPrime, I, Q);
-
-    return vec3( dot (yIQ, kYIQToR), dot (yIQ, kYIQToG), dot (yIQ, kYIQToB) );
-
-}
-  
-  struct Geometry {
-    vec3 pos;
-    vec3 posWorld;
-    vec3 viewDir;
-    vec3 viewDirWorld;
-    vec3 normal;
-    vec3 normalWorld;
-  };
-
-  void main() {
-    vec2 uv = gl_FragCoord.xy / winResolution.xy;
-    vec2 refractNormal = vNormal.xy * (1.0 - vNormal.z * 0.85);
-    vec3 refractCol = vec3( 0.0 );
-
-    float slide;
-    vec2 refractUvR;
-    vec2 refractUvG;
-    vec2 refractUvB;
-    #pragma unroll_loop_start
-    for ( int i = 0; i < 8; i ++ ) {
-      slide = float(UNROLLED_LOOP_INDEX) / float(8) * 0.1 + random(uv) * uNoise;
-      refractUvR = uv - refractNormal * ( uRefractPower + slide * 1.0 ) * uTransparent;
-      refractUvG = uv - refractNormal * ( uRefractPower + slide * 2.0 ) * uTransparent;
-      refractUvB = uv - refractNormal * ( uRefractPower + slide * 3.0 ) * uTransparent;
-      refractCol.r += texture2D( uSceneTex, refractUvR ).r;
-      refractCol.g += texture2D( uSceneTex, refractUvG ).g;
-      refractCol.b += texture2D( uSceneTex, refractUvB ).b;
-      refractCol = sat(refractCol, uSat);
+      vLightVec = viewLightPos.xyz - viewPos.xyz;
     }
-    #pragma unroll_loop_end
+  `,
+  glsl`
+    precision highp float;
+    uniform vec3 color;
+    uniform float time;
+    uniform vec2 resolution;
+    uniform float ditherSize;
 
-    refractCol /= float( 8 );
-    gl_FragColor = vec4(hue(refractCol, uHue), 1.0);
-    //#include <tonemapping_fragment>
-    //#include <encodings_fragment>
-  }`
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    varying vec3 vLightVec;
+
+    // varying vec2 screenUV;
+    #pragma glslify: dither = require('glsl-dither/8x8');
+
+    void main () {
+      vec3 L = normalize(vLightVec);
+      vec3 N = normalize(vNormal);
+
+      // vec3 lightDir = normalize(N - L);
+      float diffuse = max(dot(N, L), 0.0);
+
+      float dither = dither(gl_FragCoord.xy / resolution.xy * ditherSize, diffuse);
+
+      gl_FragColor = vec4(color * dither, 1.0);
+    }
+  `
 )
 
-export function MeshRefractionMaterial(props) {
-  extend({ MeshRefractionMaterial: MeshRefractionMaterialImpl })
-  const size = useThree((state) => state.size)
-  const dpr = useThree((state) => state.viewport.dpr)
-  return (
-    <meshRefractionMaterial
-      winResolution={[size.width * dpr, size.height * dpr]}
-      {...props}
-    />
-  )
-}
+extend({ MeshRefractionMaterial: MeshRefractionMaterialImpl })
 
 const gliphSvgs = [
   ['R00', '?', 'S', '4', 'F01', 'R01', 'N01', '4'],
@@ -172,60 +126,36 @@ const FLOOR_SIZE = 2.5 * largestRow
 
 const threshold = 800
 
-const PhysicBody = ({
-  materialConfig,
-  focus,
-  height,
-  xPos,
-  xDisplace,
-  name
-}) => {
-  const { nodes } = useGLTF('/models/glyphs.glb')
+const PhysicBody = forwardRef(
+  ({ focus, height, xPos, xDisplace, name, materialConfig = {} }, ref) => {
+    const { nodes } = useGLTF('/models/glyphs.glb')
 
-  const scale = 0.05
-
-  return (
-    <RigidBody
-      onContactForce={(e) => {
-        if (e.collider.contactForceEventThreshold() < threshold) {
-          e.collider.setContactForceEventThreshold(threshold)
-        }
-      }}
-      colliders="hull"
-      enabledRotations={[false, false, true]}
-      enabledTranslations={[true, true, false]}
-      type="dynamic"
-      rotation={[-Math.PI / 2, 0, 0]}
-      position={[xPos - xDisplace, height, 0]}
-      scale={scale}
-      key={name}
-    >
-      <mesh onPointerMove={focus} geometry={nodes[name].geometry}>
-        <MeshRefractionMaterial {...materialConfig} />
-      </mesh>
-    </RigidBody>
-  )
-}
-
-const FallingSVGsRow = ({ materialConfig, focus, names, height = 2 }) => {
-  return names.map((name, i) => {
-    const letterContainer = 1.85
-    const xPos = i * letterContainer
-    const xDisplace = (largestRow * letterContainer) / 2
+    const scale = 0.05
 
     return (
-      <PhysicBody
-        materialConfig={materialConfig}
-        focus={focus}
-        height={height}
-        xPos={xPos}
-        xDisplace={xDisplace}
-        name={name}
-        key={i}
-      />
+      <RigidBody
+        onContactForce={(e) => {
+          if (e.collider.contactForceEventThreshold() < threshold) {
+            e.collider.setContactForceEventThreshold(threshold)
+          }
+        }}
+        colliders="hull"
+        enabledRotations={[false, false, true]}
+        enabledTranslations={[true, true, false]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        type="dynamic"
+        position={[xPos - xDisplace, height, 0]}
+        scale={scale}
+        key={name}
+      >
+        <mesh onPointerMove={focus} geometry={nodes[name].geometry} ref={ref}>
+          <meshRefractionMaterial {...materialConfig} />
+          {/* <meshNormalMaterial /> */}
+        </mesh>
+      </RigidBody>
     )
-  })
-}
+  }
+)
 
 const Constraints = ({ tightenWallsBy }) => {
   const constraintsThinkness = 1
@@ -291,22 +221,11 @@ const Constraints = ({ tightenWallsBy }) => {
   )
 }
 
-const config = {
-  cam: {
-    position: new THREE.Vector3(
-      -11.096288834783838,
-      3.2768999336644313,
-      6.823361968481603
-    ),
-    rotation: new THREE.Euler(0, -0.83895665434904, 0, 'YXZ'),
-    fov: 20
-  }
-}
-
 const SVGRain = () => {
   // const focusTargetRef = useRef()
   const pointLightRef = useRef()
   const orbitControlsRef = useRef()
+  const meshRefs = useRef({})
   // const { nodes, materials } = useGLTF('/models/glyphs.glb')
 
   const { isOn, handleToggle } = useToggleState(false)
@@ -342,11 +261,11 @@ const SVGRain = () => {
       }
     }),
     Material: folder({
-      uRefractPower: { value: 0.1, min: 0, max: 1 },
-      uTransparent: { value: 0.5, min: 0, max: 1 },
-      uNoise: { value: 0.03, min: 0, max: 1, step: 0.01 },
-      uHue: { value: 0.0, min: 0, max: Math.PI * 2, step: 0.01 },
-      uSat: { value: 1.0, min: 1, max: 1.25, step: 0.01 }
+      diethering: {
+        value: 256,
+        min: 0,
+        max: 1024
+      }
     }),
     World: folder({
       'play/pause': button(() => {
@@ -377,8 +296,8 @@ const SVGRain = () => {
       gsap.to(state.camera.rotation, {
         overwrite: true,
         duration: DURATION / 2.5,
-        x: config.cam.rotation.x + cursor.y * (Math.PI * 0.01),
-        y: config.cam.rotation.y + -cursor.x * (Math.PI * 0.01),
+        x: config.cam.rotation.x + cursor.y * (Math.PI * 0.005),
+        y: config.cam.rotation.y + -cursor.x * (Math.PI * 0.005),
         ease: 'power2.out'
       })
     }, state.gl.domElement)
@@ -404,51 +323,46 @@ const SVGRain = () => {
     }
   ])
 
-  // const handleFocus = useCallback((e) => {
-  //   const dist = focusTargetRef.current.calculateFocusDistance(e.point)
-  //   const cocMaterial = focusTargetRef.current.circleOfConfusionMaterial
+  useEffect(() => {
+    Object.values(meshRefs.current).forEach((mesh) => {
+      mesh.material.uniforms.ditherSize.value = controls.diethering
+    })
+  }, [controls.diethering])
 
-  //   gsap.to(cocMaterial.uniforms.focusDistance, {
-  //     overwrite: true,
-  //     value: dist,
-  //     duration: 0.5,
-  //     delay: 0,
-  //     ease: 'power2.out'
-  //   })
-  // }, [])
+  const handleChange = useCallback(() => {
+    // if (!e?.target) return
+    // const lightPos = e.target.positionStart.clone().add(e.target.offset)
+    // console.log(lightPos)
+    // meshRef?.current?.material?.uniforms?.lightPosition?.value?.copy?.(lightPos)
+    // Object.values(meshRefs.current).forEach((mesh) => {
+    //   mesh?.material?.uniforms?.lightPosition?.value?.copy?.(lightPos)
+    // })
+  }, [])
 
   return (
     <>
-      {/* <axesHelper />
-      <gridHelper args={[100, 100]} /> */}
       <Stats />
 
       <color attach="background" args={['#000']} />
       <ambientLight intensity={controls.ambientIntensity} />
 
-      {/* <TransformControls
-        position={[1.6628776902174405, 10.116898784310333, 7.405612556979726]}
-      > */}
-      <pointLight
-        position={[1.6628776902174405, 10.116898784310333, 7.405612556979726]}
-        intensity={controls.pointIntensity}
-        ref={pointLightRef}
-      />
-      {/* </TransformControls> */}
-
-      {/* <OrbitControls target={[0, targetY, 0]} ref={orbitControlsRef} /> */}
-
-      <Text
-        letterSpacing={-0.075}
-        lineHeight={0.8}
-        position={[0, 8, -4]}
-        fontSize={5}
-        color={'white'}
+      <TransformControls
+        position={[
+          config.light.position.x,
+          config.light.position.y,
+          config.light.position.z
+        ]}
+        onChange={handleChange}
       >
-        {`THE\nSEVENTY-TWO\nNAMES OF GOD.`}
-      </Text>
+        <object3D />
+      </TransformControls>
 
-      <OrbitControls ref={orbitControlsRef} />
+      {/* <TransformControls>
+        <mesh ref={meshRef}>
+          <torusGeometry args={[10, 3, 16, 100]} />
+          <meshRefractionMaterial />
+        </mesh>
+      </TransformControls> */}
 
       <Physics
         paused={isOn}
@@ -460,34 +374,29 @@ const SVGRain = () => {
       >
         {/* <Debug /> */}
         <Constraints tightenWallsBy={TIGHTEN_WALLS_BY} />
-        <PerspectiveCamera
-          makeDefault
-          position={config.cam.position}
-          rotation={config.cam.rotation}
-          fov={config.cam.fov}
-          resolution={1024}
-        >
-          {(texture) => (
-            <>
-              {gliphSvgs.map((names, i) => (
-                <FallingSVGsRow
-                  materialConfig={{
-                    uSceneTex: texture,
-                    uRefractPower: controls.uRefractPower,
-                    uTransparent: controls.uTransparent,
-                    uNoise: controls.uNoise,
-                    uHue: controls.uHue,
-                    uSat: controls.uSat
+
+        {gliphSvgs.map((names, i1) => (
+          <>
+            {names.map((name, i2) => {
+              const letterContainer = 1.85
+              const xPos = i2 * letterContainer
+              const xDisplace = (largestRow * letterContainer) / 2
+
+              return (
+                <PhysicBody
+                  height={(i1 + 1) * 3}
+                  xPos={xPos}
+                  xDisplace={xDisplace}
+                  name={name}
+                  key={`${name}-${i1}-${i2}`}
+                  ref={(ref) => {
+                    meshRefs.current[`${i1}-${i2}`] = ref
                   }}
-                  color="red"
-                  names={names}
-                  height={(i + 1) * 3}
-                  key={i}
                 />
-              ))}
-            </>
-          )}
-        </PerspectiveCamera>
+              )
+            })}
+          </>
+        ))}
       </Physics>
 
       <EffectComposer disableNormalPass multisampling={0}>
@@ -505,7 +414,18 @@ SVGRain.Title = 'Glyph Rain'
 SVGRain.Tags = 'animation, private'
 SVGRain.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
-    <AspectCanvas aspect={21 / 9}>{children}</AspectCanvas>
+    <AspectCanvas
+      aspect={21 / 9}
+      config={{
+        camera: {
+          position: config.cam.position,
+          fov: config.cam.fov,
+          rotation: config.cam.rotation
+        }
+      }}
+    >
+      {children}
+    </AspectCanvas>
   </HTMLLayout>
 )
 
