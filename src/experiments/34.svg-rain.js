@@ -262,7 +262,7 @@ const SVGRain = () => {
     }),
     Material: folder({
       diethering: {
-        value: 256,
+        value: 216,
         min: 0,
         max: 1024
       }
