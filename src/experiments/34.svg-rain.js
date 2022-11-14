@@ -1,29 +1,112 @@
-import { Stats, useGLTF } from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
 import {
-  DepthOfField,
-  EffectComposer,
-  Vignette
-} from '@react-three/postprocessing'
+  shaderMaterial,
+  Stats,
+  TransformControls,
+  useGLTF
+} from '@react-three/drei'
+import { extend, useThree } from '@react-three/fiber'
+import { EffectComposer, Vignette } from '@react-three/postprocessing'
 import { Physics, RigidBody } from '@react-three/rapier'
+import glsl from 'glslify'
 import { button, folder } from 'leva'
-import { DURATION, gsap } from 'lib/gsap'
-import { useCallback, useLayoutEffect, useRef } from 'react'
+import { forwardRef, useCallback, useLayoutEffect, useRef } from 'react'
+import * as THREE from 'three'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
 import { HTMLLayout } from '~/components/layout/html-layout'
 import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 import { useToggleState } from '~/hooks/use-toggle-state'
+import { DURATION, gsap } from '~/lib/gsap'
 import { trackCursor } from '~/lib/three'
+
+const config = {
+  cam: {
+    position: new THREE.Vector3(
+      -11.096288834783838,
+      3.2768999336644313,
+      6.823361968481603
+    ),
+    rotation: new THREE.Euler(0, -0.83895665434904, 0, 'YXZ'),
+    fov: 20
+  },
+  light: {
+    position: new THREE.Vector3(
+      -7.984629070935935,
+      4.2702468181164335,
+      5.463079488712904
+    )
+  }
+}
+
+const MeshRefractionMaterialImpl = shaderMaterial(
+  {
+    resolution: [900, 900],
+    time: 0,
+    color: new THREE.Color(1, 0, 0),
+    lightPosition: config.light.position.clone(),
+    ditherSize: 170
+  },
+  `
+    uniform vec3 lightPosition;
+
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    varying vec3 vLightVec;
+
+    void main() {
+      vec3 pos = position;
+      vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
+      vec4 mvPosition = viewMatrix * worldPos;
+
+      gl_Position = projectionMatrix * mvPosition;
+
+      vNormal = normalMatrix * normal;
+      vPosition = worldPos.xyz;
+
+      vec4 viewPos = modelViewMatrix * vec4(position, 1.0);
+      vec4 viewLightPos = viewMatrix * vec4(lightPosition, 1.0);
+
+      vLightVec = viewLightPos.xyz - viewPos.xyz;
+    }
+  `,
+  glsl`
+    precision highp float;
+    uniform vec3 color;
+    uniform float time;
+    uniform vec2 resolution;
+    uniform float ditherSize;
+
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    varying vec3 vLightVec;
+
+    // varying vec2 screenUV;
+    #pragma glslify: dither = require('glsl-dither/8x8');
+
+    void main () {
+      vec3 L = normalize(vLightVec);
+      vec3 N = normalize(vNormal);
+
+      // vec3 lightDir = normalize(N - L);
+      float diffuse = max(dot(N, L), 0.0);
+
+      float dither = dither(gl_FragCoord.xy / resolution.xy * ditherSize, diffuse);
+
+      gl_FragColor = vec4(color * dither, 1.0);
+    }
+  `
+)
+
+extend({ MeshRefractionMaterial: MeshRefractionMaterialImpl })
 
 const gliphSvgs = [
   ['R00', '?', 'S', '4', 'F01', 'R01', 'N01', '4'],
-  ['B01', '4', 'S', '#', 'M', 'u01', 'N01', 'Q'],
+  ['B01', '4', 'S', '#', 'M', 'U01', 'N01', 'Q'],
   ['B01', 'A', 'H', 'R01', 'M', 'E', 'H', 'T'],
   ['B01', 'Q', 'S', 'M', '#', 'E', 'N01', 'T'],
   ['U00', 'A', 'S', 'U00', 'Y', 'E', 'R01', '?'],
-  ['F00', 'A', 'u01', 'E', 'F01', 'E', 'N01', 'T'],
+  ['F00', 'A', 'U01', 'E', 'F01', 'E', 'N01', 'T'],
   ['K', 'G', '#', 'E', 'M', 'E', 'N01', 'T'],
   ['B01', 'A', 'S', 'Q', 'M', 'Y', 'N01', 'T'],
   ['B01', 'A', 'S', 'E', 'M', 'E', 'N00', 'T']
@@ -37,53 +120,36 @@ const FLOOR_SIZE = 2.5 * largestRow
 
 const threshold = 800
 
-const PhysicBody = ({ color, focus, height, xPos, xDisplace, name }) => {
-  const { nodes } = useGLTF('/models/glyphs.glb')
+const PhysicBody = forwardRef(
+  ({ focus, height, xPos, xDisplace, name, materialConfig = {} }, ref) => {
+    const { nodes } = useGLTF('/models/glyphs.glb')
 
-  const scale = 0.05
-
-  return (
-    <RigidBody
-      onContactForce={(e) => {
-        if (e.collider.contactForceEventThreshold() < threshold) {
-          e.collider.setContactForceEventThreshold(threshold)
-        }
-      }}
-      colliders="hull"
-      enabledRotations={[false, false, true]}
-      enabledTranslations={[true, true, false]}
-      type="dynamic"
-      rotation={[-Math.PI / 2, 0, 0]}
-      position={[xPos - xDisplace, height, 0]}
-      scale={scale}
-      key={name}
-    >
-      <mesh onPointerMove={focus} geometry={nodes[name].geometry}>
-        <meshPhongMaterial args={[{ color: color || 'white' }]} />
-      </mesh>
-    </RigidBody>
-  )
-}
-
-const FallingSVGsRow = ({ color, focus, names, height = 2 }) => {
-  return names.map((name, i) => {
-    const letterContainer = 1.85
-    const xPos = i * letterContainer
-    const xDisplace = (largestRow * letterContainer) / 2
+    const scale = 0.05
 
     return (
-      <PhysicBody
-        color={color}
-        focus={focus}
-        height={height}
-        xPos={xPos}
-        xDisplace={xDisplace}
-        name={name}
-        key={i}
-      />
+      <RigidBody
+        onContactForce={(e) => {
+          if (e.collider.contactForceEventThreshold() < threshold) {
+            e.collider.setContactForceEventThreshold(threshold)
+          }
+        }}
+        colliders="hull"
+        enabledRotations={[false, false, true]}
+        enabledTranslations={[true, true, false]}
+        rotation={[0, 0, 0]}
+        type="dynamic"
+        position={[xPos - xDisplace, height, 0]}
+        scale={scale}
+        key={name}
+      >
+        <mesh onPointerMove={focus} geometry={nodes[name].geometry} ref={ref}>
+          <meshRefractionMaterial {...materialConfig} />
+          {/* <meshNormalMaterial /> */}
+        </mesh>
+      </RigidBody>
     )
-  })
-}
+  }
+)
 
 const Constraints = ({ tightenWallsBy }) => {
   const constraintsThinkness = 1
@@ -149,19 +215,13 @@ const Constraints = ({ tightenWallsBy }) => {
   )
 }
 
-const config = {
-  cam: {
-    position: [-11.096288834783838, 3.2768999336644313, 6.823361968481603],
-    rotation: [0, -0.83895665434904, 0]
-  }
-}
-
 const SVGRain = () => {
-  const focusTargetRef = useRef()
-  // const { nodes, materials } = useGLTF('/models/glyphs.glb')
+  const pointLightRef = useRef()
+  const orbitControlsRef = useRef()
+  const meshRefs = useRef({})
+  const canvasElmHeight = useThree((state) => state.gl.domElement.clientHeight)
 
   const { isOn, handleToggle } = useToggleState(false)
-  const orbitControlsRef = useRef()
   const controls = useReproducibleControls({
     Lights: folder({
       ambientIntensity: {
@@ -175,36 +235,10 @@ const SVGRain = () => {
         max: 1
       }
     }),
-    Cam: folder({
-      focusZ: {
-        value: 0
-      },
-      focusDistance: {
-        value: 0.011975014191862875,
-        min: 0,
-        max: 0.1,
-        step: 0.0001
-      },
-      focalLength: {
-        value: 0.017499999999999998,
-        min: 0,
-        max: 0.1,
-        step: 0.0001
-      },
-      bokehScale: {
-        value: 10,
-        min: 0,
-        max: 20
-      },
-      blur: {
-        value: 10,
-        min: 0,
-        max: 20
-      }
-    }),
+
     Vignette: folder({
       offset: {
-        value: 0.3,
+        value: 0.4,
         min: 0,
         max: 1
       },
@@ -220,8 +254,10 @@ const SVGRain = () => {
       }
     }),
     Material: folder({
-      materialColor: {
-        value: '#ff6000'
+      diethering: {
+        value: 170,
+        min: 0,
+        max: 1024
       }
     }),
     World: folder({
@@ -230,7 +266,7 @@ const SVGRain = () => {
       })
     })
   })
-  const pointLightRef = useRef()
+
   const state = useThree((state) => ({
     gl: state.gl,
     scene: state.scene,
@@ -239,22 +275,30 @@ const SVGRain = () => {
   }))
 
   const TIGHTEN_WALLS_BY = 1.5
-  // const midFloor = (FLOOR_SIZE - TIGHTEN_WALLS_BY * 2) / 2
-  // const arcAspect = state.viewport.height / state.viewport.width
-  // const targetY = midFloor * arcAspect
-
-  // useHelper(pointLightRef, THREE.PointLightHelper)
 
   useLayoutEffect(() => {
-    state.camera.position.set(...config.cam.position)
-    state.camera.rotation.set(...config.cam.rotation)
+    // if (orbitControlsRef.current.enabled) return
+    state.camera.position.copy(config.cam.position)
+    state.camera.rotation.copy(config.cam.rotation)
 
     const mouseTracker = trackCursor((cursor) => {
       gsap.to(state.camera.rotation, {
         overwrite: true,
         duration: DURATION / 2.5,
-        x: config.cam.rotation[0] + cursor.y * (Math.PI * 0.01),
-        y: config.cam.rotation[1] + -cursor.x * (Math.PI * 0.01),
+        x: config.cam.rotation.x + cursor.y * (Math.PI * 0.005),
+        y: config.cam.rotation.y + -cursor.x * (Math.PI * 0.005),
+        ease: 'power2.out'
+      })
+
+      const meshMaterialLightUniforms = Object.values(meshRefs.current).map(
+        (mesh) => mesh?.material?.uniforms?.lightPosition?.value
+      )
+
+      gsap.to(meshMaterialLightUniforms, {
+        overwrite: true,
+        duration: DURATION / 2.5,
+        x: config.light.position.x + cursor.y * 1,
+        y: config.light.position.y + -cursor.x * 2,
         ease: 'power2.out'
       })
     }, state.gl.domElement)
@@ -280,42 +324,43 @@ const SVGRain = () => {
     }
   ])
 
-  const handleFocus = useCallback(
-    (e) => {
-      const dist = focusTargetRef.current.calculateFocusDistance(e.point)
-      const cocMaterial = focusTargetRef.current.circleOfConfusionMaterial
+  useLayoutEffect(() => {
+    Object.values(meshRefs.current).forEach((mesh) => {
+      mesh.material.uniforms.resolution.value = [
+        canvasElmHeight,
+        canvasElmHeight
+      ]
+      mesh.material.uniforms.ditherSize.value = controls.diethering
+    })
+  }, [controls.diethering, canvasElmHeight])
 
-      gsap.to(cocMaterial.uniforms.focusDistance, {
-        overwrite: true,
-        value: dist,
-        duration: 0.5,
-        delay: 0,
-        ease: 'power2.out'
-      })
-    },
-    [state.camera]
-  )
+  const handleChange = useCallback(() => {
+    // if (!e?.target) return
+    // const lightPos = e.target.positionStart.clone().add(e.target.offset)
+    // Object.values(meshRefs.current).forEach((mesh) => {
+    //   mesh?.material?.uniforms?.lightPosition?.value?.copy?.(lightPos)
+    // })
+  }, [])
 
   return (
     <>
-      {/* <axesHelper />
-      <gridHelper args={[100, 100]} /> */}
       <Stats />
 
       <color attach="background" args={['#000']} />
       <ambientLight intensity={controls.ambientIntensity} />
 
-      {/* <TransformControls
-        position={[1.6628776902174405, 10.116898784310333, 7.405612556979726]}
-      > */}
-      <pointLight
-        position={[1.6628776902174405, 10.116898784310333, 7.405612556979726]}
-        intensity={controls.pointIntensity}
-        ref={pointLightRef}
-      />
-      {/* </TransformControls> */}
+      <TransformControls
+        position={[
+          config.light.position.x,
+          config.light.position.y,
+          config.light.position.z
+        ]}
+        onChange={handleChange}
+      >
+        <object3D />
+      </TransformControls>
 
-      {/* <OrbitControls target={[0, targetY, 0]} ref={orbitControlsRef} /> */}
+      {/* <OrbitControls ref={orbitControlsRef} /> */}
 
       <Physics
         paused={isOn}
@@ -328,27 +373,31 @@ const SVGRain = () => {
         {/* <Debug /> */}
         <Constraints tightenWallsBy={TIGHTEN_WALLS_BY} />
 
-        {gliphSvgs.map((names, i) => (
-          <FallingSVGsRow
-            color={controls.materialColor}
-            focus={handleFocus}
-            names={names}
-            height={(i + 1) * 3}
-            key={i}
-          />
+        {gliphSvgs.map((names, i1) => (
+          <>
+            {names.map((name, i2) => {
+              const letterContainer = 1.85
+              const xPos = i2 * letterContainer
+              const xDisplace = (largestRow * letterContainer) / 2
+
+              return (
+                <PhysicBody
+                  height={(i1 + 1) * 3}
+                  xPos={xPos}
+                  xDisplace={xDisplace}
+                  name={name}
+                  key={`${name}-${i1}-${i2}`}
+                  ref={(ref) => {
+                    meshRefs.current[`${i1}-${i2}`] = ref
+                  }}
+                />
+              )
+            })}
+          </>
         ))}
       </Physics>
 
       <EffectComposer disableNormalPass multisampling={0}>
-        <DepthOfField
-          target={null}
-          focusDistance={controls.focusDistance}
-          focalLength={controls.focalLength}
-          bokehScale={controls.bokehScale}
-          blur={controls.blur}
-          ref={focusTargetRef}
-          height={480}
-        />
         <Vignette
           opacity={controls.opacity}
           darkness={controls.darkness}
@@ -367,8 +416,9 @@ SVGRain.Layout = ({ children, ...props }) => (
       aspect={21 / 9}
       config={{
         camera: {
-          position: [0, 90, 80],
-          fov: 20
+          position: config.cam.position,
+          fov: config.cam.fov,
+          rotation: config.cam.rotation
         }
       }}
     >
