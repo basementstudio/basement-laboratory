@@ -45,7 +45,7 @@ const MeshRefractionMaterialImpl = shaderMaterial(
     time: 0,
     color: new THREE.Color(1, 0, 0),
     lightPosition: config.light.position.clone(),
-    ditherSize: 170
+    ditherSize: 200
   },
   `
     uniform vec3 lightPosition;
@@ -121,7 +121,7 @@ const FLOOR_SIZE = 2.5 * largestRow
 const threshold = 800
 
 const PhysicBody = forwardRef(
-  ({ focus, height, xPos, xDisplace, name, materialConfig = {} }, ref) => {
+  ({ focus, name, materialConfig = {}, ...rest }, ref) => {
     const { nodes } = useGLTF('/models/glyphs.glb')
 
     const scale = 0.05
@@ -136,15 +136,13 @@ const PhysicBody = forwardRef(
         colliders="hull"
         enabledRotations={[false, false, true]}
         enabledTranslations={[true, true, false]}
-        rotation={[0, 0, 0]}
         type="dynamic"
-        position={[xPos - xDisplace, height, 0]}
         scale={scale}
         key={name}
+        {...rest}
       >
         <mesh onPointerMove={focus} geometry={nodes[name].geometry} ref={ref}>
           <meshRefractionMaterial {...materialConfig} />
-          {/* <meshNormalMaterial /> */}
         </mesh>
       </RigidBody>
     )
@@ -255,7 +253,7 @@ const SVGRain = () => {
     }),
     Material: folder({
       diethering: {
-        value: 170,
+        value: 200,
         min: 0,
         max: 1024
       }
@@ -277,7 +275,6 @@ const SVGRain = () => {
   const TIGHTEN_WALLS_BY = 1.5
 
   useLayoutEffect(() => {
-    // if (orbitControlsRef.current.enabled) return
     state.camera.position.copy(config.cam.position)
     state.camera.rotation.copy(config.cam.rotation)
 
@@ -297,8 +294,8 @@ const SVGRain = () => {
       gsap.to(meshMaterialLightUniforms, {
         overwrite: true,
         duration: DURATION / 2.5,
-        x: config.light.position.x + cursor.y * 1,
-        y: config.light.position.y + -cursor.x * 2,
+        x: config.light.position.x + cursor.x * 1,
+        y: config.light.position.y + cursor.y * 2,
         ease: 'power2.out'
       })
     }, state.gl.domElement)
@@ -360,8 +357,6 @@ const SVGRain = () => {
         <object3D />
       </TransformControls>
 
-      {/* <OrbitControls ref={orbitControlsRef} /> */}
-
       <Physics
         paused={isOn}
         colliders={'hull'}
@@ -370,21 +365,28 @@ const SVGRain = () => {
         updatePriority={-100}
         key="same"
       >
-        {/* <Debug /> */}
         <Constraints tightenWallsBy={TIGHTEN_WALLS_BY} />
 
         {gliphSvgs.map((names, i1) => (
           <>
             {names.map((name, i2) => {
-              const letterContainer = 1.85
+              const letterContainer = 2.1
               const xPos = i2 * letterContainer
-              const xDisplace = (largestRow * letterContainer) / 2
+              const xDisplace = ((largestRow - 1) * letterContainer) / 2
+              const safeRandomSpace = 2
+              const visibileHeight = 7.5
+              const random = Math.random()
+
+              const posY =
+                i1 * letterContainer * safeRandomSpace +
+                random * safeRandomSpace +
+                visibileHeight
+              const rotationZ = Math.PI / 2 + Math.PI * random
 
               return (
                 <PhysicBody
-                  height={(i1 + 1) * 3}
-                  xPos={xPos}
-                  xDisplace={xDisplace}
+                  position={[xPos - xDisplace, posY, 0]}
+                  rotation={[0, 0, rotationZ]}
                   name={name}
                   key={`${name}-${i1}-${i2}`}
                   ref={(ref) => {
