@@ -1,70 +1,18 @@
-import { Environment, useGLTF } from '@react-three/drei'
+import { Environment, OrbitControls, useGLTF } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
-// import { useControls } from 'leva'
+import { Debug, Physics, RigidBody } from '@react-three/rapier'
 import { gsap } from 'lib/gsap'
-import React, {
-  forwardRef,
-  /* useCallback,  */ useLayoutEffect /* useMemo */
-} from 'react'
+import React, { forwardRef, useLayoutEffect, useRef } from 'react'
+import useRefs from 'react-use-refs'
+import * as THREE from 'three'
 
-import { CoolGrid } from '~/components/common/cool-grid'
-// import { Vector2 } from 'three'
 import { useGsapContext } from '~/hooks/use-gsap-context'
-
-// import { plot } from '../lib/plugins/leva/plot'
-
-class SecondOrderDynamics {
-  PI = Math.PI
-  /*  */
-  xp
-  /*  */
-  y
-  yd
-  /*  */
-  k1
-  k2
-  k3
-
-  constructor(f, z, r, x0) {
-    this.setConfig(f, z, r, x0)
-  }
-
-  setConfig(f, z, r, x0) {
-    this.k1 = z / (this.PI * f)
-    this.k2 = 1 / (2 * this.PI * f * (2 * this.PI * f))
-    this.k3 = (r * z) / (2 * this.PI * f)
-
-    this.xp = x0
-    this.y = x0
-    this.yd = 0
-  }
-
-  Update(T, x, xd = null) {
-    if (xd == null) {
-      xd = (x - this.xp) / T
-      this.xp = x
-    }
-
-    // const k2_stable = Math.max(
-    //   this.k2,
-    //   T * (T / 2) + (T * this.k1) / 2,
-    //   T * this.k1
-    // )
-    this.y = this.y + T * this.yd
-    this.yd =
-      this.yd + T * ((x + this.k3 * xd - this.y - this.k1 * this.yd) / this.k2)
-
-    return this.y
-  }
-}
-
-const SecondOrderDynamicsInstance = new SecondOrderDynamics(2, 0.5, 1, 0)
-const SecondOrderDynamicsInstance2 = new SecondOrderDynamics(2, 0.5, 1, 0)
-const SecondOrderDynamicsInstance3 = new SecondOrderDynamics(2, 0.5, 2, 0)
-const SecondOrderDynamicsInstance4 = new SecondOrderDynamics(2, 0.5, 2, 0)
+import { useMousetrap } from '~/hooks/use-mousetrap'
 
 const Drone = forwardRef((props, ref) => {
+  // const [body, rotor1, rotor2, rotor3, rotor4] = useRefs()
   const { nodes } = useGLTF('/models/drone.glb')
+
   return (
     <group {...props} dispose={null} ref={ref}>
       <mesh
@@ -106,33 +54,40 @@ const Drone = forwardRef((props, ref) => {
   )
 })
 
+const Floor = () => {
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[100, 100]} />
+      <meshBasicMaterial color={0xffff00} />
+    </mesh>
+  )
+}
+
+const initialDronePosition = new THREE.Vector3(0, 5, 0)
+
+const dir = new THREE.Vector3(0, 1, 0)
+const origin = new THREE.Vector3(0, 0, 0)
+const euler = new THREE.Euler(0, 0, 0, 'ZXY')
+// const offset = {
+//   x: 0.96,
+//   z: 0.96
+// }
+
 const DroneAnimation = () => {
-  const droneRef = React.useRef()
-  const locked = React.useRef(true)
+  const [arrowRFRef, arrowRRRef, arrowLFRef, arrowLRRef] = useRefs()
+  // const meshRef = useRef()
+  const droneRef = useRef()
+  const dronePhysicRef = useRef()
   const camera = useThree((state) => state.camera)
 
-  // const pointer = useThree((state) => state.pointer)
+  const gas = useRef(false)
 
-  // const TRGT = 1
-
-  // const values = useControls({
-  //   w: 1,
-  //   f: 0.2,
-  //   z: -1,
-  //   r: -1,
-  //   x0: 1,
-  //   y1: plot({
-  //     expression: (x) => {
-  //       const res = SecondOrderDynamicsInstance.Update(0.016, TRGT)
-
-  //       console.log(res)
-
-  //       return res - TRGT
-  //     },
-  //     boundsX: [0, 10],
-  //     boundsY: [-1, 1]
-  //   })
-  // })
+  const helice = {
+    H_Lf: arrowLFRef,
+    N_Lf: arrowLRRef,
+    H_Rt: arrowRFRef,
+    N_Rt: arrowRRRef
+  }
 
   useLayoutEffect(() => {
     camera.position.set(
@@ -148,89 +103,123 @@ const DroneAnimation = () => {
   }, [camera])
 
   useGsapContext(() => {
-    const drone = droneRef.current
+    // const drone = droneRef.current
     const timeline = gsap.timeline()
-
-    locked.current = true
-
-    timeline.set(drone.position, { x: 0, y: 0, z: 0 })
-    timeline.set(drone.rotation, { x: 0, y: 0, z: 0 })
 
     timeline.to({}, { duration: 0 })
 
-    drone.traverse((e) => {
-      if (/(N_Lf*)|(H_Rt*)|(H_Lf*)|(N_Rt*)/.test(e.name)) {
-        timeline.fromTo(
-          e.rotation,
-          { z: 0 },
-          { z: Math.PI * 2, duration: 0.1, repeat: -1, ease: 'none' }
-        )
-      }
-    })
-
-    timeline
-      .fromTo(
-        drone.position,
-        {
-          y: 0
-        },
-        {
-          y: 2,
-          duration: 1.5,
-          onComplete: () => {
-            locked.current = false
-          }
-        }
-      )
-      .fromTo(
-        drone.position,
-        {
-          y: 2
-        },
-        {
-          y: 1.8,
-          repeat: -1,
-          yoyo: true,
-          ease: 'power1.inOut',
-          duration: 2.5
-        }
-      )
+    // drone.traverse((e) => {
+    //   if (/(N_Lf*)|(H_Rt*)|(H_Lf*)|(N_Rt*)/.test(e.name)) {
+    //     timeline.fromTo(
+    //       e.rotation,
+    //       { z: 0 },
+    //       { z: Math.PI * 2, duration: 0.1, repeat: -1, ease: 'none' }
+    //     )
+    //   }
+    // })
   }, [])
 
-  useFrame((state, delta) => {
-    if (locked.current) return
+  useMousetrap([
+    {
+      keys: 'space',
+      callback: () => {
+        gas.current = !gas.current
+        console.log(dronePhysicRef.current)
+      }
+    },
+    {
+      keys: 'c',
+      callback: () => {
+        dronePhysicRef.current.resetForces(true)
+      }
+    }
+  ])
 
-    console.log(delta)
+  useFrame((st) => {
+    // if (!arrowRef.current) return
 
-    const drone = droneRef.current
-    // const { x, y } = pointer
-    // const speed = 0.2
-    // const targetX = x * speed
-    // const targetY = y * speed
+    const { x, y } = st.pointer
 
-    drone.rotation.z = SecondOrderDynamicsInstance3.Update(delta, 0)
-    drone.rotation.x = SecondOrderDynamicsInstance4.Update(delta, 0)
+    // Rotate vec3 towards mouse on x & y axis
+    euler.set(-y * (Math.PI / 2), 1, -x * (Math.PI / 2))
 
-    drone.position.x = SecondOrderDynamicsInstance.Update(
-      delta,
-      state.pointer.x
-    )
-    drone.position.z = SecondOrderDynamicsInstance2.Update(
-      delta,
-      -state.pointer.y
-    )
+    const force = (dronePhysicRef.current.mass() * 10) / 4
 
-    /* Make interpolation logic w/position */
+    const forceVector = dir
+      .clone()
+      .setY(force)
+      .applyQuaternion(dronePhysicRef.current.rotation())
+
+    dronePhysicRef.current.resetForces(true)
+    dronePhysicRef.current.resetTorques(true)
+
+    console.log(dronePhysicRef.current.colliders)
+
+    droneRef.current.getWorldPosition(origin)
+
+    droneRef.current.traverse((e) => {
+      const res = /(N_Lf*)|(H_Rt*)|(H_Lf*)|(N_Rt*)/.exec(e.name)
+
+      // switch (res?.[0]) {
+      //   case 'N_Lf':
+      //     origin.copy(currPosition).add({ y: 0, z: offset.z, x: -offset.x })
+      //     break
+      //   case 'H_Lf':
+      //     origin.copy(currPosition).add({ y: 0, z: -offset.z, x: -offset.x })
+      //     break
+      //   case 'H_Rt':
+      //     origin.copy(currPosition).add({ y: 0, z: -offset.z, x: offset.x })
+      //     break
+      //   case 'N_Rt':
+      //     origin.copy(currPosition).add({ y: 0, z: offset.z, x: offset.x })
+      //     break
+      //   default:
+      //     break
+      // }
+
+      if (gas.current) {
+        dronePhysicRef.current.addForceAtPoint(forceVector, origin)
+      }
+
+      if (res) {
+        helice[res[0]].current.position.copy(origin)
+        helice[res[0]].current.setDirection(
+          dir.set(0, 1, 0).applyQuaternion(dronePhysicRef.current.rotation())
+        )
+
+        // console.log(arrowRef.current.position)
+      }
+    })
   })
 
   return (
     <>
-      <fog attach="fog" near={20} far={40} color="#f2f2f5" />
-      {/* <OrbitControls /> */}
+      <gridHelper position={[0, 0.01, 0]} args={[100, 100]} />
+      <OrbitControls />
       <color attach="background" args={['#f2f2f5']} />
       <Environment preset="apartment" />
-      <CoolGrid />
-      <Drone ref={droneRef} />
+
+      {/* <mesh position={[0, 3, 0]} ref={meshRef}>
+        <coneGeometry args={[1, 3, 32]} />
+        <meshBasicMaterial color="red" wireframe />
+      </mesh> */}
+
+      <arrowHelper args={[dir, origin, 1, 0xff0000]} ref={arrowRFRef} />
+      <arrowHelper args={[dir, origin, 1, 0xff0000]} ref={arrowRRRef} />
+      <arrowHelper args={[dir, origin, 1, 0x00ff00]} ref={arrowLFRef} />
+      <arrowHelper args={[dir, origin, 1, 0x00ff00]} ref={arrowLRRef} />
+
+      <Physics gravity={[0, -9.8, 0]} timeStep="vary">
+        <Debug />
+
+        <RigidBody colliders="cuboid" ref={dronePhysicRef}>
+          <Drone position={initialDronePosition} ref={droneRef} />
+        </RigidBody>
+
+        <RigidBody colliders="cuboid">
+          <Floor />
+        </RigidBody>
+      </Physics>
     </>
   )
 }

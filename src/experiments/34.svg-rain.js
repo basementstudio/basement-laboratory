@@ -108,11 +108,11 @@ extend({ MeshRefractionMaterial: MeshRefractionMaterialImpl })
 
 const gliphSvgs = [
   ['R00', '?', 'S', '4', 'F01', 'R01', 'N01', '4'],
-  ['B01', '4', 'S', '#', 'M', 'u01', 'N01', 'Q'],
+  ['B01', '4', 'S', '#', 'M', 'U01', 'N01', 'Q'],
   ['B01', 'A', 'H', 'R01', 'M', 'E', 'H', 'T'],
   ['B01', 'Q', 'S', 'M', '#', 'E', 'N01', 'T'],
   ['U00', 'A', 'S', 'U00', 'Y', 'E', 'R01', '?'],
-  ['F00', 'A', 'u01', 'E', 'F01', 'E', 'N01', 'T'],
+  ['F00', 'A', 'U01', 'E', 'F01', 'E', 'N01', 'T'],
   ['K', 'G', '#', 'E', 'M', 'E', 'N01', 'T'],
   ['B01', 'A', 'S', 'Q', 'M', 'Y', 'N01', 'T'],
   ['B01', 'A', 'S', 'E', 'M', 'E', 'N00', 'T']
@@ -142,7 +142,7 @@ const PhysicBody = forwardRef(
         colliders="hull"
         enabledRotations={[false, false, true]}
         enabledTranslations={[true, true, false]}
-        rotation={[-Math.PI / 2, 0, 0]}
+        rotation={[0, 0, 0]}
         type="dynamic"
         position={[xPos - xDisplace, height, 0]}
         scale={scale}

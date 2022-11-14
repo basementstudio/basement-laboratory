@@ -50,6 +50,7 @@
     "react-merge-refs": "1.1.0",
     "react-ogl": "^0.1.6",
     "react-use-measure": "^2.1.1",
+    "react-use-refs": "^1.0.1",
     "slugify": "^1.6.5",
     "three": "^0.140.2",
     "zustand": "^4.1.1"
