@@ -9,13 +9,7 @@ import { EffectComposer, Vignette } from '@react-three/postprocessing'
 import { Physics, RigidBody } from '@react-three/rapier'
 import glsl from 'glslify'
 import { button, folder } from 'leva'
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef
-} from 'react'
+import { forwardRef, useCallback, useLayoutEffect, useRef } from 'react'
 import * as THREE from 'three'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
@@ -51,7 +45,7 @@ const MeshRefractionMaterialImpl = shaderMaterial(
     time: 0,
     color: new THREE.Color(1, 0, 0),
     lightPosition: config.light.position.clone(),
-    ditherSize: 256
+    ditherSize: 170
   },
   `
     uniform vec3 lightPosition;
@@ -225,6 +219,7 @@ const SVGRain = () => {
   const pointLightRef = useRef()
   const orbitControlsRef = useRef()
   const meshRefs = useRef({})
+  const canvasElmHeight = useThree((state) => state.gl.domElement.clientHeight)
 
   const { isOn, handleToggle } = useToggleState(false)
   const controls = useReproducibleControls({
@@ -260,7 +255,7 @@ const SVGRain = () => {
     }),
     Material: folder({
       diethering: {
-        value: 256,
+        value: 170,
         min: 0,
         max: 1024
       }
@@ -329,11 +324,15 @@ const SVGRain = () => {
     }
   ])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     Object.values(meshRefs.current).forEach((mesh) => {
+      mesh.material.uniforms.resolution.value = [
+        canvasElmHeight,
+        canvasElmHeight
+      ]
       mesh.material.uniforms.ditherSize.value = controls.diethering
     })
-  }, [controls.diethering])
+  }, [controls.diethering, canvasElmHeight])
 
   const handleChange = useCallback(() => {
     // if (!e?.target) return
