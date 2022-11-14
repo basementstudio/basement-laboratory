@@ -43,7 +43,7 @@ const MeshRefractionMaterialImpl = shaderMaterial(
   {
     resolution: [900, 900],
     time: 0,
-    color: new THREE.Color(1, 0, 0),
+    color: new THREE.Color('#ff6000'),
     lightPosition: config.light.position.clone(),
     ditherSize: 200
   },
@@ -256,6 +256,9 @@ const SVGRain = () => {
         value: 200,
         min: 0,
         max: 1024
+      },
+      color: {
+        value: '#ff4300'
       }
     }),
     World: folder({
@@ -328,8 +331,9 @@ const SVGRain = () => {
         canvasElmHeight
       ]
       mesh.material.uniforms.ditherSize.value = controls.diethering
+      mesh.material.uniforms.color.value.set(controls.color)
     })
-  }, [controls.diethering, canvasElmHeight])
+  }, [controls.diethering, canvasElmHeight, controls.color])
 
   const handleChange = useCallback(() => {
     // if (!e?.target) return
