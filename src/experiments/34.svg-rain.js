@@ -51,7 +51,7 @@ const MeshRefractionMaterialImpl = shaderMaterial(
     time: 0,
     color: new THREE.Color(1, 0, 0),
     lightPosition: config.light.position.clone(),
-    ditherSize: 216
+    ditherSize: 256
   },
   `
     uniform vec3 lightPosition;
@@ -222,11 +222,9 @@ const Constraints = ({ tightenWallsBy }) => {
 }
 
 const SVGRain = () => {
-  // const focusTargetRef = useRef()
   const pointLightRef = useRef()
   const orbitControlsRef = useRef()
   const meshRefs = useRef({})
-  // const { nodes, materials } = useGLTF('/models/glyphs.glb')
 
   const { isOn, handleToggle } = useToggleState(false)
   const controls = useReproducibleControls({
@@ -262,7 +260,7 @@ const SVGRain = () => {
     }),
     Material: folder({
       diethering: {
-        value: 216,
+        value: 256,
         min: 0,
         max: 1024
       }
@@ -282,13 +280,9 @@ const SVGRain = () => {
   }))
 
   const TIGHTEN_WALLS_BY = 1.5
-  // const midFloor = (FLOOR_SIZE - TIGHTEN_WALLS_BY * 2) / 2
-  // const arcAspect = state.viewport.height / state.viewport.width
-  // const targetY = midFloor * arcAspect
-
-  // useHelper(pointLightRef, THREE.PointLightHelper)
 
   useLayoutEffect(() => {
+    // if (orbitControlsRef.current.enabled) return
     state.camera.position.copy(config.cam.position)
     state.camera.rotation.copy(config.cam.rotation)
 
@@ -298,6 +292,18 @@ const SVGRain = () => {
         duration: DURATION / 2.5,
         x: config.cam.rotation.x + cursor.y * (Math.PI * 0.005),
         y: config.cam.rotation.y + -cursor.x * (Math.PI * 0.005),
+        ease: 'power2.out'
+      })
+
+      const meshMaterialLightUniforms = Object.values(meshRefs.current).map(
+        (mesh) => mesh?.material?.uniforms?.lightPosition?.value
+      )
+
+      gsap.to(meshMaterialLightUniforms, {
+        overwrite: true,
+        duration: DURATION / 2.5,
+        x: config.light.position.x + cursor.y * 1,
+        y: config.light.position.y + -cursor.x * 2,
         ease: 'power2.out'
       })
     }, state.gl.domElement)
@@ -332,8 +338,6 @@ const SVGRain = () => {
   const handleChange = useCallback(() => {
     // if (!e?.target) return
     // const lightPos = e.target.positionStart.clone().add(e.target.offset)
-    // console.log(lightPos)
-    // meshRef?.current?.material?.uniforms?.lightPosition?.value?.copy?.(lightPos)
     // Object.values(meshRefs.current).forEach((mesh) => {
     //   mesh?.material?.uniforms?.lightPosition?.value?.copy?.(lightPos)
     // })
@@ -357,12 +361,7 @@ const SVGRain = () => {
         <object3D />
       </TransformControls>
 
-      {/* <TransformControls>
-        <mesh ref={meshRef}>
-          <torusGeometry args={[10, 3, 16, 100]} />
-          <meshRefractionMaterial />
-        </mesh>
-      </TransformControls> */}
+      {/* <OrbitControls ref={orbitControlsRef} /> */}
 
       <Physics
         paused={isOn}
