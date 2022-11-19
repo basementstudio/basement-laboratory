@@ -1,64 +1,40 @@
-import { createRoot, events, extend, RenderProps } from '@react-three/fiber'
-import { FC, useEffect, useRef } from 'react'
-import * as THREE from 'three'
+import { Canvas, RenderProps } from '@react-three/fiber'
+import { FC, Fragment, ReactNode } from 'react'
 
 import { AspectBox } from '~/components/layout/aspect-box'
 
-extend(THREE)
+export const FullHeightWrapper: FC<{
+  children: ReactNode
+  fixed?: boolean
+}> = ({ children, fixed = true }) => (
+  <div
+    style={{
+      position: fixed ? 'fixed' : 'static',
+      display: 'flex',
+      height: '100vh',
+      width: '100%',
+      alignItems: 'center'
+    }}
+  >
+    {children}
+  </div>
+)
 
 export const AspectCanvas: FC<{
+  children: ReactNode
   config: RenderProps<never> | undefined
-  aspect: number
-}> = ({ children, config, aspect }) => {
-  const canvasRef = useRef(null)
-  const aspectBoxRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!canvasRef.current || !aspectBoxRef.current) return
-
-    const root = createRoot(canvasRef.current)
-
-    root.configure({
-      events,
-      ...config
-    })
-
-    window.addEventListener('resize', () => {
-      if (!aspectBoxRef.current) return
-
-      root.configure({
-        size: {
-          width: aspectBoxRef.current.clientWidth,
-          height: aspectBoxRef.current.clientHeight,
-          left: 0,
-          top: 0
-        },
-        ...config
-      })
-    })
-
-    window.dispatchEvent(new Event('resize'))
-
-    root.render(children)
-
-    return root.unmount
-  }, [config])
+  ratio: number
+  fullHeight?: boolean
+}> = ({ children, config, ratio: aspect, fullHeight = true }) => {
+  const Wrapper = fullHeight ? FullHeightWrapper : Fragment
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100vh',
-        alignItems: 'center'
-      }}
-    >
-      <AspectBox
-        style={{ position: 'relative', width: '100%' }}
-        ratio={aspect}
-        ref={aspectBoxRef}
-      >
-        <canvas style={{ position: 'absolute', inset: 0 }} ref={canvasRef} />
+    <Wrapper>
+      <AspectBox style={{ position: 'relative', width: '100%' }} ratio={aspect}>
+        <Canvas style={{ position: 'absolute', inset: 0 }} {...config}>
+          {children}
+        </Canvas>
       </AspectBox>
-    </div>
+    </Wrapper>
   )
 }

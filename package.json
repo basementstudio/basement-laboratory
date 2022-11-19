@@ -19,7 +19,7 @@
   "dependencies": {
     "@basementstudio/definitive-scroll": "^0.1.7",
     "@liveblocks/client": "^0.17.4",
-    "@react-three/drei": "^9.40.0",
+    "@react-three/drei": "^9.40.5",
     "@react-three/fiber": "^8.9.1",
     "@react-three/gltfjsx": "^4.3.4",
     "@react-three/postprocessing": "^2.7.0",
@@ -44,6 +44,7 @@
     "next-qrcode": "^2.1.0",
     "next-real-viewport": "^0.7.0",
     "ogl": "^0.0.93",
+    "r3f-perf": "^6.5.0",
     "react": "^18.2.0",
     "react-device-detect": "2.1.2",
     "react-dom": "^18.0.0",

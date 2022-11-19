@@ -539,7 +539,7 @@ BunkerScene.Tags = 'three,private'
 BunkerScene.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
     <AspectCanvas
-      aspect={21 / 9}
+      ratio={21 / 9}
       config={{
         camera: {
           position: config.camera.position,

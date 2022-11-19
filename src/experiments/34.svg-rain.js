@@ -419,7 +419,7 @@ SVGRain.Tags = 'animation, private'
 SVGRain.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
     <AspectCanvas
-      aspect={21 / 9}
+      ratio={21 / 9}
       config={{
         camera: {
           position: config.cam.position,
