@@ -10,7 +10,7 @@ type Config = {
 
 export const useUniforms = (
   uniformsArg: Uniforms,
-  updateObj: Configs,
+  updateObj: Configs = {},
   config: Config = {}
 ) => {
   const uniforms = useRef(uniformsArg)

@@ -1,5 +1,5 @@
-import { Box, OrbitControls, Sphere, useGLTF } from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
+import { Environment, Lightformer, useGLTF } from '@react-three/drei'
+import { useFrame, useThree } from '@react-three/fiber'
 import {
   Bloom,
   EffectComposer,
@@ -7,20 +7,22 @@ import {
   Vignette
 } from '@react-three/postprocessing'
 import { folder } from 'leva'
+import { gsap } from 'lib/gsap'
 import { Perf } from 'r3f-perf'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef
+} from 'react'
 import * as THREE from 'three'
+import { lerp } from 'three/src/math/MathUtils'
 
-import {
-  AspectCanvas,
-  FullHeightWrapper
-} from '~/components/common/aspect-canvas'
-import {
-  CamTargetRotation,
-  DebugPanelCanvas
-} from '~/components/common/cam-target-rotation'
+import { AspectCanvas } from '~/components/common/aspect-canvas'
+import { CamTargetRotation } from '~/components/common/cam-target-rotation'
 import { useLoader } from '~/components/common/loader'
 import { Particles } from '~/components/common/particles'
-import { AspectBox } from '~/components/layout/aspect-box'
 import { HTMLLayout } from '~/components/layout/html-layout'
 import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
@@ -47,6 +49,9 @@ const config = {
     rotation: new THREE.Euler(0, 0, 0),
     fov: 10,
     target: new THREE.Vector3(-0.15, 2.25, 1.12)
+  },
+  ambient: {
+    minMaxIntensity: [0.02, 0.15]
   }
 }
 
@@ -54,7 +59,7 @@ config.camera.rotation.copy(
   setCameraLookAtEuler(config.camera.position, config.camera.target)
 )
 
-const Xero = (props) => {
+const Xero = forwardRef((props, ref) => {
   const setLoaded = useLoader((s) => s.setLoaded)
   const { nodes, materials } = useGLTF(
     `/models/${config.modelSrc}`,
@@ -65,51 +70,38 @@ const Xero = (props) => {
     }
   )
 
-  materials['Cartel.001'].toneMapped = false
+  useLayoutEffect(() => {
+    materials['Cartel.001'].toneMapped = false
+    materials['Cartel.001'].emissive.setRGB(0, 0, 0)
+  }, [])
 
   return (
     <group {...props} dispose={null}>
       <mesh
-        geometry={nodes.Tube.geometry}
-        material={materials.Material}
-        position={[-0.88372904, 5.93715239, 2.4232769]}
-      />
-      <mesh
-        geometry={nodes.Sing.geometry}
+        name="Cartel001"
+        geometry={nodes.Cartel001.geometry}
         material={materials['Cartel.001']}
+        position={[0.49438527, -4.25901508, -0.93923509]}
         rotation={[-Math.PI / 2, 0, 0]}
         scale={0.00999999}
+        ref={ref}
       />
       <mesh
-        geometry={nodes.Base.geometry}
+        name="SCENE001"
+        geometry={nodes.SCENE001.geometry}
         material={materials['SCENE.001']}
-        position={[0.00050449, 0.00366921, 0.00050121]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        scale={0.00999999}
+        position={[-1.35712373, 1.81302774, -0.00302282]}
+        rotation={[Math.PI / 2, -8e-8, Math.PI]}
+        scale={0.01}
       />
-      {/* <mesh
-        geometry={nodes.Ligth.geometry}
-        material={materials['Cartel.001']}
-        position={[0.03100049, 0, -0.77576327]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        scale={0.00999999}
-      /> */}
     </group>
   )
-}
+})
 
-const XeroScene = () => {
+const Effects = () => {
+  const bloomRef = useRef()
+
   const controls = useReproducibleControls({
-    Lights: folder({
-      ambientColor: {
-        value: '#ffffff'
-      },
-      ambientIntensity: {
-        value: 0.36,
-        min: 0,
-        max: 1
-      }
-    }),
     Vignette: folder({
       offset: {
         value: 0.46,
@@ -129,20 +121,20 @@ const XeroScene = () => {
     }),
     Bloom: folder({
       radius: {
-        value: 0.1,
+        value: 0.64,
         min: 0,
         max: 1,
         step: 0.001
       },
       luminanceSmoothing: {
-        value: 1,
+        value: 0.4,
         min: 0,
         max: 1
       },
       luminanceThreshold: {
-        value: 1,
+        value: 0.87,
         min: 0,
-        max: 1
+        max: 2
       }
     }),
     Noise: folder({
@@ -152,10 +144,80 @@ const XeroScene = () => {
         max: 1,
         step: 0.01
       }
-    }),
+    })
+  })
+
+  useFrame(() => {
+    if (!bloomRef.current) return
+  })
+
+  return (
+    <EffectComposer
+      disableGamma={false}
+      disableRender={false}
+      disableRenderPass={false}
+      multisamping={0}
+      renderIndex={1}
+    >
+      <Noise opacity={controls.noiseOpacity} />
+
+      <Bloom
+        radius={controls.radius}
+        luminanceThreshold={controls.luminanceThreshold}
+        luminanceSmoothing={controls.luminanceSmoothing}
+        mipmapBlur
+        ref={bloomRef}
+      />
+
+      <Vignette
+        opacity={controls.opacity}
+        darkness={controls.darkness}
+        offset={controls.offset}
+      />
+    </EffectComposer>
+  )
+}
+
+function MovingSpots({ positions = [2, 0, 2, 0, 2, 0] }) {
+  const group = useRef()
+
+  const interval = 120
+
+  useFrame(
+    (state, delta) =>
+      (group.current.position.z += delta * 35) > interval &&
+      (group.current.position.z = -interval)
+  )
+
+  return (
+    <group position={[0, 4, 0]} rotation={[0, 0, -Math.PI / 2]}>
+      <group ref={group}>
+        {positions.map((x, i) => (
+          <Lightformer
+            key={i}
+            form="rect"
+            intensity={1}
+            rotation={[Math.PI / 2, 0, 0]}
+            position={[x, 4, i * 6]}
+            scale={[4, 1, 1]}
+          />
+        ))}
+      </group>
+    </group>
+  )
+}
+
+const XeroScene = () => {
+  const neonRef = useRef()
+  const ambientRef = useRef()
+  const orbitControlsRef = useRef()
+
+  const controls = useReproducibleControls({
     'Emmisive Material': folder({
-      color: {
-        value: '#ffffff'
+      neon: {
+        value: 0,
+        min: 0,
+        max: 1
       }
     })
   })
@@ -170,8 +232,75 @@ const XeroScene = () => {
       callback: () => {
         console.log({ cam: state.camera })
       }
+    },
+    {
+      keys: 'l',
+      callback: () => {
+        console.log('Toggle orbit enabled')
+        orbitControlsRef.current.enabled = !orbitControlsRef.current.enabled
+      }
     }
   ])
+
+  const updateNeon = useCallback((v) => {
+    if (!ambientRef.current || !neonRef.current) {
+      console.error('ambientRef or neonRef not found')
+
+      return
+    }
+
+    const neonColor = v
+    const ambientIntensity = lerp(
+      config.ambient.minMaxIntensity[0],
+      config.ambient.minMaxIntensity[1],
+      v
+    )
+
+    ambientRef.current.intensity = ambientIntensity
+    neonRef.current?.material?.emissive?.setRGB?.(
+      neonColor,
+      neonColor,
+      neonColor
+    )
+  }, [])
+
+  useLayoutEffect(() => {
+    const neon = { value: 0 }
+
+    const tm = gsap
+      .timeline({ delay: 2, onUpdate: () => updateNeon(neon.value) })
+      .to(neon, {
+        value: 1,
+        duration: 0.05
+      })
+      .to(neon, {
+        value: 0,
+        duration: 0.25,
+        delay: 0.2
+      })
+      .to({}, { duration: 0.5 })
+      .to(neon, {
+        value: 1,
+        duration: 0.05
+      })
+      .to(neon, {
+        value: 0,
+        duration: 0.25,
+        delay: 0.2
+      })
+      .to(neon, {
+        value: 1,
+        duration: 2,
+        delay: 1,
+        ease: 'sine.out'
+      })
+
+    return tm.kill
+  }, [updateNeon])
+
+  useEffect(() => {
+    updateNeon(controls.neon)
+  }, [controls.neon, updateNeon])
 
   return (
     <>
@@ -179,40 +308,27 @@ const XeroScene = () => {
       <axesHelper /> */}
 
       <ambientLight
-        color={controls.ambientColor}
-        intensity={controls.ambientIntensity}
+        color="white"
+        intensity={config.ambient.minMaxIntensity[0]}
+        ref={ambientRef}
       />
+
+      {/* <OrbitControls /> */}
 
       <CamTargetRotation
         initialCamPosition={config.camera.position}
         target={config.camera.target}
         rotationMultipliers={{ x: 1 / 30, y: 1 / 40 }}
-        // autoRotate
+        autoRotate
       />
 
-      <Xero position={[0, -3, 0]} />
+      <Xero position={[-0.5, 1.25, 0.95]} ref={neonRef} />
 
-      <EffectComposer
-        disableGamma={false}
-        disableRender={false}
-        disableRenderPass={false}
-        multisamping={0}
-        renderIndex={1}
-      >
-        <Noise opacity={controls.noiseOpacity} />
-        <Bloom
-          radius={controls.radius}
-          luminanceThreshold={controls.luminanceThreshold}
-          luminanceSmoothing={controls.luminanceSmoothing}
-          mipmapBlur
-        />
+      <Effects />
 
-        <Vignette
-          opacity={controls.opacity}
-          darkness={controls.darkness}
-          offset={controls.offset}
-        />
-      </EffectComposer>
+      <Environment frames={Infinity} resolution={512}>
+        <MovingSpots />
+      </Environment>
 
       <Particles />
     </>
@@ -237,12 +353,16 @@ XeroScene.Layout = ({ children, ...props }) => (
       {children}
     </AspectCanvas>
 
-    <FullHeightWrapper>
+    {/* <FullHeightWrapper>
       <AspectBox
         ratio={21 / 9}
-        style={{ display: 'flex', alignItems: 'flex-end' }}
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          pointerEvents: 'none'
+        }}
       >
-        <div style={{ width: 350 }}>
+        <div style={{ width: 350, pointerEvents: 'none' }}>
           <DebugPanelCanvas>
             <color attach="background" args={['#000']} />
             <gridHelper />
@@ -262,7 +382,7 @@ XeroScene.Layout = ({ children, ...props }) => (
           </DebugPanelCanvas>
         </div>
       </AspectBox>
-    </FullHeightWrapper>
+    </FullHeightWrapper> */}
   </HTMLLayout>
 )
 

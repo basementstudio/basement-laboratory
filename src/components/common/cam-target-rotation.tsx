@@ -25,13 +25,15 @@ export const CamTargetRotation = memo<{
     y: number
   }
   autoRotate?: boolean
+  debug?: boolean
 }>(
   ({
     target,
     initialCamPosition,
     rotationMultipliers = { x: 1 / 2, y: 1 / 2 },
     showTargetHelper = false,
-    autoRotate: autoRotateProp = false
+    autoRotate: autoRotateProp = false,
+    debug = false
   }) => {
     const arrowRef = useRef<THREE.ArrowHelper>(null)
     const prevAutoRotate = useRef<boolean>()
@@ -205,9 +207,11 @@ export const CamTargetRotation = memo<{
           </mesh>
         )}
 
-        <DebugPanelWebGL.In>
-          <arrowHelper ref={arrowRef} />
-        </DebugPanelWebGL.In>
+        {debug && (
+          <DebugPanelWebGL.In>
+            <arrowHelper ref={arrowRef} />
+          </DebugPanelWebGL.In>
+        )}
       </>
     )
   }

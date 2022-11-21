@@ -47,7 +47,7 @@ const MeshRefractionMaterialImpl = shaderMaterial(
     lightPosition: config.light.position.clone(),
     ditherSize: 200
   },
-  `
+  glsl/* glsl */ `
     uniform vec3 lightPosition;
 
     varying vec3 vNormal;
@@ -70,7 +70,7 @@ const MeshRefractionMaterialImpl = shaderMaterial(
       vLightVec = viewLightPos.xyz - viewPos.xyz;
     }
   `,
-  glsl`
+  glsl/* glsl */ `
     precision highp float;
     uniform vec3 color;
     uniform float time;
