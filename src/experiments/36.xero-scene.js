@@ -48,10 +48,11 @@ const config = {
     position: new THREE.Vector3(3.8974264860083605, 0.82, -2.3958733109675228),
     rotation: new THREE.Euler(0, 0, 0),
     fov: 10,
-    target: new THREE.Vector3(-0.15, 2.25, 1.12)
+    target: new THREE.Vector3(-0.15, 2.25, 1.12),
+    rotationMultipliers: { x: 1 / 30, y: 1 / 40 }
   },
   ambient: {
-    minMaxIntensity: [0.02, 0.15]
+    minMaxIntensity: [0.02, 1]
   }
 }
 
@@ -73,6 +74,9 @@ const Xero = forwardRef((props, ref) => {
   useLayoutEffect(() => {
     materials['Cartel.001'].toneMapped = false
     materials['Cartel.001'].emissive.setRGB(0, 0, 0)
+    materials['Cartel.001'].emissiveIntensity = 1
+    materials['Cartel.001'].envMapIntensity = 0
+    materials['SCENE.001'].envMapIntensity = 0.2
   }, [])
 
   return (
@@ -196,7 +200,7 @@ function MovingSpots({ positions = [2, 0, 2, 0, 2, 0] }) {
           <Lightformer
             key={i}
             form="rect"
-            intensity={1}
+            intensity={4}
             rotation={[Math.PI / 2, 0, 0]}
             position={[x, 4, i * 6]}
             scale={[4, 1, 1]}
@@ -266,12 +270,12 @@ const XeroScene = () => {
 
   useLayoutEffect(() => {
     const neon = { value: 0 }
+    const trgtValue = 0.54
 
     const tm = gsap
       .timeline({ delay: 2, onUpdate: () => updateNeon(neon.value) })
-      .to(neon, {
-        value: 1,
-        duration: 0.05
+      .set(neon, {
+        value: trgtValue
       })
       .to(neon, {
         value: 0,
@@ -279,9 +283,8 @@ const XeroScene = () => {
         delay: 0.2
       })
       .to({}, { duration: 0.5 })
-      .to(neon, {
-        value: 1,
-        duration: 0.05
+      .set(neon, {
+        value: trgtValue
       })
       .to(neon, {
         value: 0,
@@ -289,7 +292,7 @@ const XeroScene = () => {
         delay: 0.2
       })
       .to(neon, {
-        value: 1,
+        value: trgtValue,
         duration: 2,
         delay: 1,
         ease: 'sine.out'
@@ -318,7 +321,7 @@ const XeroScene = () => {
       <CamTargetRotation
         initialCamPosition={config.camera.position}
         target={config.camera.target}
-        rotationMultipliers={{ x: 1 / 30, y: 1 / 40 }}
+        rotationMultipliers={config.camera.rotationMultipliers}
         autoRotate
       />
 
@@ -326,7 +329,7 @@ const XeroScene = () => {
 
       <Effects />
 
-      <Environment frames={Infinity} resolution={512}>
+      <Environment preset="city" frames={Infinity} resolution={512}>
         <MovingSpots />
       </Environment>
 
