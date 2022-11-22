@@ -1,10 +1,8 @@
 import { useFrame } from '@react-three/fiber'
 import glsl from 'glslify'
-import { folder } from 'leva'
-import { useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import * as THREE from 'three'
 
-import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 import { useUniforms } from '~/hooks/use-uniforms'
 
 const particlesVert = glsl/* glsl */ `
@@ -57,29 +55,38 @@ void main()
 }
 `
 
-export const Particles = () => {
-  const controls = useReproducibleControls({
-    /* Particles */
-    Particles: folder({
-      uSize: { value: 25, min: 0, max: 300, step: 1 },
-      uColor: { value: '#fff' },
-      uAlpha: { value: 0.25, min: 0, max: 1, step: 0.01 },
-      uParticleVelocity: { value: 0.1, min: 0, max: 1, step: 0.01 },
-      uParticleDisplaceFactor: { value: 0.5, min: 0, max: 1, step: 0.01 }
-    })
-  })
+export type ParticlesProps = {
+  size?: number
+  color?: THREE.ColorRepresentation
+  alpha?: number
+  velocity?: number
+  displacementFactor?: number
+}
 
+export const Particles: FC<ParticlesProps> = ({
+  size = 25,
+  color = '#fff',
+  alpha = 0.25,
+  velocity = 0.1,
+  displacementFactor = 0.5
+}) => {
   const particleUniforms = useUniforms(
     {
       uTime: { value: 0 },
       uParticleVelocity: { value: 0.1 },
       uParticleDisplaceFactor: { value: 0.5 },
       uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
-      uSize: { value: controls.particleSize },
-      uColor: { value: new THREE.Color(controls.particleColor) },
-      uAlpha: { value: controls.uAlpha }
+      uSize: { value: size },
+      uColor: { value: new THREE.Color(color) },
+      uAlpha: { value: alpha }
     },
-    controls,
+    {
+      size,
+      color,
+      alpha,
+      velocity,
+      displacementFactor
+    },
     {
       middlewares: {
         uColor: (curr, input) => {

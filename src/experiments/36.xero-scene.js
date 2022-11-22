@@ -1,5 +1,5 @@
 import { Environment, Lightformer, useGLTF } from '@react-three/drei'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame } from '@react-three/fiber'
 import {
   Bloom,
   EffectComposer,
@@ -9,13 +9,7 @@ import {
 import { folder } from 'leva'
 import { gsap } from 'lib/gsap'
 import { Perf } from 'r3f-perf'
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef
-} from 'react'
+import { forwardRef, useCallback, useLayoutEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { lerp } from 'three/src/math/MathUtils'
 
@@ -24,7 +18,6 @@ import { CamTargetRotation } from '~/components/common/cam-target-rotation'
 import { useLoader } from '~/components/common/loader'
 import { Particles } from '~/components/common/particles'
 import { HTMLLayout } from '~/components/layout/html-layout'
-import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 
 const setCameraLookAtEuler = (position, target) => {
@@ -48,11 +41,16 @@ const config = {
     position: new THREE.Vector3(3.8974264860083605, 0.82, -2.3958733109675228),
     rotation: new THREE.Euler(0, 0, 0),
     fov: 10,
+    near: 0.1,
+    far: 10,
     target: new THREE.Vector3(-0.15, 2.25, 1.12),
     rotationMultipliers: { x: 1 / 30, y: 1 / 40 }
   },
   ambient: {
     minMaxIntensity: [0.02, 1]
+  },
+  neon: {
+    target: 0.54
   }
 }
 
@@ -76,7 +74,7 @@ const Xero = forwardRef((props, ref) => {
     materials['Cartel.001'].emissive.setRGB(0, 0, 0)
     materials['Cartel.001'].emissiveIntensity = 1
     materials['Cartel.001'].envMapIntensity = 0
-    materials['SCENE.001'].envMapIntensity = 0.2
+    materials['SCENE.001'].envMapIntensity = 0.08
   }, [])
 
   return (
@@ -151,10 +149,6 @@ const Effects = () => {
     })
   })
 
-  useFrame(() => {
-    if (!bloomRef.current) return
-  })
-
   return (
     <EffectComposer
       disableGamma={false}
@@ -200,7 +194,7 @@ function MovingSpots({ positions = [2, 0, 2, 0, 2, 0] }) {
           <Lightformer
             key={i}
             form="rect"
-            intensity={4}
+            intensity={5}
             rotation={[Math.PI / 2, 0, 0]}
             position={[x, 4, i * 6]}
             scale={[4, 1, 1]}
@@ -214,37 +208,6 @@ function MovingSpots({ positions = [2, 0, 2, 0, 2, 0] }) {
 const XeroScene = () => {
   const neonRef = useRef()
   const ambientRef = useRef()
-  const orbitControlsRef = useRef()
-
-  const controls = useReproducibleControls({
-    'Emmisive Material': folder({
-      neon: {
-        value: 0,
-        min: 0,
-        max: 1
-      }
-    })
-  })
-
-  const state = useThree((s) => ({
-    camera: s.camera
-  }))
-
-  useMousetrap([
-    {
-      keys: 'o',
-      callback: () => {
-        console.log({ cam: state.camera })
-      }
-    },
-    {
-      keys: 'l',
-      callback: () => {
-        console.log('Toggle orbit enabled')
-        orbitControlsRef.current.enabled = !orbitControlsRef.current.enabled
-      }
-    }
-  ])
 
   const updateNeon = useCallback((v) => {
     if (!ambientRef.current || !neonRef.current) {
@@ -252,6 +215,8 @@ const XeroScene = () => {
 
       return
     }
+
+    console.log(v)
 
     const neonColor = v
     const ambientIntensity = lerp(
@@ -282,7 +247,6 @@ const XeroScene = () => {
         duration: 0.25,
         delay: 0.2
       })
-      .to({}, { duration: 0.5 })
       .set(neon, {
         value: trgtValue
       })
@@ -292,31 +256,22 @@ const XeroScene = () => {
         delay: 0.2
       })
       .to(neon, {
-        value: trgtValue,
+        value: config.neon.target,
         duration: 2,
         delay: 1,
         ease: 'sine.out'
       })
 
-    return tm.kill
+    return () => tm.kill()
   }, [updateNeon])
-
-  useEffect(() => {
-    updateNeon(controls.neon)
-  }, [controls.neon, updateNeon])
 
   return (
     <>
-      {/* <gridHelper args={[100, 100]} />
-      <axesHelper /> */}
-
       <ambientLight
         color="white"
         intensity={config.ambient.minMaxIntensity[0]}
         ref={ambientRef}
       />
-
-      {/* <OrbitControls /> */}
 
       <CamTargetRotation
         initialCamPosition={config.camera.position}
@@ -333,7 +288,7 @@ const XeroScene = () => {
         <MovingSpots />
       </Environment>
 
-      <Particles />
+      <Particles size={10} velocity={0.01} />
     </>
   )
 }
@@ -348,7 +303,9 @@ XeroScene.Layout = ({ children, ...props }) => (
         camera: {
           position: config.camera.position,
           rotation: config.camera.rotation,
-          fov: config.camera.fov
+          fov: config.camera.fov,
+          near: config.camera.near,
+          far: config.camera.far
         }
       }}
     >
