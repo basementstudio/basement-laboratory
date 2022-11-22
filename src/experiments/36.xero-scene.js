@@ -216,8 +216,6 @@ const XeroScene = () => {
       return
     }
 
-    console.log(v)
-
     const neonColor = v
     const ambientIntensity = lerp(
       config.ambient.minMaxIntensity[0],
