@@ -803,5 +803,15 @@
         "company": "@basementstudio"
       }
     ]
+  },
+  {
+    "filename": "38.grotesque-scene.js",
+    "title": "Grotesque Scene",
+    "href": "/experiments/38.grotesque-scene.js",
+    "tags": [
+      "three"
+    ],
+    "number": 38,
+    "contributors": []
   }
 ]
