@@ -53,7 +53,9 @@
     "react-use-measure": "^2.1.1",
     "react-use-refs": "^1.0.1",
     "slugify": "^1.6.5",
+    "suspend-react": "^0.0.8",
     "three": "^0.140.2",
+    "use-sound": "^4.0.1",
     "zustand": "^4.1.1"
   },
   "devDependencies": {

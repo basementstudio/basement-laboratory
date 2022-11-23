@@ -122,10 +122,28 @@ const Effects = () => {
   )
 }
 
-const useAudioState = create((set) => ({
-  set,
-  canPlay: false
-}))
+// const filterData = (audioBuffer) => {
+//   const rawData = audioBuffer.getChannelData(0) // We only need to work with one channel of data
+//   const samples = 70 // Number of samples we want to have in our final data set
+//   const blockSize = Math.floor(rawData.length / samples) // the number of samples in each subdivision
+//   const filteredData = []
+//   for (let i = 0; i < samples; i++) {
+//     let blockStart = blockSize * i // the location of the first sample in the block
+//     let sum = 0
+//     for (let j = 0; j < blockSize; j++) {
+//       sum = sum + Math.abs(rawData[blockStart + j]) // find the sum of all the samples in the block
+//     }
+//     filteredData.push(sum / blockSize) // divide the sum by the block size to get the average
+//   }
+//   return filteredData
+// }
+
+const useCursor = create((set) => {
+  return {
+    pointer: false,
+    set
+  }
+})
 
 const GrotesqueScene = () => {
   const cassetteRef = useRef(null)
@@ -136,7 +154,6 @@ const GrotesqueScene = () => {
     return audio
   }, [listener])
   const audio = useLoader(THREE.AudioLoader, '/audio/grotesque-audio.mp3')
-  const canPlay = useAudioState((state) => state.canPlay)
 
   const [controls, set] = useReproducibleControls(() => ({
     background: {
@@ -183,23 +200,11 @@ const GrotesqueScene = () => {
 
     sound.setBuffer(audio)
     sound.setLoop(false)
-
-    sound.play()
-
-    const updInterval = setInterval(() => {
-      set({ progress: sound.context.currentTime / audio.duration })
-    })
-
-    return () => {
-      clearInterval(updInterval)
-    }
   }, [sound, audio, set])
 
   useEffect(() => {
     sound.setVolume(controls.volume)
   }, [sound, controls.volume])
-
-  console.log({ canPlay })
 
   return (
     <>
@@ -215,7 +220,24 @@ const GrotesqueScene = () => {
 
       <Float>
         <Center>
-          <Cassette scale={3} ref={cassetteRef} />
+          <Cassette
+            onPointerEnter={() => {
+              useCursor.setState({ pointer: true })
+            }}
+            onPointerLeave={() => {
+              useCursor.setState({ pointer: false })
+            }}
+            onClick={(e) => {
+              e.stopPropagation()
+              if (sound?.isPlaying) {
+                sound?.stop()
+              } else {
+                sound?.play()
+              }
+            }}
+            scale={3}
+            ref={cassetteRef}
+          />
         </Center>
       </Float>
 
@@ -227,21 +249,12 @@ const GrotesqueScene = () => {
 GrotesqueScene.Title = 'Grotesque Scene'
 GrotesqueScene.Tags = 'three'
 GrotesqueScene.Layout = ({ children, ...props }) => {
-  const audioRef = useRef()
-
-  useLayoutEffect(() => {
-    if (!audioRef.current) return
-
-    audioRef.current.addEventListener('canplay', () => {
-      console.log('Can Play!')
-      useAudioState.setState({ canPlay: true })
-    })
-  }, [])
+  const pointer = useCursor((s) => s.pointer)
 
   return (
     <HTMLLayout {...props}>
-      <audio src="/audio/grotesque-audio.mp3" ref={audioRef} />
       <AspectCanvas
+        style={{ cursor: pointer ? 'pointer' : 'auto' }}
         ratio={21 / 9}
         config={{
           camera: {
