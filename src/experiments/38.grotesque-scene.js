@@ -164,16 +164,11 @@ const GrotesqueScene = () => {
       min: 0,
       max: 1
     },
-    progress: {
-      value: 0,
-      min: 0,
-      max: 1
-    },
     'Play/Pause': button(() => {
-      if (sound.isPlaying) {
-        sound.pause()
+      if (sound?.isPlaying) {
+        sound?.stop()
       } else {
-        sound.play()
+        sound?.play()
       }
     })
   }))
