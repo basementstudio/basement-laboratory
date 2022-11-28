@@ -8,14 +8,20 @@ import {
 import { button, folder } from 'leva'
 import { gsap } from 'lib/gsap'
 import { Perf } from 'r3f-perf'
-import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef
+} from 'react'
 import * as THREE from 'three'
 import create from 'zustand'
 
 import { AspectCanvas } from '~/components/common/aspect-canvas'
 import { CamTargetRotation } from '~/components/common/cam-target-rotation'
 import { HTMLLayout } from '~/components/layout/html-layout'
-import { useGsapContext } from '~/hooks/use-gsap-context'
 import { useReproducibleControls } from '~/hooks/use-reproducible-controls'
 
 extend({ ThreeAudio: THREE.Audio })
@@ -147,13 +153,55 @@ const useCursor = create((set) => {
 
 const GrotesqueScene = () => {
   const cassetteRef = useRef(null)
+  const timelineRef = useRef(null)
   const listener = useMemo(() => new THREE.AudioListener(), [])
   const sound = useMemo(() => {
     const audio = new THREE.Audio(listener)
 
+    audio.onEnded = () => {
+      handleClick()
+    }
+
     return audio
-  }, [listener])
+  }, [listener, handleClick])
   const audio = useLoader(THREE.AudioLoader, '/audio/grotesque-audio.mp3')
+
+  const handleClick = useCallback(
+    (e = {}) => {
+      e?.stopPropagation?.()
+
+      if (sound?.isPlaying) {
+        sound?.stop()
+
+        timelineRef.current?.kill?.()
+        timelineRef.current = null
+      } else {
+        sound?.play()
+
+        const cassette = cassetteRef.current
+        const targets = []
+
+        cassette.traverse((o) => {
+          if (o.isMesh && o.name.includes('Engranaje')) {
+            targets.push(o.rotation)
+          }
+        })
+
+        const timeline = gsap.to(targets, {
+          overwrite: true,
+          duration: 2,
+          ease: 'none',
+          repeat: -1,
+          z: (idx, t) => {
+            return t.z + Math.PI * 2
+          }
+        })
+
+        timelineRef.current = timeline
+      }
+    },
+    [sound]
+  )
 
   const [controls, set] = useReproducibleControls(() => ({
     background: {
@@ -164,31 +212,8 @@ const GrotesqueScene = () => {
       min: 0,
       max: 1
     },
-    'Play/Pause': button(() => {
-      if (sound?.isPlaying) {
-        sound?.stop()
-      } else {
-        sound?.play()
-      }
-    })
+    'Play/Pause': button(handleClick)
   }))
-
-  useGsapContext(() => {
-    if (!cassetteRef.current) return
-
-    const cassette = cassetteRef.current
-
-    cassette.traverse((o) => {
-      if (o.isMesh && o.name.includes('Engranaje')) {
-        gsap.to(o.rotation, {
-          duration: 2,
-          ease: 'none',
-          repeat: -1,
-          z: Math.PI * 2
-        })
-      }
-    })
-  }, [])
 
   useLayoutEffect(() => {
     if (!audio || !sound) return
@@ -222,14 +247,7 @@ const GrotesqueScene = () => {
             onPointerLeave={() => {
               useCursor.setState({ pointer: false })
             }}
-            onClick={(e) => {
-              e.stopPropagation()
-              if (sound?.isPlaying) {
-                sound?.stop()
-              } else {
-                sound?.play()
-              }
-            }}
+            onClick={handleClick}
             scale={3}
             ref={cassetteRef}
           />
