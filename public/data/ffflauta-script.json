@@ -1,0 +1,309 @@
+{
+  "scene-1": {
+    "char-left": "opening",
+    "dialog-left": "I got here a half hour ago, there's no one in the cabin.",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-2": {
+    "char-left": "opening",
+    "dialog-left": "there is no electricity, the generator is empty.",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-3": {
+    "char-left": "opening",
+    "dialog-left": "if bob lived here, he left a long time ago.",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-4": {
+    "char-left": "opening",
+    "dialog-left": "Yes, I know, the last time I heard from him, it was a letter he wrote me in the summer...",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-5": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "",
+    "dialog-right": "",
+    "text": "7:06 pm"
+  },
+  "scene-6": {
+    "char-left": "A-outdoor-1",
+    "dialog-left": "bob... where are you brother?...",
+    "char-right": "",
+    "dialog-right": ""
+  },
+  "scene-7": {
+    "char-left": "A-outdoor-5",
+    "dialog-left": "no signal...",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-8": {
+    "char-left": "A-outdoor-4",
+    "dialog-left": "the car won't start, I knew I shouldn't turn off the engine...",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-9": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "",
+    "dialog-right": "",
+    "text": "a rescue van comes..."
+  },
+  "scene-10": {
+    "char-left": "A-outdoor-6",
+    "dialog-left": "",
+    "char-right": "B-outdoor-2",
+    "dialog-right": "It can be seen that you are not from around here, that jacket my friend, it makes me cold to see it...",
+    "text": ""
+  },
+  "scene-11": {
+    "char-left": "A-outdoor-6",
+    "dialog-left": "",
+    "char-right": "B-outdoor-3",
+    "dialog-right": "Take your car and go back the way you came.",
+    "text": ""
+  },
+  "scene-12": {
+    "char-left": "A-outdoor-9",
+    "dialog-left": "Please my brother does not answer me and I fear the worst...",
+    "char-right": "B-outdoor-1",
+    "dialog-right": "I haven't seen Bob in months...",
+    "text": ""
+  },
+  "scene-13": {
+    "char-left": "A-outdoor-9",
+    "dialog-left": "You know him!",
+    "char-right": "B-outdoor-2",
+    "dialog-right": "a little... a storm is coming, come with me please, I'll tell you at the station, it will be good for you to have something hot",
+    "text": ""
+  },
+  "scene-14": {
+    "char-left": "A-outdoor-5",
+    "dialog-left": "",
+    "char-right": "B-outdoor-3",
+    "dialog-right": "besides, I think it will be better to talk about this... sitting down.",
+    "text": ""
+  },
+  "scene-14": {
+    "char-left": "A-outdoor-4",
+    "dialog-left": "but my car...",
+    "char-right": "B-outdoor-2",
+    "dialog-right": "tomorrow we will return for your car if the snow falls a little...",
+    "text": ""
+  },
+  "scene-15": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "",
+    "dialog-right": "",
+    "text": "at the station"
+  },
+  "scene-16": {
+    "char-left": "A-indoor-1",
+    "dialog-left": "but my car...",
+    "char-right": "B-indoor-4",
+    "dialog-right": "your brother had problems... bob was a good man",
+    "text": ""
+  },
+  "scene-17": {
+    "char-left": "A-indoor-4",
+    "dialog-left": "was?",
+    "char-right": "B-indoor-4",
+    "dialog-right": "It's been months since... forgive me. Bob asked me in January for some survival cans, you know, canned protein and sparking stones, I warned him that he didn't have the necessary equipment to go to the base...",
+    "text": ""
+  },
+  "scene-18": {
+    "char-left": "A-indoor-4",
+    "dialog-left": "was?",
+    "char-right": "B-indoor-1",
+    "dialog-right": "It's been months since... forgive me. Bob asked me in January for some survival cans, you know, canned protein and sparking stones, I warned him that he didn't have the necessary equipment to go to the base...",
+    "text": ""
+  },
+  "scene-19": {
+    "char-left": "A-indoor-2",
+    "dialog-left": "base? what is he talking about?",
+    "char-right": "B-indoor-3",
+    "dialog-right": "At the end of the summer Bob told me that he had found some footprints on his property, that someone was watching him...",
+    "text": ""
+  },
+  "scene-20": {
+    "char-left": "A-indoor-3",
+    "dialog-left": "?",
+    "char-right": "B-indoor-4",
+    "dialog-right": "he was obsessed with those footprints all summer. He couldn't stop talking about it... that kind of thing never leads to anything good...",
+    "text": ""
+  },
+  "scene-21": {
+    "char-left": "A-indoor-3",
+    "dialog-left": "",
+    "char-right": "B-indoor-4",
+    "dialog-right": "He asked me for the supplies to go to the base... when he didn't come back I closed the cabin... I guessed what happened to the others...",
+    "text": ""
+  },
+  "scene-22": {
+    "char-left": "A-indoor-4",
+    "dialog-left": "My God... What others?",
+    "char-right": "B-indoor-3",
+    "dialog-right": "I'm sorry...there are certain things around here...things you have to be careful of. Here you have a good coat and diesel, I have some game meat. If you want tomorrow I can take you to the base, if Bob is alive, he will most likely be there.",
+    "text": ""
+  },
+  "scene-22": {
+    "char-left": "A-indoor-2",
+    "dialog-left": "if he is alive? Speak up, I need to know what's going on.",
+    "char-right": "B-indoor-3",
+    "dialog-right": "Look, we don't usually talk much about this, but those of us who were born and grew up here know that in those woods there is something, someone... that has caused us to lose many good boys...",
+    "text": ""
+  },
+  "scene-23": {
+    "char-left": "A-indoor-2",
+    "dialog-left": "",
+    "char-right": "B-indoor-3",
+    "dialog-right": "Do you know what a ciguapa is?",
+    "text": ""
+  },
+  "scene-24": {
+    "char-left": "A-indoor-3",
+    "dialog-left": "... a mermaid but from the forest. What is that about?",
+    "char-right": "B-indoor-1",
+    "dialog-right": "She is much more than that, she is a creature that must be taken care of... the most beautiful woman that has ever been seen, intoxicates men with her charms, loses them in the labyrinth of her own obsessions... only one thing matters to those who have made the mistake of following the trail of the ciguapa: to see it again, everything else is erased forever from their minds.",
+    "text": ""
+  },
+  "scene-25": {
+    "char-left": "A-indoor-3",
+    "dialog-left": "",
+    "char-right": "B-indoor-3",
+    "dialog-right": "I'm afraid this has happened to your brother!",
+    "text": ""
+  },
+  "scene-26": {
+    "char-left": "A-indoor-1",
+    "dialog-left": "the cold froze your brain? let's leave tomorrow for the base, I'm not for stories...",
+    "char-right": "B-indoor-4",
+    "dialog-right": "...right...",
+    "text": ""
+  },
+  "scene-27": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "",
+    "dialog-right": "",
+    "text": "already in the cabin"
+  },
+  "scene-28": {
+    "char-left": "A-outdoor-5",
+    "dialog-left": "so cold... bob... I hope you are well...",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-27": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "",
+    "dialog-right": "",
+    "text": "4:11 am"
+  },
+  "scene-28": {
+    "char-left": "A-end-1",
+    "dialog-left": "Who's there!?",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-29": {
+    "char-left": "A-end-1",
+    "dialog-left": "hey!!!!",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-30": {
+    "char-left": "A-end-1",
+    "dialog-left": "footprints in the snow!",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-31": {
+    "char-left": "A-end-2",
+    "dialog-left": "bob is that you?!",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-31": {
+    "char-left": "A-end-3",
+    "dialog-left": "oh! I'm sorry, I shouldn't have shouted so much, I'm so nervous...",
+    "char-right": "G",
+    "dialog-right": "...",
+    "text": ""
+  },
+  "scene-32": {
+    "char-left": "A-end-3",
+    "dialog-left": "you are beautiful... I lack words for...",
+    "char-right": "G",
+    "dialog-right": "...",
+    "text": ""
+  },
+  "scene-33": {
+    "char-left": "A-end-2",
+    "dialog-left": "Wait! come back!",
+    "char-right": "",
+    "dialog-right": "",
+    "text": ""
+  },
+  "scene-34": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "",
+    "dialog-right": "",
+    "text": "8:35 am"
+  },
+  "scene-35": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "B-end-1",
+    "dialog-right": "Good Morning! I already have everything to go to the base!",
+    "text": ""
+  },
+  "scene-36": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "B-end-5",
+    "dialog-right": "If I may, you city dwellers are not used to getting up early?",
+    "text": ""
+  },
+  "scene-37": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "B-end-2",
+    "dialog-right": "hello?",
+    "text": ""
+  },
+  "scene-38": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "B-end-4",
+    "dialog-right": "wow, there's no one here...",
+    "text": ""
+  },
+  "scene-39": {
+    "char-left": "",
+    "dialog-left": "",
+    "char-right": "B-end-3",
+    "dialog-right": "many, many good boys...",
+    "text": ""
+  }
+}

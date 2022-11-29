@@ -37,3 +37,12 @@
   font-style: normal;
   font-display: swap;
 }
+
+@font-face {
+  font-family: Ffflauta;
+  font-weight: 500;
+  font-display: block;
+  font-style: normal;
+  font-named-instance: 'Regular';
+  src: url('/fonts/ffflauta/ffflauta.otf');
+}
