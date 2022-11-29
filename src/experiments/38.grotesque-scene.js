@@ -260,7 +260,7 @@ const GrotesqueScene = () => {
 }
 
 GrotesqueScene.Title = 'Grotesque Scene'
-GrotesqueScene.Tags = 'three'
+GrotesqueScene.Tags = 'three,private'
 GrotesqueScene.Layout = ({ children, ...props }) => {
   const pointer = useCursor((s) => s.pointer)
 
