@@ -68,7 +68,6 @@ const Avatar = ({ src }) => {
     <Image
       width={64}
       height={64}
-      style={{ userSelect: 'none' }}
       src={`/images/ffflauta-scene/avatars/${src}.png`}
     />
   )
@@ -146,7 +145,6 @@ const Dialog = ({ text }) => {
           style={{
             fontSize: 9,
             height: '100%',
-            userSelect: 'none',
             textTransform: 'lowercase'
           }}
         >
@@ -235,7 +233,7 @@ const FFFlautaScene = () => {
   return (
     <FullHeightWrapper>
       <AspectBox
-        style={{ fontFamily: 'Ffflauta', fontWeight: 500 }}
+        style={{ fontFamily: 'Ffflauta', fontWeight: 500, userSelect: 'none' }}
         ratio={21 / 9}
         onClick={() => {
           handleNextScene()
