@@ -204,13 +204,15 @@ const TV = ({ children }) => {
         }}
       >
         <div
+          className="tv-screen"
           style={{
             gridColumn: '2',
             aspectRatio: 1.35,
             padding: '0 30px',
             transform: 'translateY(-1%)',
             display: 'flex',
-            imageRendering: 'pixelated'
+            imageRendering: 'pixelated',
+            border: '1px solid red'
           }}
         >
           {children}
@@ -220,28 +222,123 @@ const TV = ({ children }) => {
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
         <Image src={flautaTv} layout="responsive" />
       </div>
+
+      <style jsx>
+        {`
+          .tv-screen {
+            opacity: 1;
+            animation: tv-screen 0.1s linear infinite;
+          }
+
+          @keyframes tv-screen {
+            0% {
+              opacity: 1;
+            }
+
+            50% {
+              opacity: 0.925;
+            }
+
+            100% {
+              opacity: 1;
+            }
+          }
+        `}
+      </style>
     </>
   )
 }
 
 const ScanLines = () => {
   return (
-    <div style={{ position: 'absolute', inset: 0 }}>
-      <div className="tv-scanline-1">
-        <Image src={flautaTvScanline1} />
-      </div>
-      <div className="tv-scanline-2">
-        <Image src={flautaTvScanline2} />
+    <>
+      <div className="scanlines-container">
+        <div className="tv-scanline tv-scanline-1">
+          <div>
+            <Image src={flautaTvScanline1} />
+          </div>
+        </div>
+        <div className="tv-scanline tv-scanline-2">
+          <div>
+            <Image src={flautaTvScanline2} />
+          </div>
+        </div>
       </div>
       <style jsx>{`
-        .container {
-          margin: 50px;
+        .scanlines-container {
+          position: absolute;
+          inset: 0;
+          zindex: 1;
+          opacity: 0.45;
         }
-        p {
-          color: blue;
+
+        .tv-scanline {
+          position: absolute;
+          height: 100%;
+        }
+
+        .tv-scanline-1 {
+          animation: scanline-translate-inverted 16s ease-in-out infinite;
+        }
+
+        .tv-scanline-2 {
+          animation: scanline-translate 16s ease-in-out infinite;
+        }
+
+        .tv-scanline-1 > div,
+        .tv-scanline-2 > div {
+          animation: scanline1 0.1s steps(2) infinite;
+        }
+
+        @keyframes scanline-translate {
+          0% {
+            transform: translateY(0%);
+          }
+          50% {
+            transform: translateY(100%);
+          }
+          100% {
+            transform: translateY(0%);
+          }
+        }
+
+        @keyframes scanline-translate-inverted {
+          0% {
+            transform: translateY(100%);
+          }
+          50% {
+            transform: translateY(0%);
+          }
+          100% {
+            transform: translateY(100%);
+          }
+        }
+
+        @keyframes scanline1 {
+          0% {
+            transform: scale(1, 1);
+          }
+
+          50% {
+            transform: scale(-1, 1);
+          }
+
+          100% {
+            transform: scale(-1, 1);
+          }
+        }
+
+        @keyframes scanline2 {
+          0% {
+            transform: rotate(0deg);
+          }
+
+          100% {
+            transform: rotate(360deg);
+          }
         }
       `}</style>
-    </div>
+    </>
   )
 }
 
