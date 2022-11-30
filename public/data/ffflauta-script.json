@@ -124,13 +124,6 @@
     "dialog-right": "It's been months since... forgive me. Bob asked me in January for some survival cans, you know, canned protein and sparking stones, I warned him that he didn't have the necessary equipment to go to the base...",
     "text": ""
   },
-  "scene-18": {
-    "char-left": "A-indoor-4",
-    "dialog-left": "was?",
-    "char-right": "B-indoor-1",
-    "dialog-right": "It's been months since... forgive me. Bob asked me in January for some survival cans, you know, canned protein and sparking stones, I warned him that he didn't have the necessary equipment to go to the base...",
-    "text": ""
-  },
   "scene-19": {
     "char-left": "A-indoor-2",
     "dialog-left": "base? what is he talking about?",
@@ -177,129 +170,136 @@
     "char-left": "A-indoor-3",
     "dialog-left": "... a mermaid but from the forest. What is that about?",
     "char-right": "B-indoor-1",
-    "dialog-right": "She is much more than that, she is a creature that must be taken care of... the most beautiful woman that has ever been seen, intoxicates men with her charms, loses them in the labyrinth of her own obsessions... only one thing matters to those who have made the mistake of following the trail of the ciguapa: to see it again, everything else is erased forever from their minds.",
+    "dialog-right": "She is much more than that, she is a creature that must be taken care of... the most beautiful woman that has ever been seen, intoxicates men with her charms, loses them in the labyrinth of her own obsessions...",
     "text": ""
   },
   "scene-25": {
+    "char-left": "A-indoor-3",
+    "dialog-left": "...",
+    "char-right": "B-indoor-1",
+    "dialog-right": "...only one thing matters to those who have made the mistake of following the trail of the ciguapa: to see it again, everything else is erased forever from their minds.",
+    "text": ""
+  },
+  "scene-26": {
     "char-left": "A-indoor-3",
     "dialog-left": "",
     "char-right": "B-indoor-3",
     "dialog-right": "I'm afraid this has happened to your brother!",
     "text": ""
   },
-  "scene-26": {
+  "scene-27": {
     "char-left": "A-indoor-1",
     "dialog-left": "the cold froze your brain? let's leave tomorrow for the base, I'm not for stories...",
     "char-right": "B-indoor-4",
     "dialog-right": "...right...",
     "text": ""
   },
-  "scene-27": {
+  "scene-28": {
     "char-left": "",
     "dialog-left": "",
     "char-right": "",
     "dialog-right": "",
     "text": "already in the cabin"
   },
-  "scene-28": {
+  "scene-29": {
     "char-left": "A-outdoor-5",
     "dialog-left": "so cold... bob... I hope you are well...",
     "char-right": "",
     "dialog-right": "",
     "text": ""
   },
-  "scene-27": {
+  "scene-30": {
     "char-left": "",
     "dialog-left": "",
     "char-right": "",
     "dialog-right": "",
     "text": "4:11 am"
   },
-  "scene-28": {
+  "scene-31": {
     "char-left": "A-end-1",
     "dialog-left": "Who's there!?",
     "char-right": "",
     "dialog-right": "",
     "text": ""
   },
-  "scene-29": {
+  "scene-32": {
     "char-left": "A-end-1",
     "dialog-left": "hey!!!!",
     "char-right": "",
     "dialog-right": "",
     "text": ""
   },
-  "scene-30": {
+  "scene-33": {
     "char-left": "A-end-1",
     "dialog-left": "footprints in the snow!",
     "char-right": "",
     "dialog-right": "",
     "text": ""
   },
-  "scene-31": {
+  "scene-34": {
     "char-left": "A-end-2",
     "dialog-left": "bob is that you?!",
     "char-right": "",
     "dialog-right": "",
     "text": ""
   },
-  "scene-31": {
+  "scene-35": {
     "char-left": "A-end-3",
     "dialog-left": "oh! I'm sorry, I shouldn't have shouted so much, I'm so nervous...",
     "char-right": "G",
     "dialog-right": "...",
     "text": ""
   },
-  "scene-32": {
+  "scene-36": {
     "char-left": "A-end-3",
     "dialog-left": "you are beautiful... I lack words for...",
     "char-right": "G",
     "dialog-right": "...",
     "text": ""
   },
-  "scene-33": {
+  "scene-37": {
     "char-left": "A-end-2",
     "dialog-left": "Wait! come back!",
     "char-right": "",
     "dialog-right": "",
     "text": ""
   },
-  "scene-34": {
+  "scene-38": {
     "char-left": "",
     "dialog-left": "",
     "char-right": "",
     "dialog-right": "",
     "text": "8:35 am"
   },
-  "scene-35": {
+  "scene-39": {
     "char-left": "",
     "dialog-left": "",
     "char-right": "B-end-1",
     "dialog-right": "Good Morning! I already have everything to go to the base!",
     "text": ""
   },
-  "scene-36": {
+  "scene-40": {
     "char-left": "",
     "dialog-left": "",
     "char-right": "B-end-5",
     "dialog-right": "If I may, you city dwellers are not used to getting up early?",
     "text": ""
   },
-  "scene-37": {
+  "scene-41": {
     "char-left": "",
     "dialog-left": "",
     "char-right": "B-end-2",
     "dialog-right": "hello?",
     "text": ""
   },
-  "scene-38": {
+  "scene-42": {
     "char-left": "",
     "dialog-left": "",
     "char-right": "B-end-4",
     "dialog-right": "wow, there's no one here...",
     "text": ""
   },
-  "scene-39": {
+  "scene-43": {
     "char-left": "",
     "dialog-left": "",
     "char-right": "B-end-3",

@@ -828,7 +828,9 @@
     "filename": "39.ffflauta-scene.js",
     "title": "FFFlauta Scene",
     "href": "/experiments/39.ffflauta-scene.js",
-    "tags": [],
+    "tags": [
+      "private"
+    ],
     "number": 39,
     "contributors": [
       {

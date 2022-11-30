@@ -5,7 +5,6 @@ import { FullHeightWrapper } from '~/components/common/aspect-canvas'
 import { AspectBox } from '~/components/layout/aspect-box'
 import { HTMLLayout } from '~/components/layout/html-layout'
 import flautaTv from '~/public/images/ffflauta-scene/misc/flauta-tv.png'
-import flautaTvBg from '~/public/images/ffflauta-scene/misc/flauta-tv-bg.png'
 
 import script from '../../public/data/ffflauta-script.json'
 
@@ -82,7 +81,7 @@ const Dialog = ({ text }) => {
         minWidth: 120,
         maxWidth: 160,
         width: 'max-content',
-        minHeight: 60,
+        minHeight: 30,
         height: 'auto',
         position: 'relative',
         color: 'black'
@@ -138,16 +137,17 @@ const Dialog = ({ text }) => {
         style={{
           position: 'relative',
           display: 'block',
-          padding: '8px 10px 11px 10px',
+          padding: '8px 10px 8px 10px',
           minHeight: '100%',
           height: '100%'
         }}
       >
         <p
           style={{
-            fontSize: 10,
+            fontSize: 9,
             height: '100%',
-            userSelect: 'none'
+            userSelect: 'none',
+            textTransform: 'lowercase'
           }}
         >
           {text}
@@ -157,11 +157,21 @@ const Dialog = ({ text }) => {
   )
 }
 
-const Background = () => {
+const Background = ({ muted }) => {
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
       <div style={{ width: '100%', height: '100%' }}>
-        <Image src={flautaTvBg} layout="fill" objectFit="cover" />
+        <video
+          onLoadStart={(e) => {
+            e.target.volume = 0.5
+          }}
+          style={{ width: '100%' }}
+          playsInline
+          autoPlay
+          src="/video/ffflauta-scene/tv-bg.mp4"
+          muted={muted}
+          loop
+        />
       </div>
     </div>
   )
@@ -201,6 +211,7 @@ const TV = ({ children }) => {
 }
 
 const FFFlautaScene = () => {
+  const [hasInteracted, setHasInteracted] = useState(false)
   const [scene, setScene] = useState(0)
 
   const parsedScript = useMemo(() => Object.entries(script), [])
@@ -226,20 +237,33 @@ const FFFlautaScene = () => {
       <AspectBox
         style={{ fontFamily: 'Ffflauta', fontWeight: 500 }}
         ratio={21 / 9}
-        onClick={handleNextScene}
+        onClick={() => {
+          handleNextScene()
+          setHasInteracted(true)
+        }}
       >
         <TV>
-          <Background />
+          <Background muted={!hasInteracted} />
+          <div style={{ position: 'absolute', top: '10%', right: '10%' }}>
+            <p>
+              {scene + 1}/{parsedScript.length}
+            </p>
+          </div>
           {isCurtain ? (
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '100%'
+                width: '100%',
+                position: 'absolute',
+                inset: 0,
+                background: '#373737'
               }}
             >
-              <p style={{ fontSize: 14 }}>{curtainText}</p>
+              <p style={{ fontSize: 12, textTransform: 'lowercase' }}>
+                {curtainText}
+              </p>
             </div>
           ) : (
             <div
@@ -253,7 +277,7 @@ const FFFlautaScene = () => {
                 padding: '10% 5%'
               }}
             >
-              {dialogLeft && (
+              {dialogLeftAvatar && (
                 <div
                   style={{
                     display: 'flex',
@@ -262,13 +286,13 @@ const FFFlautaScene = () => {
                     gridColumn: 1
                   }}
                 >
-                  <Dialog text={dialogLeft} />
+                  {dialogLeft && <Dialog text={dialogLeft} />}
                   <div style={{ marginTop: 10 }}>
                     <Avatar src={dialogLeftAvatar} />
                   </div>
                 </div>
               )}
-              {dialogRight && (
+              {dialogRightAvatar && (
                 <div
                   style={{
                     display: 'flex',
@@ -277,7 +301,7 @@ const FFFlautaScene = () => {
                     gridColumn: 2
                   }}
                 >
-                  <Dialog text={dialogRight} />
+                  {dialogRight && <Dialog text={dialogRight} />}
                   <div style={{ marginTop: 10 }}>
                     <Avatar src={dialogRightAvatar} />
                   </div>
