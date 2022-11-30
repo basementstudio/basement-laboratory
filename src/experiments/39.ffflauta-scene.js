@@ -1,5 +1,6 @@
+import { gsap } from 'lib/gsap'
 import Image from 'next/image'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { FullHeightWrapper } from '~/components/common/aspect-canvas'
 import { AspectBox } from '~/components/layout/aspect-box'
@@ -156,12 +157,24 @@ const Dialog = ({ text }) => {
 }
 
 const Background = ({ muted }) => {
+  const videoRef = useRef()
+
+  useEffect(() => {
+    if (!muted) {
+      gsap.to(videoRef.current, {
+        volume: 0.5,
+        duration: 1,
+        ease: 'none'
+      })
+    }
+  }, [muted])
+
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
       <div style={{ width: '100%', height: '100%' }}>
         <video
           onLoadStart={(e) => {
-            e.target.volume = 0.5
+            e.target.volume = 0
           }}
           style={{ width: '100%' }}
           playsInline
@@ -169,6 +182,7 @@ const Background = ({ muted }) => {
           src="/video/ffflauta-scene/tv-bg.mp4"
           muted={muted}
           loop
+          ref={videoRef}
         />
       </div>
     </div>
@@ -208,9 +222,25 @@ const TV = ({ children }) => {
   )
 }
 
+const ScanLines = () => {
+  return (
+    <div>
+      <div>{/* <Image */}</div>
+    </div>
+  )
+}
+
 const FFFlautaScene = () => {
   const [hasInteracted, setHasInteracted] = useState(false)
   const [scene, setScene] = useState(0)
+
+  const interactionAudio = useMemo(() => {
+    const audio = new Audio('/audio/ffflauta-interaction.mp3')
+
+    audio.volume = 1
+
+    return audio
+  }, [])
 
   const parsedScript = useMemo(() => Object.entries(script), [])
 
@@ -218,7 +248,11 @@ const FFFlautaScene = () => {
     setScene((scene) => {
       return parsedScript[scene + 1] ? scene + 1 : 0
     })
-  }, [parsedScript])
+
+    interactionAudio.pause()
+    interactionAudio.currentTime = 0
+    interactionAudio.play()
+  }, [parsedScript, interactionAudio])
 
   const dialog = parsedScript[scene]
 
@@ -307,6 +341,7 @@ const FFFlautaScene = () => {
               )}
             </div>
           )}
+          <ScanLines />
         </TV>
       </AspectBox>
     </FullHeightWrapper>
