@@ -6,6 +6,8 @@ import { FullHeightWrapper } from '~/components/common/aspect-canvas'
 import { AspectBox } from '~/components/layout/aspect-box'
 import { HTMLLayout } from '~/components/layout/html-layout'
 import flautaTv from '~/public/images/ffflauta-scene/misc/flauta-tv.png'
+import flautaTvScanline1 from '~/public/images/ffflauta-scene/misc/flauta-tv-grunge_01.png'
+import flautaTvScanline2 from '~/public/images/ffflauta-scene/misc/flauta-tv-grunge_02.png'
 
 import script from '../../public/data/ffflauta-script.json'
 
@@ -224,8 +226,21 @@ const TV = ({ children }) => {
 
 const ScanLines = () => {
   return (
-    <div>
-      <div>{/* <Image */}</div>
+    <div style={{ position: 'absolute', inset: 0 }}>
+      <div className="tv-scanline-1">
+        <Image src={flautaTvScanline1} />
+      </div>
+      <div className="tv-scanline-2">
+        <Image src={flautaTvScanline2} />
+      </div>
+      <style jsx>{`
+        .container {
+          margin: 50px;
+        }
+        p {
+          color: blue;
+        }
+      `}</style>
     </div>
   )
 }
@@ -244,15 +259,18 @@ const FFFlautaScene = () => {
 
   const parsedScript = useMemo(() => Object.entries(script), [])
 
-  const handleNextScene = useCallback(() => {
-    setScene((scene) => {
-      return parsedScript[scene + 1] ? scene + 1 : 0
-    })
+  const handleNextScene = useCallback(
+    (step = 1) => {
+      setScene((scene) => {
+        return parsedScript[scene + step] ? scene + step : 0
+      })
 
-    interactionAudio.pause()
-    interactionAudio.currentTime = 0
-    interactionAudio.play()
-  }, [parsedScript, interactionAudio])
+      interactionAudio.pause()
+      interactionAudio.currentTime = 0
+      interactionAudio.play()
+    },
+    [parsedScript, interactionAudio]
+  )
 
   const dialog = parsedScript[scene]
 
@@ -271,6 +289,11 @@ const FFFlautaScene = () => {
         ratio={21 / 9}
         onClick={() => {
           handleNextScene()
+          setHasInteracted(true)
+        }}
+        onContextMenu={(e) => {
+          e.preventDefault()
+          handleNextScene(-1)
           setHasInteracted(true)
         }}
       >
