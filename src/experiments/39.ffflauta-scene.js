@@ -4,11 +4,12 @@ import { useCallback, useMemo, useState } from 'react'
 import { FullHeightWrapper } from '~/components/common/aspect-canvas'
 import { AspectBox } from '~/components/layout/aspect-box'
 import { HTMLLayout } from '~/components/layout/html-layout'
-import flautaBg from '~/public/images/ffflauta-scene/misc/flauta-bg.png'
+import flautaTv from '~/public/images/ffflauta-scene/misc/flauta-tv.png'
+import flautaTvBg from '~/public/images/ffflauta-scene/misc/flauta-tv-bg.png'
 
 import script from '../../public/data/ffflauta-script.json'
 
-const thickness = 8
+const thickness = 4
 
 const Border = ({ bg, style, direction }) => {
   return (
@@ -146,13 +147,21 @@ const Dialog = ({ text }) => {
           style={{
             fontSize: 10,
             height: '100%',
-            fontFamily: 'Ffflauta',
-            fontWeight: 500,
             userSelect: 'none'
           }}
         >
           {text}
         </p>
+      </div>
+    </div>
+  )
+}
+
+const Background = () => {
+  return (
+    <div style={{ position: 'absolute', inset: 0 }}>
+      <div style={{ width: '100%', height: '100%' }}>
+        <Image src={flautaTvBg} layout="fill" objectFit="cover" />
       </div>
     </div>
   )
@@ -176,7 +185,8 @@ const TV = ({ children }) => {
             aspectRatio: 1.35,
             padding: '0 30px',
             transform: 'translateY(-1%)',
-            display: 'flex'
+            display: 'flex',
+            imageRendering: 'pixelated'
           }}
         >
           {children}
@@ -184,7 +194,7 @@ const TV = ({ children }) => {
       </div>
 
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-        <Image src={flautaBg} layout="responsive" />
+        <Image src={flautaTv} layout="responsive" />
       </div>
     </>
   )
@@ -207,55 +217,74 @@ const FFFlautaScene = () => {
   const dialogRight = dialog[1]['dialog-right']
   const dialogLeftAvatar = dialog[1]['char-left']
   const dialogRightAvatar = dialog[1]['char-right']
+  const curtainText = dialog[1]['text']
 
-  console.log({ scene, dialog })
+  const isCurtain = curtainText
 
   return (
     <FullHeightWrapper>
-      <AspectBox ratio={21 / 9} onClick={handleNextScene}>
+      <AspectBox
+        style={{ fontFamily: 'Ffflauta', fontWeight: 500 }}
+        ratio={21 / 9}
+        onClick={handleNextScene}
+      >
         <TV>
-          <div
-            style={{
-              display: 'grid',
-              width: '100%',
-              gridTemplateColumns: '1fr 1fr',
-              alignItems: 'flex-end',
-              justifyContent: 'space-between',
-              background: 'black',
-              padding: '10% 5%'
-            }}
-          >
-            {dialogLeft && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  flexDirection: 'column',
-                  gridColumn: 1
-                }}
-              >
-                <Dialog text={dialogLeft} />
-                <div style={{ marginTop: 10 }}>
-                  <Avatar src={dialogLeftAvatar} />
+          <Background />
+          {isCurtain ? (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%'
+              }}
+            >
+              <p style={{ fontSize: 14 }}>{curtainText}</p>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: 'grid',
+                width: '100%',
+                gridTemplateColumns: '1fr 1fr',
+                alignItems: 'flex-end',
+                justifyContent: 'space-between',
+                background: 'black',
+                padding: '10% 5%'
+              }}
+            >
+              {dialogLeft && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    flexDirection: 'column',
+                    gridColumn: 1
+                  }}
+                >
+                  <Dialog text={dialogLeft} />
+                  <div style={{ marginTop: 10 }}>
+                    <Avatar src={dialogLeftAvatar} />
+                  </div>
                 </div>
-              </div>
-            )}
-            {dialogRight && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  flexDirection: 'column',
-                  gridColumn: 2
-                }}
-              >
-                <Dialog text={dialogRight} />
-                <div style={{ marginTop: 10 }}>
-                  <Avatar src={dialogRightAvatar} />
+              )}
+              {dialogRight && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    flexDirection: 'column',
+                    gridColumn: 2
+                  }}
+                >
+                  <Dialog text={dialogRight} />
+                  <div style={{ marginTop: 10 }}>
+                    <Avatar src={dialogRightAvatar} />
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </TV>
       </AspectBox>
     </FullHeightWrapper>
