@@ -112,7 +112,7 @@
   },
   "scene-16": {
     "char-left": "A-indoor-1",
-    "dialog-left": "but my car...",
+    "dialog-left": "",
     "char-right": "B-indoor-4",
     "dialog-right": "your brother had problems... bob was a good man",
     "text": ""
