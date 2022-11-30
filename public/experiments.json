@@ -809,7 +809,8 @@
     "title": "Grotesque Scene",
     "href": "/experiments/38.grotesque-scene.js",
     "tags": [
-      "three"
+      "three",
+      "private"
     ],
     "number": 38,
     "contributors": [

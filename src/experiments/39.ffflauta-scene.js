@@ -4,11 +4,11 @@ import { useCallback, useMemo, useState } from 'react'
 import { FullHeightWrapper } from '~/components/common/aspect-canvas'
 import { AspectBox } from '~/components/layout/aspect-box'
 import { HTMLLayout } from '~/components/layout/html-layout'
-import flautaBg from '~/public/images/flauta-bg.png'
+import flautaBg from '~/public/images/ffflauta-scene/misc/flauta-bg.png'
 
 import script from '../../public/data/ffflauta-script.json'
 
-const thickness = 12
+const thickness = 8
 
 const Border = ({ bg, style, direction }) => {
   return (
@@ -63,6 +63,17 @@ const Corner = ({ bg, style }) => {
   )
 }
 
+const Avatar = ({ src }) => {
+  return (
+    <Image
+      width={64}
+      height={64}
+      style={{ userSelect: 'none' }}
+      src={`/images/ffflauta-scene/avatars/${src}.png`}
+    />
+  )
+}
+
 const Dialog = ({ text }) => {
   return (
     <div
@@ -77,47 +88,48 @@ const Dialog = ({ text }) => {
       }}
     >
       <Corner
-        bg="/images/flauta-dialog-top-left.png"
+        bg="/images/ffflauta-scene/misc/flauta-dialog-top-left.png"
         style={{ position: 'absolute', left: 0, top: 0 }}
       />
       <Corner
-        bg="/images/flauta-dialog-top-right.png"
+        bg="/images/ffflauta-scene/misc/flauta-dialog-top-right.png"
         style={{ position: 'absolute', right: 0, top: 0 }}
       />
       <Corner
-        bg="/images/flauta-dialog-bottom-left.png"
+        bg="/images/ffflauta-scene/misc/flauta-dialog-bottom-left.png"
         style={{ position: 'absolute', left: 0, bottom: 0 }}
       />
       <Corner
-        bg="/images/flauta-dialog-bottom-right.png"
+        bg="/images/ffflauta-scene/misc/flauta-dialog-bottom-right.png"
         style={{ position: 'absolute', right: 0, bottom: 0 }}
       />
       <Border
         direction="vertical"
         style={{ left: 0, bottom: 0 }}
-        bg="/images/flauta-dialog-left.png"
+        bg="/images/ffflauta-scene/misc/flauta-dialog-left.png"
       />
       <Border
         direction="vertical"
         style={{ right: 0, bottom: 0 }}
-        bg="/images/flauta-dialog-right.png"
+        bg="/images/ffflauta-scene/misc/flauta-dialog-right.png"
       />
       <Border
         direction="horizontal"
         style={{ top: 0 }}
-        bg="/images/flauta-dialog-top.png"
+        bg="/images/ffflauta-scene/misc/flauta-dialog-top.png"
       />
       <Border
         direction="horizontal"
         style={{ bottom: 0 }}
-        bg="/images/flauta-dialog-bottom.png"
+        bg="/images/ffflauta-scene/misc/flauta-dialog-bottom.png"
       />
 
       <div
         style={{
           background: 'white',
           position: 'absolute',
-          inset: thickness
+          /* Give some inner offset to avoid dead pixels */
+          inset: thickness - 2
         }}
       />
 
@@ -193,6 +205,8 @@ const FFFlautaScene = () => {
 
   const dialogLeft = dialog[1]['dialog-left']
   const dialogRight = dialog[1]['dialog-right']
+  const dialogLeftAvatar = dialog[1]['char-left']
+  const dialogRightAvatar = dialog[1]['char-right']
 
   console.log({ scene, dialog })
 
@@ -202,23 +216,43 @@ const FFFlautaScene = () => {
         <TV>
           <div
             style={{
+              display: 'grid',
               width: '100%',
-              justifySelf: 'flex-end',
-              display: 'flex',
+              gridTemplateColumns: '1fr 1fr',
               alignItems: 'flex-end',
               justifyContent: 'space-between',
               background: 'black',
-              paddingBottom: '6%'
+              padding: '10% 5%'
             }}
           >
             {dialogLeft && (
-              <div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  flexDirection: 'column',
+                  gridColumn: 1
+                }}
+              >
                 <Dialog text={dialogLeft} />
+                <div style={{ marginTop: 10 }}>
+                  <Avatar src={dialogLeftAvatar} />
+                </div>
               </div>
             )}
             {dialogRight && (
-              <div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  flexDirection: 'column',
+                  gridColumn: 2
+                }}
+              >
                 <Dialog text={dialogRight} />
+                <div style={{ marginTop: 10 }}>
+                  <Avatar src={dialogRightAvatar} />
+                </div>
               </div>
             )}
           </div>
