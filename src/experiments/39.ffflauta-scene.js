@@ -3,17 +3,17 @@ import Image from 'next/image'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { FullHeightWrapper } from '~/components/common/aspect-canvas'
-import { AspectBox } from '~/components/layout/aspect-box'
 import { HTMLLayout } from '~/components/layout/html-layout'
 import { useGsapContext } from '~/hooks/use-gsap-context'
-import { useImageLoader, useProgress } from '~/hooks/use-image-loader'
+import arrowLeft from '~/public/images/ffflauta-scene/misc/flauta-dialog-arrow-left.png'
+import arrowRight from '~/public/images/ffflauta-scene/misc/flauta-dialog-arrow-right.png'
 import flautaTv from '~/public/images/ffflauta-scene/misc/flauta-tv.png'
 import flautaTvScanline1 from '~/public/images/ffflauta-scene/misc/flauta-tv-grunge_01.png'
 import flautaTvScanline2 from '~/public/images/ffflauta-scene/misc/flauta-tv-grunge_02.png'
 
 import script from '../../public/data/ffflauta-script.json'
 
-const thickness = 4
+const thickness = 0.5 // on em
 
 const Border = ({ bg, style, direction }) => {
   return (
@@ -21,10 +21,11 @@ const Border = ({ bg, style, direction }) => {
       style={{
         display: 'block',
         position: 'absolute',
-        width: direction === 'vertical' ? `${thickness}px` : '100%',
-        height: direction === 'vertical' ? '100%' : `${thickness}px`,
+        zIndex: 1,
+        width: direction === 'vertical' ? `${thickness}em` : '100%',
+        height: direction === 'vertical' ? '100%' : `${thickness}em`,
         padding:
-          direction === 'vertical' ? `${thickness}px 0` : `0 ${thickness}px`,
+          direction === 'vertical' ? `${thickness}em 0` : `0 ${thickness}em`,
         ...style
       }}
     >
@@ -49,7 +50,8 @@ const Corner = ({ bg, style }) => {
       style={{
         display: 'block',
         position: 'absolute',
-        width: `${thickness}px`,
+        zIndex: 1,
+        width: `${thickness}em`,
         aspectRatio: 1,
         ...style
       }}
@@ -75,87 +77,108 @@ const Avatar = ({ src }) => {
       height={64}
       src={`/images/ffflauta-scene/avatars/${src}.png`}
       alt={`${src} avatar`}
+      layout="responsive"
     />
   )
 }
 
-const Dialog = ({ text }) => {
+const Dialog = ({ text, side }) => {
   return (
-    <div
-      style={{
-        minWidth: 120,
-        maxWidth: 160,
-        width: 'max-content',
-        minHeight: 30,
-        height: 'auto',
-        position: 'relative',
-        color: 'black'
-      }}
-    >
-      <Corner
-        bg="/images/ffflauta-scene/misc/flauta-dialog-top-left.png"
-        style={{ position: 'absolute', left: 0, top: 0 }}
-      />
-      <Corner
-        bg="/images/ffflauta-scene/misc/flauta-dialog-top-right.png"
-        style={{ position: 'absolute', right: 0, top: 0 }}
-      />
-      <Corner
-        bg="/images/ffflauta-scene/misc/flauta-dialog-bottom-left.png"
-        style={{ position: 'absolute', left: 0, bottom: 0 }}
-      />
-      <Corner
-        bg="/images/ffflauta-scene/misc/flauta-dialog-bottom-right.png"
-        style={{ position: 'absolute', right: 0, bottom: 0 }}
-      />
-      <Border
-        direction="vertical"
-        style={{ left: 0, bottom: 0 }}
-        bg="/images/ffflauta-scene/misc/flauta-dialog-left.png"
-      />
-      <Border
-        direction="vertical"
-        style={{ right: 0, bottom: 0 }}
-        bg="/images/ffflauta-scene/misc/flauta-dialog-right.png"
-      />
-      <Border
-        direction="horizontal"
-        style={{ top: 0 }}
-        bg="/images/ffflauta-scene/misc/flauta-dialog-top.png"
-      />
-      <Border
-        direction="horizontal"
-        style={{ bottom: 0 }}
-        bg="/images/ffflauta-scene/misc/flauta-dialog-bottom.png"
-      />
-
+    <div style={{ position: 'relative', width: '100%', textAlign: side }}>
       <div
         style={{
-          background: 'white',
-          position: 'absolute',
-          /* Give some inner offset to avoid dead pixels */
-          inset: thickness - 2
-        }}
-      />
-
-      <div
-        style={{
+          display: 'inline-block',
+          maxWidth: '95%',
+          minWidth: '40%',
+          minHeight: 30,
+          height: 'auto',
           position: 'relative',
-          display: 'block',
-          padding: '8px 10px 8px 10px',
-          minHeight: '100%',
-          height: '100%'
+          color: 'black'
         }}
       >
-        <p
+        <Corner
+          bg="/images/ffflauta-scene/misc/flauta-dialog-top-left.png"
+          style={{ position: 'absolute', left: 0, top: 0 }}
+        />
+        <Corner
+          bg="/images/ffflauta-scene/misc/flauta-dialog-top-right.png"
+          style={{ position: 'absolute', right: 0, top: 0 }}
+        />
+        <Corner
+          bg="/images/ffflauta-scene/misc/flauta-dialog-bottom-left.png"
+          style={{ position: 'absolute', left: 0, bottom: 0 }}
+        />
+        <Corner
+          bg="/images/ffflauta-scene/misc/flauta-dialog-bottom-right.png"
+          style={{ position: 'absolute', right: 0, bottom: 0 }}
+        />
+        <Border
+          direction="vertical"
+          style={{ left: 0, bottom: 0 }}
+          bg="/images/ffflauta-scene/misc/flauta-dialog-left.png"
+        />
+        <Border
+          direction="vertical"
+          style={{ right: 0, bottom: 0 }}
+          bg="/images/ffflauta-scene/misc/flauta-dialog-right.png"
+        />
+        <Border
+          direction="horizontal"
+          style={{ top: 0 }}
+          bg="/images/ffflauta-scene/misc/flauta-dialog-top.png"
+        />
+        <Border
+          direction="horizontal"
+          style={{ bottom: 0 }}
+          bg="/images/ffflauta-scene/misc/flauta-dialog-bottom.png"
+        />
+
+        <div
           style={{
-            fontSize: 9,
-            height: '100%',
-            textTransform: 'lowercase'
+            background: 'white',
+            position: 'absolute',
+            /* Give some inner offset to avoid dead pixels */
+            inset: `calc(${thickness}em - 2px)`
+          }}
+        />
+
+        <div
+          style={{
+            position: 'relative',
+            display: 'block',
+            padding: '0.8em 1em 0.8em 1em',
+            minHeight: '100%',
+            height: '100%'
           }}
         >
-          {text}
-        </p>
+          <p
+            style={{
+              fontSize: '0.9em',
+              height: '100%',
+              textTransform: 'lowercase',
+              textAlign: 'left'
+            }}
+          >
+            {text}
+          </p>
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          height: '',
+          zIndex: 10,
+          bottom: 0,
+          // 1px offset to avoid bleeding
+          transform: 'translateY(calc(50% - 1px))',
+          left: side === 'left' ? '22%' : undefined,
+          right: side === 'right' ? '22%' : undefined,
+          width: `${thickness}em`
+        }}
+      >
+        {side === 'left' && <Image src={arrowLeft} layout="responsive" />}
+        {side === 'right' && <Image src={arrowRight} layout="responsive" />}
       </div>
     </div>
   )
@@ -195,12 +218,11 @@ const Background = ({ muted }) => {
 }
 
 const TV = ({ children }) => {
-  const image = useImageLoader(flautaTv)
-
   return (
     <>
       <div
         style={{
+          position: 'relative',
           display: 'grid',
           width: '100%',
           height: '100%',
@@ -219,16 +241,17 @@ const TV = ({ children }) => {
         >
           {children}
         </div>
-      </div>
 
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-        <Image
-          src={image}
-          width={flautaTv.width}
-          height={flautaTv.height}
-          layout="responsive"
-          alt="tv scene"
-        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            pointerEvents: 'none',
+            width: '100%'
+          }}
+        >
+          <Image src={flautaTv} layout="responsive" alt="tv scene" />
+        </div>
       </div>
 
       <style jsx>
@@ -353,7 +376,6 @@ const ScanLines = () => {
 const FFFlautaScene = () => {
   const [hasInteracted, setHasInteracted] = useState(false)
   const [scene, setScene] = useState(0)
-  const progress = useProgress((s) => s.progress)
 
   const contentRef = useRef()
 
@@ -411,9 +433,19 @@ const FFFlautaScene = () => {
 
   return (
     <FullHeightWrapper>
-      <AspectBox
-        style={{ fontFamily: 'Ffflauta', fontWeight: 500, userSelect: 'none' }}
-        ratio={21 / 9}
+      <div
+        style={{
+          fontSize: 'max(6px, 0.6vw)',
+          fontFamily: 'Ffflauta',
+          fontWeight: 500,
+          userSelect: 'none',
+          minWidth: 780,
+          position: 'relative',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100%',
+          aspectRatio: 21 / 9
+        }}
         onClick={() => {
           handleNextScene()
           setHasInteracted(true)
@@ -429,7 +461,7 @@ const FFFlautaScene = () => {
           {/* Content */}
           <div
             style={{
-              padding: '0 30px',
+              padding: '0 6%',
               display: 'flex',
               width: '100%',
               height: '100%'
@@ -437,7 +469,7 @@ const FFFlautaScene = () => {
             ref={contentRef}
           >
             <div style={{ position: 'absolute', top: '10%', right: '10%' }}>
-              <p>
+              <p style={{ fontSize: '1.6em' }}>
                 {scene + 1}/{parsedScript.length}
               </p>
             </div>
@@ -453,7 +485,7 @@ const FFFlautaScene = () => {
                   background: '#373737'
                 }}
               >
-                <p style={{ fontSize: 12, textTransform: 'lowercase' }}>
+                <p style={{ fontSize: '1.2em', textTransform: 'lowercase' }}>
                   {curtainText}
                 </p>
               </div>
@@ -472,14 +504,16 @@ const FFFlautaScene = () => {
                 {dialogLeftAvatar && (
                   <div
                     style={{
+                      position: 'relative',
+                      width: '100%',
                       display: 'flex',
                       alignItems: 'flex-start',
                       flexDirection: 'column',
                       gridColumn: 1
                     }}
                   >
-                    {dialogLeft && <Dialog text={dialogLeft} />}
-                    <div style={{ marginTop: 10 }}>
+                    {dialogLeft && <Dialog text={dialogLeft} side="left" />}
+                    <div style={{ marginTop: '1.5em', width: '32%' }}>
                       <Avatar src={dialogLeftAvatar} />
                     </div>
                   </div>
@@ -487,14 +521,16 @@ const FFFlautaScene = () => {
                 {dialogRightAvatar && (
                   <div
                     style={{
+                      position: 'relative',
+                      width: '100%',
                       display: 'flex',
                       alignItems: 'flex-end',
                       flexDirection: 'column',
                       gridColumn: 2
                     }}
                   >
-                    {dialogRight && <Dialog text={dialogRight} />}
-                    <div style={{ marginTop: 10 }}>
+                    {dialogRight && <Dialog text={dialogRight} side="right" />}
+                    <div style={{ marginTop: '1.5em', width: '32%' }}>
                       <Avatar src={dialogRightAvatar} />
                     </div>
                   </div>
@@ -505,7 +541,7 @@ const FFFlautaScene = () => {
 
           <ScanLines />
         </TV>
-      </AspectBox>
+      </div>
     </FullHeightWrapper>
   )
 }
