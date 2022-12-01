@@ -5,6 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FullHeightWrapper } from '~/components/common/aspect-canvas'
 import { AspectBox } from '~/components/layout/aspect-box'
 import { HTMLLayout } from '~/components/layout/html-layout'
+import { useGsapContext } from '~/hooks/use-gsap-context'
+import { useImageLoader, useProgress } from '~/hooks/use-image-loader'
 import flautaTv from '~/public/images/ffflauta-scene/misc/flauta-tv.png'
 import flautaTvScanline1 from '~/public/images/ffflauta-scene/misc/flauta-tv-grunge_01.png'
 import flautaTvScanline2 from '~/public/images/ffflauta-scene/misc/flauta-tv-grunge_02.png'
@@ -72,6 +74,7 @@ const Avatar = ({ src }) => {
       width={64}
       height={64}
       src={`/images/ffflauta-scene/avatars/${src}.png`}
+      alt={`${src} avatar`}
     />
   )
 }
@@ -192,6 +195,8 @@ const Background = ({ muted }) => {
 }
 
 const TV = ({ children }) => {
+  const image = useImageLoader(flautaTv)
+
   return (
     <>
       <div
@@ -208,11 +213,8 @@ const TV = ({ children }) => {
           style={{
             gridColumn: '2',
             aspectRatio: 1.35,
-            padding: '0 30px',
             transform: 'translateY(-1%)',
-            display: 'flex',
-            imageRendering: 'pixelated',
-            border: '1px solid red'
+            imageRendering: 'pixelated'
           }}
         >
           {children}
@@ -220,7 +222,13 @@ const TV = ({ children }) => {
       </div>
 
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-        <Image src={flautaTv} layout="responsive" />
+        <Image
+          src={image}
+          width={flautaTv.width}
+          height={flautaTv.height}
+          layout="responsive"
+          alt="tv scene"
+        />
       </div>
 
       <style jsx>
@@ -255,10 +263,10 @@ const ScanLines = () => {
       <div className="scanlines-container">
         <div className="tv-scanline tv-scanline-1">
           <div>
-            <Image src={flautaTvScanline1} />
+            <Image src={flautaTvScanline1} alt="tv scanline" />
           </div>
         </div>
-        <div className="tv-scanline tv-scanline-2">
+        <div className="tv-scanline tv-scanline-2" alt="tv scanline">
           <div>
             <Image src={flautaTvScanline2} />
           </div>
@@ -345,6 +353,9 @@ const ScanLines = () => {
 const FFFlautaScene = () => {
   const [hasInteracted, setHasInteracted] = useState(false)
   const [scene, setScene] = useState(0)
+  const progress = useProgress((s) => s.progress)
+
+  const contentRef = useRef()
 
   const interactionAudio = useMemo(() => {
     const audio = new Audio('/audio/ffflauta-interaction.mp3')
@@ -359,12 +370,16 @@ const FFFlautaScene = () => {
   const handleNextScene = useCallback(
     (step = 1) => {
       setScene((scene) => {
-        return parsedScript[scene + step] ? scene + step : 0
-      })
+        const hasNextScene = parsedScript[scene + step]
 
-      interactionAudio.pause()
-      interactionAudio.currentTime = 0
-      interactionAudio.play()
+        if (hasNextScene) {
+          interactionAudio.pause()
+          interactionAudio.currentTime = 0
+          interactionAudio.play()
+        }
+
+        return hasNextScene ? scene + step : scene
+      })
     },
     [parsedScript, interactionAudio]
   )
@@ -378,6 +393,21 @@ const FFFlautaScene = () => {
   const curtainText = dialog[1]['text']
 
   const isCurtain = curtainText
+  const isLastScene = scene === parsedScript.length - 1
+
+  useGsapContext(() => {
+    if (isLastScene) {
+      gsap.to(contentRef.current, {
+        opacity: 0,
+        duration: 1,
+        delay: 3
+      })
+    } else {
+      gsap.set(contentRef.current, {
+        opacity: 1
+      })
+    }
+  }, [isLastScene])
 
   return (
     <FullHeightWrapper>
@@ -396,71 +426,83 @@ const FFFlautaScene = () => {
       >
         <TV>
           <Background muted={!hasInteracted} />
-          <div style={{ position: 'absolute', top: '10%', right: '10%' }}>
-            <p>
-              {scene + 1}/{parsedScript.length}
-            </p>
-          </div>
-          {isCurtain ? (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%',
-                position: 'absolute',
-                inset: 0,
-                background: '#373737'
-              }}
-            >
-              <p style={{ fontSize: 12, textTransform: 'lowercase' }}>
-                {curtainText}
+          {/* Content */}
+          <div
+            style={{
+              padding: '0 30px',
+              display: 'flex',
+              width: '100%',
+              height: '100%'
+            }}
+            ref={contentRef}
+          >
+            <div style={{ position: 'absolute', top: '10%', right: '10%' }}>
+              <p>
+                {scene + 1}/{parsedScript.length}
               </p>
             </div>
-          ) : (
-            <div
-              style={{
-                display: 'grid',
-                width: '100%',
-                gridTemplateColumns: '1fr 1fr',
-                alignItems: 'flex-end',
-                justifyContent: 'space-between',
-                background: 'black',
-                padding: '10% 5%'
-              }}
-            >
-              {dialogLeftAvatar && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    flexDirection: 'column',
-                    gridColumn: 1
-                  }}
-                >
-                  {dialogLeft && <Dialog text={dialogLeft} />}
-                  <div style={{ marginTop: 10 }}>
-                    <Avatar src={dialogLeftAvatar} />
+            {isCurtain ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%',
+                  position: 'absolute',
+                  inset: 0,
+                  background: '#373737'
+                }}
+              >
+                <p style={{ fontSize: 12, textTransform: 'lowercase' }}>
+                  {curtainText}
+                </p>
+              </div>
+            ) : (
+              <div
+                style={{
+                  display: 'grid',
+                  width: '100%',
+                  gridTemplateColumns: '1fr 1fr',
+                  alignItems: 'flex-end',
+                  justifyContent: 'space-between',
+                  background: 'black',
+                  padding: '10% 5%'
+                }}
+              >
+                {dialogLeftAvatar && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      flexDirection: 'column',
+                      gridColumn: 1
+                    }}
+                  >
+                    {dialogLeft && <Dialog text={dialogLeft} />}
+                    <div style={{ marginTop: 10 }}>
+                      <Avatar src={dialogLeftAvatar} />
+                    </div>
                   </div>
-                </div>
-              )}
-              {dialogRightAvatar && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    flexDirection: 'column',
-                    gridColumn: 2
-                  }}
-                >
-                  {dialogRight && <Dialog text={dialogRight} />}
-                  <div style={{ marginTop: 10 }}>
-                    <Avatar src={dialogRightAvatar} />
+                )}
+                {dialogRightAvatar && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-end',
+                      flexDirection: 'column',
+                      gridColumn: 2
+                    }}
+                  >
+                    {dialogRight && <Dialog text={dialogRight} />}
+                    <div style={{ marginTop: 10 }}>
+                      <Avatar src={dialogRightAvatar} />
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </div>
+
           <ScanLines />
         </TV>
       </AspectBox>
