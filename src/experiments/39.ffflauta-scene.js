@@ -476,7 +476,7 @@ const AudioButton = ({ interacted }) => {
     <button
       style={{
         aspectRatio: 1,
-        width: '8%',
+        width: '6.5%',
         pointerEvents: 'all'
       }}
       onClick={toggleMute}
@@ -484,37 +484,47 @@ const AudioButton = ({ interacted }) => {
       {shouldBeMuted ? (
         <svg
           width="100%"
-          height="21"
-          viewBox="0 0 21 21"
-          fill="white"
+          viewBox="0 0 24 24"
+          fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ filter: 'drop-shadow(0px 0px 2px #000000)' }}
         >
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M10 2H8V4H6V6H4V8H0V13H4V15H6V17H8V19H10V2Z"
-          />
+          <path d="M12 6h-2v2H8v2H6v2H2v5h4v2h2v2h2v2h2V6Z" fill="#373737" />
+          <path d="M14 6h-2v2h-2v2H8v2H4v5h4v2h2v2h2v2h2V6Z" fill="#373737" />
+          <path d="M14 4h-2v2h-2v2H8v2H4v5h4v2h2v2h2v2h2V4Z" fill="#373737" />
+          <path d="M10 4H8v2H6v2H4v2H0v5h4v2h2v2h2v2h2V4Z" fill="#373737" />
+          <path d="M12 2h-2v2H8v2H6v2H2v5h4v2h2v2h2v2h2V2Z" fill="#373737" />
+          <path d="M12 4h-2v2H8v2H6v2H2v5h4v2h2v2h2v2h2V4Z" fill="#fff" />
         </svg>
       ) : (
         <svg
           width="100%"
-          height="21"
-          viewBox="0 0 21 21"
-          fill="white"
+          viewBox="0 0 24 24"
+          fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ filter: 'drop-shadow(0px 0px 2px #000000)' }}
         >
-          <rect x="14" y="7" width="2" height="7" />
-          <rect x="19" y="5" width="2" height="11" />
-          <rect x="12" y="5" width="2" height="2" />
-          <rect x="17" y="3" width="2" height="2" />
-          <rect x="12" y="14" width="2" height="2" />
-          <rect x="17" y="16" width="2" height="2" />
           <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M10 2H8V4H6V6H4V8H0V13H4V15H6V17H8V19H10V2Z"
+            fill="#373737"
+            d="M16 11h2v7h-2zM20 9h2v11h-2zM14 9h2v2h-2zM18 7h2v2h-2zM14 18h2v2h-2zM18 20h2v2h-2zM12 6h-2v2H8v2H6v2H2v5h4v2h2v2h2v2h2V6Z"
+          />
+          <path
+            fill="#373737"
+            d="M17 11h2v7h-2zM22 7h2v11h-2zM16 9h2v2h-2zM20 7h2v2h-2zM16 18h2v2h-2zM14 6h-2v2h-2v2H8v2H4v5h4v2h2v2h2v2h2V6Z"
+          />
+          <path
+            fill="#373737"
+            d="M17 9h2v7h-2zM22 7h2v11h-2zM16 7h2v2h-2zM20 5h2v2h-2zM16 16h2v2h-2zM20 18h2v2h-2zM14 4h-2v2h-2v2H8v2H4v5h4v2h2v2h2v2h2V4ZM14 9h2v7h-2z"
+          />
+          <path
+            fill="#373737"
+            d="M18 7h2v11h-2zM12 7h2v2h-2zM16 5h2v2h-2zM16 3h2v2h-2zM12 16h2v2h-2zM16 18h2v2h-2zM16 20h2v2h-2zM10 4H8v2H6v2H4v2H0v5h4v2h2v2h2v2h2V4ZM16 7h2v7h-2zM20 5h2v11h-2zM14 5h2v2h-2zM18 3h2v2h-2zM14 14h2v2h-2z"
+          />
+          <path
+            fill="#373737"
+            d="M18 16h2v2h-2zM12 2h-2v2H8v2H6v2H2v5h4v2h2v2h2v2h2V2Z"
+          />
+          <path
+            fill="#fff"
+            d="M16 9h2v7h-2zM20 7h2v11h-2zM14 7h2v2h-2zM18 5h2v2h-2zM14 16h2v2h-2zM18 18h2v2h-2zM12 4h-2v2H8v2H6v2H2v5h4v2h2v2h2v2h2V4Z"
           />
         </svg>
       )}
