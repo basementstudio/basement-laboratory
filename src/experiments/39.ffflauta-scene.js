@@ -152,8 +152,6 @@ const Dialog = ({ text, side }) => {
           display: 'inline-block',
           maxWidth: '95%',
           minWidth: '40%',
-          minHeight: 30,
-          height: 'auto',
           position: 'relative',
           color: 'black'
         }}
