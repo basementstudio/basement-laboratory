@@ -1,3 +1,4 @@
+import { Howl } from 'howler'
 import { gsap } from 'lib/gsap'
 import Image from 'next/image'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -184,19 +185,7 @@ const Dialog = ({ text, side }) => {
   )
 }
 
-const Background = ({ muted }) => {
-  const videoRef = useRef()
-
-  useEffect(() => {
-    if (!muted) {
-      gsap.to(videoRef.current, {
-        volume: 0.5,
-        duration: 1,
-        ease: 'none'
-      })
-    }
-  }, [muted])
-
+const Background = () => {
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
       <div style={{ width: '100%', height: '100%' }}>
@@ -208,9 +197,8 @@ const Background = ({ muted }) => {
           playsInline
           autoPlay
           src="/video/ffflauta-scene/tv-bg.mp4"
-          muted={muted}
+          muted={true}
           loop
-          ref={videoRef}
         />
       </div>
     </div>
@@ -297,6 +285,7 @@ const ScanLines = () => {
       </div>
       <style jsx>{`
         .scanlines-container {
+          pointer-events: none;
           position: absolute;
           inset: 0;
           zindex: 1;
@@ -370,6 +359,102 @@ const ScanLines = () => {
         }
       `}</style>
     </>
+  )
+}
+
+const AudioButton = ({ interacted }) => {
+  const [muted, setMuted] = useState(false)
+
+  const shouldBeMuted = !interacted || muted
+
+  var music = useMemo(
+    () =>
+      new Howl({
+        src: '/audio/flauta-loop.ogg',
+        autoplay: true,
+        loop: true,
+        mute: true,
+        volume: 0
+      }),
+    []
+  )
+
+  useEffect(() => {
+    music.mute(shouldBeMuted)
+
+    const fromTo = [0, 0.5]
+
+    shouldBeMuted && fromTo.reverse()
+
+    music.fade(...fromTo, 2000)
+
+    if (!music.playing() && !shouldBeMuted) {
+      music.play()
+    }
+  }, [music, shouldBeMuted])
+
+  useEffect(() => {
+    const musicRef = music
+
+    return () => {
+      musicRef.unload()
+    }
+  }, [music])
+
+  const toggleMute = useCallback((e) => {
+    e.stopPropagation()
+    setMuted((muted) => !muted)
+  }, [])
+
+  return (
+    <button
+      style={{
+        aspectRatio: 1,
+        width: '8%',
+        // background: '#00000060',
+        pointerEvents: 'all'
+        // mixBlendMode: 'multiply'
+      }}
+      onClick={toggleMute}
+    >
+      {shouldBeMuted ? (
+        <svg
+          width="100%"
+          height="21"
+          viewBox="0 0 21 21"
+          fill="white"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ filter: 'drop-shadow(0px 0px 2px #000000)' }}
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M10 2H8V4H6V6H4V8H0V13H4V15H6V17H8V19H10V2Z"
+          />
+        </svg>
+      ) : (
+        <svg
+          width="100%"
+          height="21"
+          viewBox="0 0 21 21"
+          fill="white"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ filter: 'drop-shadow(0px 0px 2px #000000)' }}
+        >
+          <rect x="14" y="7" width="2" height="7" />
+          <rect x="19" y="5" width="2" height="11" />
+          <rect x="12" y="5" width="2" height="2" />
+          <rect x="17" y="3" width="2" height="2" />
+          <rect x="12" y="14" width="2" height="2" />
+          <rect x="17" y="16" width="2" height="2" />
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M10 2H8V4H6V6H4V8H0V13H4V15H6V17H8V19H10V2Z"
+          />
+        </svg>
+      )}
+    </button>
   )
 }
 
@@ -457,7 +542,7 @@ const FFFlautaScene = () => {
         }}
       >
         <TV>
-          <Background muted={!hasInteracted} />
+          <Background />
           {/* Content */}
           <div
             style={{
@@ -468,7 +553,19 @@ const FFFlautaScene = () => {
             }}
             ref={contentRef}
           >
-            <div style={{ position: 'absolute', top: '10%', right: '10%' }}>
+            <div
+              style={{
+                position: 'absolute',
+                top: '10%',
+                left: 0,
+                padding: '0 10%',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'space-between'
+              }}
+            >
+              <AudioButton interacted={hasInteracted} />
+
               <p style={{ fontSize: '1.6em' }}>
                 {scene + 1}/{parsedScript.length}
               </p>

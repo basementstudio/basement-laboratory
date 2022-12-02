@@ -34,6 +34,7 @@
     "graphql-request": "^4.3.0",
     "gsap": "./src/lib/gsap/gsap-bonus.tgz",
     "hls.js": "1.1.5",
+    "howler": "^2.2.3",
     "lamina": "^1.1.20",
     "leva": "^0.9.34",
     "lodash": "^4.17.21",
@@ -60,6 +61,7 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^12.1.2",
     "@types/css-font-loading-module": "0.0.7",
+    "@types/howler": "^2.2.7",
     "@types/lodash": "^4.14.182",
     "@types/mousetrap": "1.6.9",
     "@types/node": "17.0.21",
