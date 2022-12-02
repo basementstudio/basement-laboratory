@@ -2,6 +2,7 @@ import { Howl } from 'howler'
 import { gsap } from 'lib/gsap'
 import Image from 'next/image'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { isSafari } from 'react-device-detect'
 
 import { FullHeightWrapper } from '~/components/common/aspect-canvas'
 import { Loader } from '~/components/common/loader'
@@ -427,7 +428,7 @@ const AudioButton = ({ interacted }) => {
   var music = useMemo(
     () =>
       new Howl({
-        src: '/audio/flauta-loop.ogg',
+        src: isSafari ? '/audio/flauta-loop.mp3' : '/audio/flauta-loop.ogg',
         autoplay: true,
         loop: true,
         mute: true,
