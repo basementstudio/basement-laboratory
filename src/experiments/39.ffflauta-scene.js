@@ -380,17 +380,17 @@ const AudioButton = ({ interacted }) => {
   )
 
   useEffect(() => {
-    music.mute(shouldBeMuted)
+    if (!shouldBeMuted) {
+      music.mute(shouldBeMuted)
+    }
 
     const fromTo = [0, 0.5]
 
+    console.log({ shouldBeMuted, fromTo })
+
     shouldBeMuted && fromTo.reverse()
 
-    music.fade(...fromTo, 2000)
-
-    if (!music.playing() && !shouldBeMuted) {
-      music.play()
-    }
+    music.fade(...fromTo, 1500)
   }, [music, shouldBeMuted])
 
   useEffect(() => {
@@ -543,6 +543,7 @@ const FFFlautaScene = () => {
       >
         <TV>
           <Background />
+
           {/* Content */}
           <div
             style={{
@@ -553,23 +554,6 @@ const FFFlautaScene = () => {
             }}
             ref={contentRef}
           >
-            <div
-              style={{
-                position: 'absolute',
-                top: '10%',
-                left: 0,
-                padding: '0 10%',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between'
-              }}
-            >
-              <AudioButton interacted={hasInteracted} />
-
-              <p style={{ fontSize: '1.6em' }}>
-                {scene + 1}/{parsedScript.length}
-              </p>
-            </div>
             {isCurtain ? (
               <div
                 style={{
@@ -637,6 +621,25 @@ const FFFlautaScene = () => {
           </div>
 
           <ScanLines />
+
+          {/* Controls */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '10%',
+              left: 0,
+              padding: '0 10%',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between'
+            }}
+          >
+            <AudioButton interacted={hasInteracted} />
+
+            <p style={{ fontSize: '1.6em' }}>
+              {scene + 1}/{parsedScript.length}
+            </p>
+          </div>
         </TV>
       </div>
     </FullHeightWrapper>
