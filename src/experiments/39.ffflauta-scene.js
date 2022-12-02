@@ -4,8 +4,10 @@ import Image from 'next/image'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { FullHeightWrapper } from '~/components/common/aspect-canvas'
+import { Loader } from '~/components/common/loader'
 import { HTMLLayout } from '~/components/layout/html-layout'
 import { useGsapContext } from '~/hooks/use-gsap-context'
+import { useImageLoader, useProgress } from '~/hooks/use-image-loader'
 import arrowLeft from '~/public/images/ffflauta-scene/misc/flauta-dialog-arrow-left.png'
 import arrowRight from '~/public/images/ffflauta-scene/misc/flauta-dialog-arrow-right.png'
 import flautaTv from '~/public/images/ffflauta-scene/misc/flauta-tv.png'
@@ -16,7 +18,39 @@ import script from '../../public/data/ffflauta-script.json'
 
 const thickness = 0.5 // on em
 
+const CustomImageComponent = (props) => {
+  const imgSrc = typeof props.src === 'string' ? props.src : props.src.src
+
+  const { add, complete, alreadyExists } = useProgress((s) => ({
+    alreadyExists: s.alreadyExists,
+    add: s.addObject,
+    complete: s.setComplete
+  }))
+
+  useEffect(() => {
+    if (alreadyExists(imgSrc)) {
+      return
+    }
+
+    add(imgSrc, {})
+  }, [add, alreadyExists, imgSrc])
+
+  return (
+    <Image
+      {...props}
+      onLoadingComplete={() => {
+        complete(imgSrc)
+      }}
+      unoptimized
+    />
+  )
+}
+
 const Border = ({ bg, style, direction }) => {
+  if (!bg) {
+    return <></>
+  }
+
   return (
     <span
       style={{
@@ -46,6 +80,10 @@ const Border = ({ bg, style, direction }) => {
 }
 
 const Corner = ({ bg, style }) => {
+  if (!bg) {
+    return <></>
+  }
+
   return (
     <span
       style={{
@@ -73,7 +111,7 @@ const Corner = ({ bg, style }) => {
 
 const Avatar = ({ src }) => {
   return (
-    <Image
+    <CustomImageComponent
       width={64}
       height={64}
       src={`/images/ffflauta-scene/avatars/${src}.png`}
@@ -84,6 +122,29 @@ const Avatar = ({ src }) => {
 }
 
 const Dialog = ({ text, side }) => {
+  const [
+    flautaDialogTopLeft,
+    flautaDialogTopRight,
+    flautaDialogBottomLeft,
+    flautaDialogBottomRight,
+    flautaDialogLeft,
+    flautaDialogRight,
+    flautaDialogTop,
+    flautaDialogBottom
+  ] = useImageLoader([
+    { src: '/images/ffflauta-scene/misc/flauta-dialog-top-left.png' },
+    { src: '/images/ffflauta-scene/misc/flauta-dialog-top-right.png' },
+    { src: '/images/ffflauta-scene/misc/flauta-dialog-bottom-left.png' },
+    { src: '/images/ffflauta-scene/misc/flauta-dialog-bottom-right.png' },
+    { src: '/images/ffflauta-scene/misc/flauta-dialog-left.png' },
+    { src: '/images/ffflauta-scene/misc/flauta-dialog-right.png' },
+    { src: '/images/ffflauta-scene/misc/flauta-dialog-top.png' },
+    { src: '/images/ffflauta-scene/misc/flauta-dialog-bottom.png' },
+    /* Prelaod arrows anyways, if the ImageComponent won the net request, this will just load instantly */
+    { src: arrowLeft.src },
+    { src: arrowRight.src }
+  ])
+
   return (
     <div style={{ position: 'relative', width: '100%', textAlign: side }}>
       <div
@@ -98,40 +159,40 @@ const Dialog = ({ text, side }) => {
         }}
       >
         <Corner
-          bg="/images/ffflauta-scene/misc/flauta-dialog-top-left.png"
+          bg={flautaDialogTopLeft}
           style={{ position: 'absolute', left: 0, top: 0 }}
         />
         <Corner
-          bg="/images/ffflauta-scene/misc/flauta-dialog-top-right.png"
+          bg={flautaDialogTopRight}
           style={{ position: 'absolute', right: 0, top: 0 }}
         />
         <Corner
-          bg="/images/ffflauta-scene/misc/flauta-dialog-bottom-left.png"
+          bg={flautaDialogBottomLeft}
           style={{ position: 'absolute', left: 0, bottom: 0 }}
         />
         <Corner
-          bg="/images/ffflauta-scene/misc/flauta-dialog-bottom-right.png"
+          bg={flautaDialogBottomRight}
           style={{ position: 'absolute', right: 0, bottom: 0 }}
         />
         <Border
           direction="vertical"
           style={{ left: 0, bottom: 0 }}
-          bg="/images/ffflauta-scene/misc/flauta-dialog-left.png"
+          bg={flautaDialogLeft}
         />
         <Border
           direction="vertical"
           style={{ right: 0, bottom: 0 }}
-          bg="/images/ffflauta-scene/misc/flauta-dialog-right.png"
+          bg={flautaDialogRight}
         />
         <Border
           direction="horizontal"
           style={{ top: 0 }}
-          bg="/images/ffflauta-scene/misc/flauta-dialog-top.png"
+          bg={flautaDialogTop}
         />
         <Border
           direction="horizontal"
           style={{ bottom: 0 }}
-          bg="/images/ffflauta-scene/misc/flauta-dialog-bottom.png"
+          bg={flautaDialogBottom}
         />
 
         <div
@@ -178,8 +239,12 @@ const Dialog = ({ text, side }) => {
           width: `${thickness}em`
         }}
       >
-        {side === 'left' && <Image src={arrowLeft} layout="responsive" />}
-        {side === 'right' && <Image src={arrowRight} layout="responsive" />}
+        {side === 'left' && (
+          <CustomImageComponent src={arrowLeft} layout="responsive" />
+        )}
+        {side === 'right' && (
+          <CustomImageComponent src={arrowRight} layout="responsive" />
+        )}
       </div>
     </div>
   )
@@ -238,7 +303,11 @@ const TV = ({ children }) => {
             width: '100%'
           }}
         >
-          <Image src={flautaTv} layout="responsive" alt="tv scene" />
+          <CustomImageComponent
+            src={flautaTv}
+            layout="responsive"
+            alt="tv scene"
+          />
         </div>
       </div>
 
@@ -274,12 +343,12 @@ const ScanLines = () => {
       <div className="scanlines-container">
         <div className="tv-scanline tv-scanline-1">
           <div>
-            <Image src={flautaTvScanline1} alt="tv scanline" />
+            <CustomImageComponent src={flautaTvScanline1} alt="tv scanline" />
           </div>
         </div>
         <div className="tv-scanline tv-scanline-2" alt="tv scanline">
           <div>
-            <Image src={flautaTvScanline2} />
+            <CustomImageComponent src={flautaTvScanline2} quality={100} />
           </div>
         </div>
       </div>
@@ -307,7 +376,7 @@ const ScanLines = () => {
 
         .tv-scanline-1 > div,
         .tv-scanline-2 > div {
-          animation: scanline1 0.1s steps(2) infinite;
+          animation: scanline 0.1s steps(2) infinite;
         }
 
         @keyframes scanline-translate {
@@ -334,7 +403,7 @@ const ScanLines = () => {
           }
         }
 
-        @keyframes scanline1 {
+        @keyframes scanline {
           0% {
             transform: scale(1, 1);
           }
@@ -345,16 +414,6 @@ const ScanLines = () => {
 
           100% {
             transform: scale(-1, 1);
-          }
-        }
-
-        @keyframes scanline2 {
-          0% {
-            transform: rotate(0deg);
-          }
-
-          100% {
-            transform: rotate(360deg);
           }
         }
       `}</style>
@@ -386,8 +445,6 @@ const AudioButton = ({ interacted }) => {
 
     const fromTo = [0, 0.5]
 
-    console.log({ shouldBeMuted, fromTo })
-
     shouldBeMuted && fromTo.reverse()
 
     music.fade(...fromTo, 1500)
@@ -411,9 +468,7 @@ const AudioButton = ({ interacted }) => {
       style={{
         aspectRatio: 1,
         width: '8%',
-        // background: '#00000060',
         pointerEvents: 'all'
-        // mixBlendMode: 'multiply'
       }}
       onClick={toggleMute}
     >
@@ -458,21 +513,33 @@ const AudioButton = ({ interacted }) => {
   )
 }
 
+const parsedScript = Object.entries(script)
+const uniqueChars = new Set(
+  parsedScript
+    .map(([_, data]) => [data['char-left'], data['char-right']])
+    .flat()
+    .filter((char) => char)
+)
+
+const uniqueCharsImageLoader = Array.from(uniqueChars).map((char) => {
+  return { src: `/images/ffflauta-scene/avatars/${char}.png` }
+})
+
 const FFFlautaScene = () => {
+  const progress = useProgress((p) => p.progress)
   const [hasInteracted, setHasInteracted] = useState(false)
   const [scene, setScene] = useState(0)
 
   const contentRef = useRef()
 
   const interactionAudio = useMemo(() => {
-    const audio = new Audio('/audio/ffflauta-interaction.mp3')
-
-    audio.volume = 1
+    const audio = new Howl({
+      src: '/audio/ffflauta-interaction.mp3',
+      volume: 1
+    })
 
     return audio
   }, [])
-
-  const parsedScript = useMemo(() => Object.entries(script), [])
 
   const handleNextScene = useCallback(
     (step = 1) => {
@@ -480,8 +547,7 @@ const FFFlautaScene = () => {
         const hasNextScene = parsedScript[scene + step]
 
         if (hasNextScene) {
-          interactionAudio.pause()
-          interactionAudio.currentTime = 0
+          interactionAudio.stop()
           interactionAudio.play()
         }
 
@@ -490,6 +556,8 @@ const FFFlautaScene = () => {
     },
     [parsedScript, interactionAudio]
   )
+
+  useImageLoader(uniqueCharsImageLoader)
 
   const dialog = parsedScript[scene]
 
@@ -517,132 +585,137 @@ const FFFlautaScene = () => {
   }, [isLastScene])
 
   return (
-    <FullHeightWrapper>
-      <div
-        style={{
-          fontSize: 'max(6px, 0.6vw)',
-          fontFamily: 'Ffflauta',
-          fontWeight: 500,
-          userSelect: 'none',
-          minWidth: 780,
-          position: 'relative',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '100%',
-          aspectRatio: 21 / 9
-        }}
-        onClick={() => {
-          handleNextScene()
-          setHasInteracted(true)
-        }}
-        onContextMenu={(e) => {
-          e.preventDefault()
-          handleNextScene(-1)
-          setHasInteracted(true)
-        }}
-      >
-        <TV>
-          <Background />
+    <>
+      <FullHeightWrapper>
+        <div
+          style={{
+            fontSize: 'max(6px, 0.6vw)',
+            fontFamily: 'Ffflauta',
+            fontWeight: 500,
+            userSelect: 'none',
+            minWidth: 780,
+            position: 'relative',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '100%',
+            aspectRatio: 21 / 9
+          }}
+          onClick={() => {
+            handleNextScene()
+            setHasInteracted(true)
+          }}
+          onContextMenu={(e) => {
+            e.preventDefault()
+            handleNextScene(-1)
+            setHasInteracted(true)
+          }}
+        >
+          {progress != 100 && <Loader />}
+          <TV>
+            <Background />
 
-          {/* Content */}
-          <div
-            style={{
-              padding: '0 6%',
-              display: 'flex',
-              width: '100%',
-              height: '100%'
-            }}
-            ref={contentRef}
-          >
-            {isCurtain ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  position: 'absolute',
-                  inset: 0,
-                  background: '#373737'
-                }}
-              >
-                <p style={{ fontSize: '1.2em', textTransform: 'lowercase' }}>
-                  {curtainText}
-                </p>
-              </div>
-            ) : (
-              <div
-                style={{
-                  display: 'grid',
-                  width: '100%',
-                  gridTemplateColumns: '1fr 1fr',
-                  alignItems: 'flex-end',
-                  justifyContent: 'space-between',
-                  background: 'black',
-                  padding: '10% 5%'
-                }}
-              >
-                {dialogLeftAvatar && (
-                  <div
-                    style={{
-                      position: 'relative',
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      flexDirection: 'column',
-                      gridColumn: 1
-                    }}
-                  >
-                    {dialogLeft && <Dialog text={dialogLeft} side="left" />}
-                    <div style={{ marginTop: '1.5em', width: '32%' }}>
-                      <Avatar src={dialogLeftAvatar} />
+            {/* Content */}
+            <div
+              style={{
+                padding: '0 6%',
+                display: 'flex',
+                width: '100%',
+                height: '100%'
+              }}
+              ref={contentRef}
+            >
+              {isCurtain ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    position: 'absolute',
+                    inset: 0,
+                    background: '#373737'
+                  }}
+                >
+                  <p style={{ fontSize: '1.2em', textTransform: 'lowercase' }}>
+                    {curtainText}
+                  </p>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: 'grid',
+                    width: '100%',
+                    gridTemplateColumns: '1fr 1fr',
+                    alignItems: 'flex-end',
+                    justifyContent: 'space-between',
+                    background: 'black',
+                    padding: '10% 5%'
+                  }}
+                >
+                  {dialogLeftAvatar && (
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        flexDirection: 'column',
+                        gridColumn: 1
+                      }}
+                    >
+                      {dialogLeft && <Dialog text={dialogLeft} side="left" />}
+                      <div style={{ marginTop: '1.5em', width: '32%' }}>
+                        <Avatar src={dialogLeftAvatar} />
+                      </div>
                     </div>
-                  </div>
-                )}
-                {dialogRightAvatar && (
-                  <div
-                    style={{
-                      position: 'relative',
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'flex-end',
-                      flexDirection: 'column',
-                      gridColumn: 2
-                    }}
-                  >
-                    {dialogRight && <Dialog text={dialogRight} side="right" />}
-                    <div style={{ marginTop: '1.5em', width: '32%' }}>
-                      <Avatar src={dialogRightAvatar} />
+                  )}
+                  {dialogRightAvatar && (
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        flexDirection: 'column',
+                        gridColumn: 2
+                      }}
+                    >
+                      {dialogRight && (
+                        <Dialog text={dialogRight} side="right" />
+                      )}
+                      <div style={{ marginTop: '1.5em', width: '32%' }}>
+                        <Avatar src={dialogRightAvatar} />
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+                  )}
+                </div>
+              )}
+            </div>
 
-          <ScanLines />
+            <ScanLines />
 
-          {/* Controls */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '10%',
-              left: 0,
-              padding: '0 10%',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'space-between'
-            }}
-          >
-            <AudioButton interacted={hasInteracted} />
+            {/* Controls */}
+            <div
+              style={{
+                position: 'absolute',
+                top: '10%',
+                left: 0,
+                padding: '0 10%',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'space-between'
+              }}
+            >
+              <AudioButton interacted={hasInteracted} />
 
-            <p style={{ fontSize: '1.6em' }}>
-              {scene + 1}/{parsedScript.length}
-            </p>
-          </div>
-        </TV>
-      </div>
-    </FullHeightWrapper>
+              <p style={{ fontSize: '1.6em' }}>
+                {scene + 1}/{parsedScript.length}
+              </p>
+            </div>
+          </TV>
+        </div>
+      </FullHeightWrapper>
+    </>
   )
 }
 
