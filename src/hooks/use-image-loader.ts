@@ -32,8 +32,6 @@ export const useProgress = create<State>((set, get) => {
 
       if (alreadyExists) return
 
-      console.log('Register', id)
-
       set({ store: { ...store, [id]: { object, complete: false } } })
       set({ progress: getProgress() })
     },
@@ -43,8 +41,6 @@ export const useProgress = create<State>((set, get) => {
 
       /* If doesn't exist or if already complete return */
       if (trgtObj === undefined || trgtObj?.complete) return
-
-      console.log('Complete for', id)
 
       set({
         store: {

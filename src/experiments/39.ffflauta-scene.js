@@ -439,15 +439,24 @@ const AudioButton = ({ interacted }) => {
   )
 
   useEffect(() => {
-    if (!shouldBeMuted) {
-      music.mute(shouldBeMuted)
+    if (interacted) {
+      music.mute(false)
     }
+  }, [music, interacted])
 
+  useGsapContext(() => {
     const fromTo = [0, 0.5]
 
     shouldBeMuted && fromTo.reverse()
 
-    music.fade(...fromTo, 1500)
+    const volume = { value: fromTo[0] }
+
+    gsap.to(volume, {
+      value: fromTo[1],
+      duration: 1.5,
+      ease: 'none',
+      onUpdate: () => music.volume(volume.value)
+    })
   }, [music, shouldBeMuted])
 
   useEffect(() => {
