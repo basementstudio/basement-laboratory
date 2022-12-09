@@ -1,3 +1,4 @@
+import { Euler, Matrix4, Vector3 } from 'three'
 import { PerspectiveCamera } from 'three/src/cameras/PerspectiveCamera'
 import { Clock } from 'three/src/core/Clock'
 import { Raycaster } from 'three/src/core/Raycaster'
@@ -255,4 +256,19 @@ export const createWorld = ({
     cursor: cursorTracker.cursor,
     getWorld: _getWorld
   }
+}
+
+export const setCameraLookAtEuler = (position: Vector3, target: Vector3) => {
+  /*
+  Camera records towards z: -1 of its own coordinate system so we need to use the Matrix4 transformation API
+  wich supports this eye -> target coordinate system using the lookAt method. See the source code of the Object3D
+  lookAt method for more details:
+  
+  https://github.com/mrdoob/three.js/blob/f021ec0c9051eb11d110b0c2b93305bffd0942e0/src/core/Object3D.js#L260
+*/
+  const m = new Matrix4()
+
+  m.lookAt(position, target, new Vector3(0, 1, 0))
+
+  return new Euler().setFromRotationMatrix(m)
 }

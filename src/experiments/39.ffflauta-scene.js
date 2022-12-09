@@ -252,19 +252,17 @@ const Dialog = ({ text, side }) => {
 const Background = () => {
   return (
     <div style={{ position: 'absolute', inset: 0 }}>
-      <div style={{ width: '100%', height: '100%' }}>
-        <video
-          onLoadStart={(e) => {
-            e.target.volume = 0
-          }}
-          style={{ width: '100%' }}
-          playsInline
-          autoPlay
-          src="/video/ffflauta-scene/tv-bg.mp4"
-          muted={true}
-          loop
-        />
-      </div>
+      <video
+        onLoadStart={(e) => {
+          e.target.volume = 0
+        }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        playsInline
+        autoPlay
+        src="/video/ffflauta-scene/tv-bg.mp4"
+        muted={true}
+        loop
+      />
     </div>
   )
 }
@@ -278,7 +276,7 @@ const TV = ({ children }) => {
           display: 'grid',
           width: '100%',
           height: '100%',
-          gridTemplateColumns: '1.075fr 0.94fr 1fr',
+          gridTemplateColumns: '1.065fr 0.95fr 1.06fr',
           alignContent: 'center'
         }}
       >
