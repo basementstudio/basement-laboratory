@@ -1,4 +1,4 @@
-import { CameraShake, Clone, SpotLight, useGLTF } from '@react-three/drei'
+import { CameraShake, SpotLight, useGLTF } from '@react-three/drei'
 import { applyProps } from '@react-three/fiber'
 import { Bloom, EffectComposer } from '@react-three/postprocessing'
 import { folder, useControls } from 'leva'
