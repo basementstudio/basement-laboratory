@@ -36,7 +36,7 @@ const Model = memo(
 
     const adMaterials = useMemo(
       () =>
-        range(8).map(() => {
+        range(9).map(() => {
           const clone = materials.Material__3097.clone()
 
           clone.map = materials.Material__3097.map.clone()
@@ -642,7 +642,7 @@ const Model = memo(
             name="AD_Plane001_Elements015"
             geometry={nodes.AD_Plane001_Elements015.geometry}
             material={adMaterials[3]}
-            userData={{ frames: 2 }}
+            // userData={{ frames: 2 }}
             scale={0.01}
           />
         </group>
@@ -665,7 +665,7 @@ const Model = memo(
           <mesh
             name="AD_Plane001_Elements017"
             geometry={nodes.AD_Plane001_Elements017.geometry}
-            material={adMaterials[4]}
+            material={adMaterials[5]}
             scale={0.01}
           />
         </group>
@@ -677,7 +677,7 @@ const Model = memo(
           <mesh
             name="AD_Object003"
             geometry={nodes.AD_Object003.geometry}
-            material={adMaterials[5]}
+            material={adMaterials[6]}
             scale={0.01}
           />
         </group>
@@ -689,9 +689,9 @@ const Model = memo(
           <mesh
             name="AD_Plane001_Elements018"
             geometry={nodes.AD_Plane001_Elements018.geometry}
-            material={adMaterials[6]}
+            material={adMaterials[7]}
             scale={0.01}
-            userData={{ frames: 2 }}
+            // userData={{ frames: 2 }}
           />
         </group>
         <group
@@ -702,7 +702,7 @@ const Model = memo(
           <mesh
             name="AD_Plane001_Elements019"
             geometry={nodes.AD_Plane001_Elements019.geometry}
-            material={adMaterials[7]}
+            material={adMaterials[8]}
             scale={0.01}
           />
         </group>
@@ -977,17 +977,15 @@ const animateCars = (targets = []) => {
 const animateAds = (targets = []) => {
   const mapOffsetTargets = targets.map((t) => t.material.map.offset)
 
-  const tweens = mapOffsetTargets.map((t, idx) => {
-    const delay = 7 + Math.random() * 2
-
+  const tweens = mapOffsetTargets.map((t) => {
     return gsap.fromTo(
       t,
       { x: 0 },
       {
         x: 1,
         duration: 1,
-        repeatDelay: delay,
-        delay: delay - 5.5,
+        repeatDelay: 7 + Math.random() * 2,
+        delay: 2 + Math.random() * 2,
         repeat: -1
       }
     )
