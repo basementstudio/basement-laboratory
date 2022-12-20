@@ -222,7 +222,7 @@ const InfiniteRender = () => {
 InfiniteRender.Title = 'InfiniteRender Technique'
 InfiniteRender.Description = (
   <>
-    Infinite render technique using multiple render targets based on{' '}
+    Recursive rendering technique using multiple render targets based on{' '}
     <a target="_blank" href="https://youtu.be/nf6e13wSMug" rel="noopener">
       Yuris video.
     </a>
