@@ -1,6 +1,7 @@
 import { useTexture } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import { gsap } from 'lib/gsap'
+import { clamp } from 'lodash'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
@@ -47,11 +48,12 @@ const bgFragmentShader =/* glsl */ `
   uniform sampler2D uDisp;
   uniform float uTime;
   uniform float uSpeed;
+  uniform vec2 uManualDisp;
 
   void main() {
     vec2 uv = vUv;
 
-    gl_FragColor = texture2D(uTexture, uv + vec2(.0, -.001 * uSpeed));
+    gl_FragColor = texture2D(uTexture, uv + uManualDisp * uSpeed);
   }
 `
 
@@ -76,7 +78,8 @@ const InfiniteRender = () => {
     uTexture: { value: null },
     uDisp: { value: dispTexture },
     uTime: { value: 0 },
-    uSpeed: { value: 1 }
+    uSpeed: { value: 1 },
+    uManualDisp: { value: new THREE.Vector2(0, 0) }
   })
 
   useFrame((s) => {
@@ -86,6 +89,10 @@ const InfiniteRender = () => {
 
     brushUniforms.current.uTime.value += 0.01
     bgUniforms.current.uTime.value += 0.01
+    bgUniforms.current.uManualDisp.value.set(
+      clamp(s.mouse.x * 0.005, -0.01, 0.01),
+      clamp(s.mouse.y * 0.005, -0.01, 0.01)
+    )
 
     circleRef.current.position.set(
       s.mouse.x * (viewport.width / 2),
@@ -108,7 +115,7 @@ const InfiniteRender = () => {
   useEffect(() => {
     const handleDown = () => {
       gsap.to(bgUniforms.current.uSpeed, {
-        value: 10
+        value: 2
       })
     }
     const handleUp = () => {
@@ -142,7 +149,7 @@ const InfiniteRender = () => {
       <scene name="main-scene" ref={mainSceneRef}>
         <mesh ref={bgTrgtRef}>
           <planeGeometry args={[viewport.width, viewport.height]} />
-          <meshBasicMaterial color={0xffffffff} />
+          <meshBasicMaterial />
         </mesh>
         <mesh ref={circleRef}>
           <circleGeometry args={[25, 32 * 2]} />
