@@ -7,6 +7,7 @@ export const useRenderTargets = (
   config: THREE.WebGLRenderTargetOptions
 ) => {
   const windowSize = useThree((s) => s.size)
+
   const renderTargets = useMemo(() => {
     return new Array(count)
       .fill(null)
@@ -19,7 +20,7 @@ export const useRenderTargets = (
           )
       )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, config])
+  }, [count, config, config.minFilter, config.magFilter, config.format])
 
   useEffect(() => {
     renderTargets.forEach((rt) => {

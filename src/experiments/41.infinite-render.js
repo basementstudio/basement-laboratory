@@ -1,11 +1,11 @@
 import { useTexture } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import { gsap } from 'lib/gsap'
-import { clamp } from 'lodash'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
+import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useRenderTargets } from '~/hooks/use-render-target'
 import { useUniforms } from '~/hooks/use-uniforms'
 
@@ -49,16 +49,52 @@ const bgFragmentShader =/* glsl */ `
   uniform float uTime;
   uniform float uSpeed;
   uniform vec2 uManualDisp;
+  uniform vec2 uResolution;
+
+  // Rotate uv from center without distortion
+  vec2 rotate(vec2 uv, float angle) {
+    vec2 center = vec2(0.5);
+    vec2 rot = uv - center;
+    rot = mat2(cos(angle), -sin(angle), sin(angle), cos(angle)) * rot;
+    return rot + center;
+  }
+
+  vec2 textureCover(vec2 uv, vec2 resolution) {
+    float aspect = resolution.x / resolution.y;
+    float scale = max(aspect, 1.0 / aspect);
+    vec2 center = vec2(0, 0.5);
+    vec2 pos = uv - center;
+    pos /= scale;
+    return pos + center;
+  }
 
   void main() {
-    vec2 uv = vUv;
+    float aspect = uResolution.x / uResolution.y;
 
-    gl_FragColor = texture2D(uTexture, uv + uManualDisp * uSpeed);
+    vec2 uv = vUv;
+    vec2 transformedUv = vUv;
+    transformedUv.x *= aspect;
+    
+    vec4 displacement = texture2D(
+		  uDisp,
+      transformedUv
+    );
+
+    vec2 uv_displaced = vec2(
+      uv.x + displacement.x * -0.01 * uManualDisp.x * uSpeed,
+      uv.y + displacement.y * -0.01 * uManualDisp.y * uSpeed 
+    );
+
+    gl_FragColor = texture2D(uTexture, uv_displaced);
   }
 `
 
 const InfiniteRender = () => {
-  const dispTexture = useTexture('/textures/disp.png')
+  const dispTexture = useTexture('/textures/disp.png', (texture) => {
+    texture.repeat = new THREE.Vector2(5, 5)
+    texture.wrapS = THREE.MirroredRepeatWrapping
+    texture.wrapT = THREE.MirroredRepeatWrapping
+  })
   const circleRef = useRef()
   const bgTrgtRef = useRef()
   const materialTrgtRef = useRef()
@@ -67,8 +103,11 @@ const InfiniteRender = () => {
   const { viewport } = useThree((s) => ({
     viewport: s.viewport
   }))
+  const [activeFilter, setActiveFilter] = useState(THREE.NearestFilter)
   const [trgt, trgt1] = useRenderTargets(2, {
-    format: THREE.RGBAFormat
+    format: THREE.RGBAFormat,
+    minFilter: activeFilter,
+    magFilter: activeFilter
   })
 
   const brushUniforms = useUniforms({
@@ -79,7 +118,8 @@ const InfiniteRender = () => {
     uDisp: { value: dispTexture },
     uTime: { value: 0 },
     uSpeed: { value: 1 },
-    uManualDisp: { value: new THREE.Vector2(0, 0) }
+    uManualDisp: { value: new THREE.Vector2(0, 0) },
+    uResolution: { value: new THREE.Vector2(0, 0) }
   })
 
   useFrame((s) => {
@@ -89,10 +129,8 @@ const InfiniteRender = () => {
 
     brushUniforms.current.uTime.value += 0.01
     bgUniforms.current.uTime.value += 0.01
-    bgUniforms.current.uManualDisp.value.set(
-      clamp(s.mouse.x * 0.005, -0.01, 0.01),
-      clamp(s.mouse.y * 0.005, -0.01, 0.01)
-    )
+    bgUniforms.current.uResolution.value.set(viewport.width, viewport.height)
+    bgUniforms.current.uManualDisp.value.set(s.mouse.x, s.mouse.y)
 
     circleRef.current.position.set(
       s.mouse.x * (viewport.width / 2),
@@ -131,6 +169,23 @@ const InfiniteRender = () => {
     }
   }, [bgUniforms])
 
+  useMousetrap([
+    {
+      keys: 's',
+      callback: () => {
+        setActiveFilter((curr) => {
+          if (curr == THREE.NearestFilter) {
+            console.log('Switching renderer filter to LinearFilter')
+            return THREE.LinearFilter
+          }
+
+          console.log('Switching renderer filter to NearestFilter')
+          return THREE.NearestFilter
+        })
+      }
+    }
+  ])
+
   return (
     <>
       <scene name="material-scene" ref={materialSceneRef}>
@@ -152,7 +207,7 @@ const InfiniteRender = () => {
           <meshBasicMaterial />
         </mesh>
         <mesh ref={circleRef}>
-          <circleGeometry args={[25, 32 * 2]} />
+          <circleGeometry args={[40, 32 * 2]} />
           <shaderMaterial
             vertexShader={brushVertexShader}
             fragmentShader={brushFragmentShader}
@@ -176,11 +231,10 @@ InfiniteRender.Description = (
     <p>
       <strong>Controls:</strong>
     </p>
-    <ul>
-      <li>
-        <strong>Click </strong>to speed up
-      </li>
-    </ul>
+    <p>
+      <strong>Click </strong>to speed up <br />
+      <strong>Press S </strong>to toggle smoothing <br />
+    </p>
   </>
 )
 InfiniteRender.Layout = (props) => {
