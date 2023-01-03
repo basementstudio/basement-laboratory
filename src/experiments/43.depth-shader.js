@@ -179,5 +179,20 @@ const DepthShader = () => {
 
 DepthShader.Title = 'Depth Shader'
 DepthShader.Tags = 'private'
+DepthShader.Description = (
+  <>
+    <p>
+      An implementation of a parallax mapping shader. Inspired on{' '}
+      <a
+        target="_blank"
+        href="https://twitter.com/bgolus/status/1603810525288488961?s=20&t=V85AebyZeO_ubDW1yewiTw"
+        rel="noopener"
+      >
+        @bgolus's tweet
+      </a>
+      .
+    </p>
+  </>
+)
 
 export default DepthShader
