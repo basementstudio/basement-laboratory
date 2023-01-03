@@ -155,7 +155,12 @@ const DepthShader = () => {
         />
       </mesh>
 
-      <Text position={[-2.2, 2.3, 0]} fontSize={0.3}>
+      <Text
+        characters="abcdefghijklmnopqrstuvwxyz0123456789!"
+        font="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu72xKKTU1Kvnz.woff2"
+        position={[-2.2, 2.3, 0]}
+        fontSize={0.3}
+      >
         Classic Version
       </Text>
       <mesh position={[-2.2, 0, 0]}>
