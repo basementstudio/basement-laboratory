@@ -94,5 +94,6 @@ const DepthShader = () => {
 }
 
 DepthShader.Title = 'Depth Shader'
+DepthShader.Tags = 'private'
 
 export default DepthShader
