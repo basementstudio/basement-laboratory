@@ -139,8 +139,8 @@ const DepthShader = () => {
       <OrbitControls />
       <Text
         font="/fonts/grotesque/BasementGrotesqueDisplay-UltraBlackExtraExpanded.woff"
-        position={[2.2, 2.3, 0]}
-        fontSize={0.2}
+        position={[2.2, 2.35, 0]}
+        fontSize={0.215}
       >
         Improved Version
       </Text>
@@ -161,8 +161,8 @@ const DepthShader = () => {
 
       <Text
         font="/fonts/grotesque/BasementGrotesqueDisplay-UltraBlackExtraExpanded.woff"
-        position={[-2.2, 2.3, 0]}
-        fontSize={0.2}
+        position={[-2.2, 2.35, 0]}
+        fontSize={0.215}
       >
         Classic Version
       </Text>
