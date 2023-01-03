@@ -17,7 +17,6 @@ const vertexShader =/* glsl */ `
 const fragmentShader =/* glsl */ `
   varying vec2 vUv;
 
-  // uniform vec3 cameraPosition;
   uniform vec3 uPlanePosition;
   uniform vec2 uResolution;
   
@@ -28,10 +27,6 @@ const fragmentShader =/* glsl */ `
 
     return length(vec2(x, y)) - r;
   }
-
-  // vec2 getParallaxOffset() {
-
-  // }
 
   vec3 getViewDirectionInTangentSpace() {
     vec3 viewDir = normalize(cameraPosition - uPlanePosition);
@@ -47,22 +42,25 @@ const fragmentShader =/* glsl */ `
     vec2 uv = vUv;
     uv -= 0.5;
 
-    vec3 dist = getViewDirectionInTangentSpace();
-    vec3 normalizedDist = normalize(dist);
+    vec3 viewDir = getViewDirectionInTangentSpace();
 
     float detphDist = 0.0;
     float detphDist1 = 0.2;
+    float detphDist2 = 0.4;
 
-    vec2 offset = vec2(detphDist) * normalizedDist.xy;
-    vec2 offset1 = vec2(detphDist1) * normalizedDist.xy;
+    vec2 offset = vec2(detphDist) * viewDir.xy;
+    vec2 offset1 = vec2(detphDist1) * viewDir.xy;
+    vec2 offset2 = vec2(detphDist2) * viewDir.xy;
 
-    float shape = sdfCircle(uv, 0.25, offset);
-    float shape1 = sdfCircle(uv, 0.5, offset1);
+    float shape = sdfCircle(uv, 0.2, offset);
+    float shape1 = sdfCircle(uv, 0.3, offset1);
+    float shape2 = sdfCircle(uv, 0.4, offset2);
 
     vec3 col = vec3(1.0);
 
     /* Blend them together */
-    col = mix(vec3(1, 0, 0), col, step(0., shape1));
+    col = mix(vec3(1, 0, 0), col, step(0., shape2));
+    col = mix(vec3(0, 1, 0), col, step(0., shape1));
     col = mix(vec3(0, 0, 1), col, step(0., shape));
 
     gl_FragColor = vec4(col, 1.0);
