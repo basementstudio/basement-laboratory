@@ -137,7 +137,11 @@ const DepthShader = () => {
   return (
     <>
       <OrbitControls />
-      <Text position={[2.2, 2.3, 0]} fontSize={0.3}>
+      <Text
+        font="/fonts/grotesque/BasementGrotesqueDisplay-UltraBlackExtraExpanded.woff"
+        position={[2.2, 2.3, 0]}
+        fontSize={0.2}
+      >
         Improved Version
       </Text>
       <mesh position={[2.2, 0, 0]}>
@@ -156,10 +160,9 @@ const DepthShader = () => {
       </mesh>
 
       <Text
-        characters="abcdefghijklmnopqrstuvwxyz0123456789!"
-        font="https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu72xKKTU1Kvnz.woff2"
+        font="/fonts/grotesque/BasementGrotesqueDisplay-UltraBlackExtraExpanded.woff"
         position={[-2.2, 2.3, 0]}
-        fontSize={0.3}
+        fontSize={0.2}
       >
         Classic Version
       </Text>
