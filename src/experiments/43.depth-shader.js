@@ -18,9 +18,12 @@ const helpers =/* glsl */ `
 
     vec3 tangent = normalize(vec3(1.0, 0.0, 0.0));
     vec3 bitangent = normalize(cross(normal, tangent));
-    
-    return vec3(dot(vec, tangent), dot(vec, bitangent), dot(vec, normal));
+
+    mat3 tbn = mat3(tangent, bitangent, normal);
+
+    return tbn * vec;
   }
+ 
 `
 
 const classicMethod = {
@@ -54,8 +57,8 @@ const classicMethod = {
       vec3 perspective = viewDir / facingCoeficient;
 
       float detphDist = 0.0;
-      float detphDist1 = 0.15;
-      float detphDist2 = 0.3;
+      float detphDist1 = 0.2;
+      float detphDist2 = 0.4;
 
       vec2 offset = vec2(detphDist) * perspective.xy;
       vec2 offset1 = vec2(detphDist1) * perspective.xy;
@@ -106,8 +109,8 @@ const improvedMethod = {
       vec3 viewDir = toTangentSpace(normalize(cameraPosition - uPlanePosition));
 
       float detphDist = 0.0;
-      float detphDist1 = 0.15;
-      float detphDist2 = 0.3;
+      float detphDist1 = 0.2;
+      float detphDist2 = 0.4;
 
       vec2 offset = vec2(detphDist) * viewDir.xy;
       vec2 offset1 = vec2(detphDist1) * viewDir.xy;
@@ -149,7 +152,6 @@ const DepthShader = () => {
         <shaderMaterial
           vertexShader={classicMethod.vertexShader}
           fragmentShader={classicMethod.fragmentShader}
-          side={THREE.DoubleSide}
           uniforms={{
             uPlanePosition: {
               value: new THREE.Vector3(2.2, 0, 0)
@@ -171,7 +173,6 @@ const DepthShader = () => {
         <shaderMaterial
           vertexShader={improvedMethod.vertexShader}
           fragmentShader={improvedMethod.fragmentShader}
-          side={THREE.DoubleSide}
           uniforms={{
             uPlanePosition: {
               value: new THREE.Vector3(-2.2, 0, 0)
