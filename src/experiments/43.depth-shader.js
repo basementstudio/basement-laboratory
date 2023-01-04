@@ -13,6 +13,7 @@ const helpers =/* glsl */ `
     return length(vec2(x, y)) - r;
   }
 
+  /* This one only works for planes */
   vec3 toTangentSpace(vec3 vec) {
     vec3 normal = vec3(0.0, 0.0, 1.0);
 
