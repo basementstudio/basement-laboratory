@@ -187,7 +187,7 @@ const DepthShader = () => {
 }
 
 DepthShader.Title = 'Depth Shader'
-DepthShader.Tags = 'public'
+DepthShader.Tags = 'shaders'
 DepthShader.Description = (
   <>
     <p>
