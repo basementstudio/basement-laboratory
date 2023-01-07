@@ -24,10 +24,9 @@ const helpers =/* glsl */ `
 
     return tbn * vec;
   }
- 
 `
 
-const classicMethod = {
+const improvedMethod = {
   // eslint-disable-next-line prettier/prettier
   vertexShader:/* glsl */ `
     varying vec2 vUv;
@@ -83,7 +82,7 @@ const classicMethod = {
   `
 }
 
-const improvedMethod = {
+const classicMethod = {
   // eslint-disable-next-line prettier/prettier
   vertexShader:/* glsl */ `
     varying vec2 vUv;
@@ -151,8 +150,8 @@ const DepthShader = () => {
       <mesh position={[2.2, 0, 0]}>
         <planeGeometry args={[4, 4]} />
         <shaderMaterial
-          vertexShader={classicMethod.vertexShader}
-          fragmentShader={classicMethod.fragmentShader}
+          vertexShader={improvedMethod.vertexShader}
+          fragmentShader={improvedMethod.fragmentShader}
           uniforms={{
             uPlanePosition: {
               value: new THREE.Vector3(2.2, 0, 0)
@@ -172,8 +171,8 @@ const DepthShader = () => {
       <mesh position={[-2.2, 0, 0]}>
         <planeGeometry args={[4, 4]} />
         <shaderMaterial
-          vertexShader={improvedMethod.vertexShader}
-          fragmentShader={improvedMethod.fragmentShader}
+          vertexShader={classicMethod.vertexShader}
+          fragmentShader={classicMethod.fragmentShader}
           uniforms={{
             uPlanePosition: {
               value: new THREE.Vector3(-2.2, 0, 0)
@@ -188,7 +187,7 @@ const DepthShader = () => {
 }
 
 DepthShader.Title = 'Depth Shader'
-DepthShader.Tags = 'private'
+DepthShader.Tags = 'public'
 DepthShader.Description = (
   <>
     <p>
