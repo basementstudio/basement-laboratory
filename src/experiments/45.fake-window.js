@@ -1,15 +1,6 @@
-import {
-  Environment,
-  Mask,
-  OrbitControls,
-  PerspectiveCamera,
-  useMask,
-  useTexture
-} from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
-import { Bloom, EffectComposer } from '@react-three/postprocessing'
-import { useControls } from 'leva'
-import React, { useRef } from 'react'
+import { PerspectiveCamera, useTexture } from '@react-three/drei'
+import { useFrame, useThree } from '@react-three/fiber'
+import React, { useMemo } from 'react'
 import * as THREE from 'three'
 
 import { CoolGrid } from '~/components/common/cool-grid'
@@ -230,9 +221,7 @@ const interiorCubeMap = {
 }
 
 const Window = () => {
-  const cubemap_albedo = useTexture('/textures/cubemap-faces.png', (t) => {
-    // t.wrapS = t.wrapT = THREE.RepeatWrapping
-  })
+  const cubemap_albedo = useTexture('/textures/cubemap-faces.png')
 
   return (
     <>
@@ -242,7 +231,7 @@ const Window = () => {
           uniforms={{
             room_size: { value: 2 },
             cubemap_albedo: { value: cubemap_albedo },
-            room_depth: { value: 0.5 }
+            room_depth: { value: 1 }
           }}
           vertexShader={interiorCubeMap.vertexShader}
           fragmentShader={interiorCubeMap.fragmentShader}
@@ -252,7 +241,229 @@ const Window = () => {
   )
 }
 
+const KEYS = {
+  a: 65,
+  s: 83,
+  w: 87,
+  d: 68
+}
+
+class InputController {
+  constructor(target) {
+    this.target_ = target || document
+    this.initialize_()
+  }
+
+  initialize_() {
+    this.current_ = {
+      leftButton: false,
+      rightButton: false,
+      mouseXDelta: 0,
+      mouseYDelta: 0,
+      mouseX: 0,
+      mouseY: 0
+    }
+    this.previous_ = null
+    this.keys_ = {}
+    this.previousKeys_ = {}
+    this.target_.addEventListener('click', (e) => this.onClick_(e), false)
+    this.target_.addEventListener(
+      'mousedown',
+      (e) => this.onMouseDown_(e),
+      false
+    )
+    this.target_.addEventListener(
+      'mousemove',
+      (e) => this.onMouseMove_(e),
+      false
+    )
+    this.target_.addEventListener('mouseup', (e) => this.onMouseUp_(e), false)
+    document.addEventListener('keydown', (e) => this.onKeyDown_(e), false)
+    document.addEventListener('keyup', (e) => this.onKeyUp_(e), false)
+  }
+
+  onClick_(e) {
+    e.target.requestPointerLock()
+  }
+
+  onMouseMove_(e) {
+    if (document.pointerLockElement != this.target_) {
+      this.current_.mouseXDelta = 0
+      this.current_.mouseYDelta = 0
+
+      return
+    }
+
+    this.current_.mouseXDelta = e.movementX
+    this.current_.mouseYDelta = e.movementY
+  }
+
+  onMouseDown_(e) {
+    this.onMouseMove_(e)
+
+    switch (e.button) {
+      case 0: {
+        this.current_.leftButton = true
+        break
+      }
+      case 2: {
+        this.current_.rightButton = true
+        break
+      }
+    }
+  }
+
+  onMouseUp_(e) {
+    this.onMouseMove_(e)
+
+    switch (e.button) {
+      case 0: {
+        this.current_.leftButton = false
+        break
+      }
+      case 2: {
+        this.current_.rightButton = false
+        break
+      }
+    }
+  }
+
+  onKeyDown_(e) {
+    this.keys_[e.keyCode] = true
+  }
+
+  onKeyUp_(e) {
+    this.keys_[e.keyCode] = false
+  }
+
+  key(keyCode) {
+    return !!this.keys_[keyCode]
+  }
+
+  isReady() {
+    return this.previous_ !== null
+  }
+
+  update(_) {
+    this.current_.mouseXDelta = 0
+    this.current_.mouseYDelta = 0
+  }
+}
+
+class FirstPersonCamera {
+  constructor(camera, canvas) {
+    this.camera_ = camera
+    this.input_ = new InputController(canvas)
+    this.rotation_ = new THREE.Quaternion()
+    this.translation_ = new THREE.Vector3().copy(camera.position).setY(0.9)
+    this.phi_ = 0
+    this.phiSpeed_ = 8
+    this.theta_ = 0
+    this.thetaSpeed_ = 5
+    this.headBobActive_ = false
+    this.headBobTimer_ = 0
+  }
+
+  update(timeElapsedS) {
+    this.updateRotation_(timeElapsedS)
+    this.updateCamera_(timeElapsedS)
+    this.updateTranslation_(timeElapsedS)
+    this.updateHeadBob_(timeElapsedS)
+    this.input_.update(timeElapsedS)
+  }
+
+  updateCamera_(_) {
+    this.camera_.quaternion.copy(this.rotation_)
+    this.camera_.position.copy(this.translation_)
+    this.camera_.position.y += Math.sin(this.headBobTimer_ * 20) * 0.1
+
+    const forward = new THREE.Vector3(0, 0, -1)
+    forward.applyQuaternion(this.rotation_)
+
+    forward.multiplyScalar(100)
+    forward.add(this.translation_)
+  }
+
+  updateHeadBob_(timeElapsedS) {
+    if (this.headBobActive_) {
+      const wavelength = Math.PI
+      const nextStep =
+        1 + Math.floor(((this.headBobTimer_ + 0.000001) * 10) / wavelength)
+      const nextStepTime = (nextStep * wavelength) / 10
+      this.headBobTimer_ = Math.min(
+        this.headBobTimer_ + timeElapsedS,
+        nextStepTime
+      )
+
+      if (this.headBobTimer_ == nextStepTime) {
+        this.headBobActive_ = false
+      }
+    }
+  }
+
+  updateTranslation_(timeElapsedS) {
+    const forwardVelocity =
+      (this.input_.key(KEYS.w) ? 1 : 0) + (this.input_.key(KEYS.s) ? -1 : 0)
+    const strafeVelocity =
+      (this.input_.key(KEYS.a) ? 1 : 0) + (this.input_.key(KEYS.d) ? -1 : 0)
+
+    const qx = new THREE.Quaternion()
+    qx.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.phi_)
+
+    const forward = new THREE.Vector3(0, 0, -1)
+    forward.applyQuaternion(qx)
+    forward.multiplyScalar(forwardVelocity * timeElapsedS * 10)
+
+    const left = new THREE.Vector3(-1, 0, 0)
+    left.applyQuaternion(qx)
+    left.multiplyScalar(strafeVelocity * timeElapsedS * 10)
+
+    this.translation_.add(forward)
+    this.translation_.add(left)
+
+    if (forwardVelocity != 0 || strafeVelocity != 0) {
+      this.headBobActive_ = true
+    }
+  }
+
+  updateRotation_() {
+    const xh = this.input_.current_.mouseXDelta / window.innerWidth
+    const yh = this.input_.current_.mouseYDelta / window.innerHeight
+
+    console.log(this.input_.current_.mouseXDelta)
+
+    this.phi_ += -xh * this.phiSpeed_
+    this.theta_ = THREE.MathUtils.clamp(
+      this.theta_ + -yh * this.thetaSpeed_,
+      -Math.PI / 3,
+      Math.PI / 3
+    )
+
+    const qx = new THREE.Quaternion()
+    qx.setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.phi_)
+    const qz = new THREE.Quaternion()
+    qz.setFromAxisAngle(new THREE.Vector3(1, 0, 0), this.theta_)
+
+    const q = new THREE.Quaternion()
+    q.multiply(qx)
+    q.multiply(qz)
+
+    this.rotation_.copy(q)
+  }
+}
+
 const FakeWindow = () => {
+  const camera = useThree((s) => s.camera)
+  const gl = useThree((s) => s.gl)
+
+  const camControl = useMemo(() => {
+    return new FirstPersonCamera(camera, gl.domElement)
+  }, [camera, gl])
+
+  useFrame((s) => {
+    camControl.update(s.clock.getDelta() * 4)
+  })
+
   return (
     <>
       <CoolGrid />
@@ -260,7 +471,8 @@ const FakeWindow = () => {
 
       <color args={['#fff']} attach="background" />
 
-      <OrbitControls />
+      <PerspectiveCamera position={[0, 0, 5]} makeDefault fov={50} />
+
       <Window />
     </>
   )
