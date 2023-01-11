@@ -276,7 +276,7 @@ const Window = () => {
 
   return (
     <>
-      {range(20).map((idx) => {
+      {range(-15, 15).map((idx) => {
         const position = [idx * 2.1, 1, 0]
         return (
           <mesh position={position} key={idx}>
