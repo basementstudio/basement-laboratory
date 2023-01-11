@@ -1,5 +1,6 @@
 import { PerspectiveCamera, useTexture } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
+import { range } from 'lodash'
 import React, { useMemo } from 'react'
 import * as THREE from 'three'
 
@@ -81,6 +82,7 @@ const depth = {
 
 // eslint-disable-next-line prettier/prettier
 const params =/* glsl */ `
+  uniform vec3 uPlanePosition;
   uniform float room_size;
   uniform float room_depth;
   uniform sampler2D cubemap_albedo;
@@ -105,11 +107,10 @@ const interiorCubeMap = {
 
         //camera pos in obj space
         obj_cam = inverse(modelViewMatrix)[3].xyz - delta;
-        
-        vUv = uv;
       }
 
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      vUv = uv;
     }
   `,
 
@@ -158,64 +159,114 @@ const interiorCubeMap = {
       return texture(cubemap, uv).rgb;
     }
 
+    vec4 blend(vec4 a, vec4 b, float t) {
+      return a * (1. - t) + b * t;
+    }
+
+    float sdfCircle(vec2 uv, float r, vec2 offset) {
+      float x = uv.x - offset.x;
+      float y = uv.y - offset.y;
+
+      return length(vec2(x, y)) - r;
+    }
+
+    vec3 toTangentSpace(vec3 vec) {
+      vec3 normal = vec3(0.0, 0.0, 1.0);
+
+      vec3 tangent = normalize(vec3(1.0, 0.0, 0.0));
+      vec3 bitangent = normalize(cross(normal, tangent));
+
+      mat3 tbn = mat3(tangent, bitangent, normal);
+
+      return tbn * vec;
+    }
+
     void main() {
+      vec3 color = vec3(0.);
+      
+      /* Cube Mapping */
       vec3 cm_face = vec3(0., 0., 1.);
       vec2 cm_uv = vUv;
-
-      if (room_depth != 0.) {
-        float depth = room_depth * 2.;
-        vec3 cam2pix = obj_vertex - obj_cam;
-        
-        //camp2pix.y <= 0 --> show floor
-        //camp2pix.y > 0 --> show ceiling
-        float is_floor = step(cam2pix.z, 0.);
-        float ceil_y   = ceil(obj_vertex.z / depth - is_floor) * depth;
-        float ceil_t   = (ceil_y - obj_cam.z) / cam2pix.z;
-        
-        //camp2pix.z <= 0 --> show north
-        //camp2pix.z > 0 --> show south
-        float is_north = step(cam2pix.y, 0.);
-        float wall_f_z = ceil(obj_vertex.y / room_size - is_north) * room_size;
-        float wall_f_t = (wall_f_z - obj_cam.y) / cam2pix.y;
-        
-        //camp2pix.x <= 0 --> show east
-        //camp2pix.x > 0 --> show west
-        float is_east  = step(cam2pix.x, 0.);
-        float wall_e_z = ceil(obj_vertex.x / room_size - is_east) * room_size;
-        float wall_e_t = (wall_e_z - obj_cam.x) / cam2pix.x;
-        
-        vec2 tex_coord;
-        float min_t = min(min(ceil_t, wall_e_t), wall_f_t);
-        
-        if (wall_e_t == min_t) {
-          //East / West
-          tex_coord = obj_cam.zy + wall_e_t * cam2pix.zy;
-          cm_face = vec3((is_east == 0.) ? 1. : -1., 0., 0.);
-        }
-        else if (wall_f_t == min_t) {
-          //Front / Back
-          tex_coord = obj_cam.xz + wall_f_t * cam2pix.xz;
-          cm_face = vec3(0., (is_north == 0.) ? -1. : 1., 0.);
-        }
-        else if (ceil_t == min_t) {
-          //Ceiling / Floor
-          tex_coord = obj_cam.xy + ceil_t * cam2pix.xy;
-          cm_face = vec3(0., 0., (is_floor == 0.) ? 1. : -1.);
-        }
-
-        // if (!(ceil_t == min_t)) {
-        //   tex_coord.y /= room_depth;
-        // }
-
-        cm_uv = (tex_coord*.5 + 1.);
-
-        cm_uv.x = clamp(cm_uv.x, 0., 1.);
-        cm_uv.y = clamp(cm_uv.y, 0., 1.);
-
-        gl_FragColor = vec4(sample_cubemap(cubemap_albedo, cm_uv, cm_face), 1.0);
-      } else {
-        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.);
+      
+      float depth = room_depth * 2.;
+      vec3 cam2pix = obj_vertex - obj_cam;
+      
+      //camp2pix.y <= 0 --> show floor
+      //camp2pix.y > 0 --> show ceiling
+      float is_floor = step(cam2pix.z, 0.);
+      float ceil_y   = ceil(obj_vertex.z / depth - is_floor) * depth;
+      float ceil_t   = (ceil_y - obj_cam.z) / cam2pix.z;
+      
+      //camp2pix.z <= 0 --> show north
+      //camp2pix.z > 0 --> show south
+      float is_north = step(cam2pix.y, 0.);
+      float wall_f_z = ceil(obj_vertex.y / room_size - is_north) * room_size;
+      float wall_f_t = (wall_f_z - obj_cam.y) / cam2pix.y;
+      
+      //camp2pix.x <= 0 --> show east
+      //camp2pix.x > 0 --> show west
+      float is_east  = step(cam2pix.x, 0.);
+      float wall_e_z = ceil(obj_vertex.x / room_size - is_east) * room_size;
+      float wall_e_t = (wall_e_z - obj_cam.x) / cam2pix.x;
+      
+      vec2 tex_coord;
+      float min_t = min(min(ceil_t, wall_e_t), wall_f_t);
+      
+      if (wall_e_t == min_t) {
+        //East / West
+        tex_coord = obj_cam.zy + wall_e_t * cam2pix.zy;
+        cm_face = vec3((is_east == 0.) ? 1. : -1., 0., 0.);
       }
+      else if (wall_f_t == min_t) {
+        //Front / Back
+        tex_coord = obj_cam.xz + wall_f_t * cam2pix.xz;
+        cm_face = vec3(0., (is_north == 0.) ? -1. : 1., 0.);
+      }
+      else if (ceil_t == min_t) {
+        //Ceiling / Floor
+        tex_coord = obj_cam.xy + ceil_t * cam2pix.xy;
+        cm_face = vec3(0., 0., (is_floor == 0.) ? 1. : -1.);
+      }
+
+      // if (!(ceil_t == min_t)) {
+      //   tex_coord.y /= room_depth;
+      // }
+
+      cm_uv = (tex_coord*.5 + 1.);
+
+      cm_uv.x = clamp(cm_uv.x, 0., 1.);
+      cm_uv.y = clamp(cm_uv.y, 0., 1.);
+      
+      color = sample_cubemap(cubemap_albedo, cm_uv, cm_face);
+
+
+      /* Parallax */
+      vec2 parallaxUv = vUv;
+      parallaxUv -= 0.5;
+
+      vec3 viewDir = toTangentSpace(normalize(cameraPosition - uPlanePosition));
+      vec3 normal = toTangentSpace(vec3(0.0, 0.0, 1.0));
+      float facingCoeficient = dot(viewDir, normal);
+      vec3 perspective = viewDir / facingCoeficient;
+
+      float detphDist1 = 0.0;
+      float detphDist2 = 0.2;
+      float detphDist3 = 0.4;
+
+      vec2 offset1 = vec2(detphDist1) * perspective.xy;
+      vec2 offset2 = vec2(detphDist2) * perspective.xy;
+      vec2 offset3 = vec2(detphDist3) * perspective.xy;
+
+      float shape1 = sdfCircle(parallaxUv, 0.1, offset1);
+      float shape2 = sdfCircle(parallaxUv, 0.14, offset2);
+      float shape3 = sdfCircle(parallaxUv, 0.18, offset3);
+
+      /* Blend */
+      color = mix(vec3(1, 0, 0), color, step(0., shape3));
+      color = mix(vec3(0, 1, 0), color, step(0., shape2));
+      color = mix(vec3(0, 0, 1), color, step(0., shape1));
+
+      gl_FragColor = vec4(color, 1.0);
     }
   `
 }
@@ -225,18 +276,24 @@ const Window = () => {
 
   return (
     <>
-      <mesh position={[0, 1, 0]}>
-        <planeGeometry args={[2, 2]} />
-        <shaderMaterial
-          uniforms={{
-            room_size: { value: 2 },
-            cubemap_albedo: { value: cubemap_albedo },
-            room_depth: { value: 1 }
-          }}
-          vertexShader={interiorCubeMap.vertexShader}
-          fragmentShader={interiorCubeMap.fragmentShader}
-        />
-      </mesh>
+      {range(20).map((idx) => {
+        const position = [idx * 2.1, 1, 0]
+        return (
+          <mesh position={position} key={idx}>
+            <planeGeometry args={[2, 2]} />
+            <shaderMaterial
+              uniforms={{
+                uPlanePosition: { value: position },
+                room_size: { value: 2 },
+                cubemap_albedo: { value: cubemap_albedo },
+                room_depth: { value: 1 }
+              }}
+              vertexShader={interiorCubeMap.vertexShader}
+              fragmentShader={interiorCubeMap.fragmentShader}
+            />
+          </mesh>
+        )
+      })}
     </>
   )
 }
@@ -357,9 +414,9 @@ class FirstPersonCamera {
     this.rotation_ = new THREE.Quaternion()
     this.translation_ = new THREE.Vector3().copy(camera.position).setY(0.9)
     this.phi_ = 0
-    this.phiSpeed_ = 8
+    this.phiSpeed_ = 0.85
     this.theta_ = 0
-    this.thetaSpeed_ = 5
+    this.thetaSpeed_ = 0.85
     this.headBobActive_ = false
     this.headBobTimer_ = 0
   }
@@ -430,8 +487,6 @@ class FirstPersonCamera {
     const xh = this.input_.current_.mouseXDelta / window.innerWidth
     const yh = this.input_.current_.mouseYDelta / window.innerHeight
 
-    console.log(this.input_.current_.mouseXDelta)
-
     this.phi_ += -xh * this.phiSpeed_
     this.theta_ = THREE.MathUtils.clamp(
       this.theta_ + -yh * this.thetaSpeed_,
@@ -471,7 +526,7 @@ const FakeWindow = () => {
 
       <color args={['#fff']} attach="background" />
 
-      <PerspectiveCamera position={[0, 0, 5]} makeDefault fov={50} />
+      <PerspectiveCamera position={[0, 0, 5]} makeDefault fov={22} />
 
       <Window />
     </>
@@ -479,7 +534,7 @@ const FakeWindow = () => {
 }
 
 FakeWindow.Title = 'FakeWindow'
-FakeWindow.Tags = 'public'
+FakeWindow.Tags = 'private'
 FakeWindow.Description = (
   <>
     <p>
