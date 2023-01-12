@@ -53,15 +53,6 @@ const JustATest = () => {
         // first draw our video frame
         ctx.drawImage(vid, 0, 0, canvas.width / 2, canvas.height / 2)
 
-        // reset the normal compositing mode
-
-        // do it again at next screen refresh
-
-        /* Transparentize all white pixels with composite operation */
-        // ctx.globalCompositeOperation = 'difference'
-        // ctx.fillStyle = '#FF0000'
-        // ctx.fillRect(0, 0, canvas.width, canvas.height)
-
         ctx.globalCompositeOperation = 'source-over'
 
         requestAnimationFrame(draw)
@@ -103,7 +94,7 @@ const JustATest = () => {
     </div>
   )
 }
-//
+
 JustATest.Layout = HTMLLayout
 
 JustATest.Title = 'Ballen Title'
