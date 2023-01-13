@@ -228,9 +228,9 @@ const interiorCubeMap = {
         cm_face = vec3(0., 0., (is_floor == 0.) ? 1. : -1.);
       }
 
-      // if (!(ceil_t == min_t)) {
-      //   tex_coord.y /= room_depth;
-      // }
+      if (!(ceil_t == min_t)) {
+        tex_coord.y /= room_depth;
+      }
 
       cm_uv = (tex_coord*.5 + 1.);
 
@@ -249,9 +249,9 @@ const interiorCubeMap = {
       float facingCoeficient = dot(viewDir, normal);
       vec3 perspective = viewDir / facingCoeficient;
 
-      float detphDist1 = 0.0;
-      float detphDist2 = 0.2;
-      float detphDist3 = 0.4;
+      float detphDist1 = 0.2;
+      float detphDist2 = 0.35;
+      float detphDist3 = 0.5;
 
       vec2 offset1 = vec2(detphDist1) * perspective.xy;
       vec2 offset2 = vec2(detphDist2) * perspective.xy;
