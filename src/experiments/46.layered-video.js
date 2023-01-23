@@ -114,8 +114,8 @@ const LayeredVideo = () => {
       />
       <PresentationControls polar={[0, 0]} azimuth={[-Infinity, Infinity]}>
         <group
-          // onPointerDown={() => (lockRotation.current = true)}
-          // onPointerUp={() => (lockRotation.current = false)}
+          onPointerDown={() => (lockRotation.current = true)}
+          onPointerUp={() => (lockRotation.current = false)}
           ref={groupRef}
         >
           {planes}
