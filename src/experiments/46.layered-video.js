@@ -16,7 +16,7 @@ const LayeredVideo = () => {
   const groupRef = useRef()
   const videoTexture = useVideoTexture('/video/nike-reel.mp4', {
     // start: false,
-    // currentTime: 1
+    // currentTime: 8
   })
 
   const planeCount = 15
@@ -57,15 +57,24 @@ const LayeredVideo = () => {
         `
           #include <dithering_fragment>
 
-          float byColorAlpha = step(
-            0.75,
+          float limit = 0.75;
+          float smoothDelta = 0.2;
+          float computedLimit = limit - mix(0.0, limit, uAlpha);
+
+          float byColorAlpha = smoothstep(
+            max(
+              0.0,
+              computedLimit - smoothDelta
+            ),
+            computedLimit,
             1.0 - (gl_FragColor.r + gl_FragColor.g + gl_FragColor.b) / 3.0
           );
+
           float alpha = max(byColorAlpha, uAlpha);
 
           gl_FragColor = vec4(
             gl_FragColor.rgb,
-            min(alpha, 1.0)
+            alpha
           );
         `
       )
