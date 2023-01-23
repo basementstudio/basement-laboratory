@@ -1,5 +1,4 @@
 import {
-  OrbitControls,
   PerspectiveCamera,
   PresentationControls,
   useVideoTexture
@@ -13,7 +12,7 @@ import { CamTargetRotation } from '~/components/common/cam-target-rotation'
 import { gsap } from '~/lib/gsap'
 
 const LayeredVideo = () => {
-  const lockRotation = useRef()
+  const lockRotation = useRef(true)
   const groupRef = useRef()
   const videoTexture = useVideoTexture('/video/nike-reel.mp4', {
     // start: false,
@@ -28,7 +27,6 @@ const LayeredVideo = () => {
     const uniforms = range(planeCount).map(() => ({ value: 1 }))
 
     const duration = 2
-    // const tl = gsap.timeline({ repeat: -1, repeatDelay: -2, yoyo: false })
 
     uniforms.forEach((u, i) => {
       gsap.to(u, {
@@ -38,7 +36,7 @@ const LayeredVideo = () => {
           '50%': { value: 0 },
           '100%': { value: 1 }
         },
-        duration: 2,
+        duration: 3,
         repeat: -1,
         delay: () => i * (duration / planeCount)
       })
@@ -116,8 +114,8 @@ const LayeredVideo = () => {
       />
       <PresentationControls polar={[0, 0]} azimuth={[-Infinity, Infinity]}>
         <group
-          onPointerDown={() => (lockRotation.current = true)}
-          onPointerUp={() => (lockRotation.current = false)}
+          // onPointerDown={() => (lockRotation.current = true)}
+          // onPointerUp={() => (lockRotation.current = false)}
           ref={groupRef}
         >
           {planes}
