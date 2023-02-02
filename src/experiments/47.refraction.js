@@ -58,7 +58,7 @@ vec4 blend (vec4 base, vec4 blend) {
 vec3 calcIrradiance(vec3 nor) {
   vec3 irradiance = vec3(
     nor.y,
-    nor.z,
+    sin(nor.z),
     nor.y * nor.y
   );
 
@@ -111,10 +111,10 @@ void main() {
     vec4(invertedOverlayTexture.rgb, invertedOverlayTexture.a * step(0.58, invertedOverlayTexture.r))
   ).rgb;
 
-  gl_FragColor.rgb = blend(
-    gl_FragColor,
-    borderChromaFactor * vec4(calcIrradiance(normal), 1.0)
-  ).rgb;
+  // gl_FragColor.rgb = blend(
+  //   gl_FragColor,
+  //   borderChromaFactor * vec4(calcIrradiance(normal), 1.0)
+  // ).rgb;
 }
 `
 
@@ -298,7 +298,7 @@ const Refraction = () => {
         </mesh>
       </group>
       <mesh
-        scale={[2.5, 2.5, 1.8]}
+        // scale={[2.5, 2.5, 1.8]}
         geometry={nodes.Cylinder001_1.geometry}
         position={[0, 0, -1]}
         ref={mesh1}
