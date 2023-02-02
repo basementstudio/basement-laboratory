@@ -18,7 +18,7 @@ import { useToggleState } from '~/hooks/use-toggle-state'
 const texts = [
   'HELLO, WORLD!',
   'THIS IS A PAGER',
-  'THIS SHOULD ALSO ALLOW SCROLLING OF THE TEXT. I THINK.'
+  'THIS SHOULD ALSO ALLOW SCROLLING THE TEXT. PRESS THE UP/DOWN BUTTONS.'
 ]
 
 const Pager = () => {
@@ -353,7 +353,7 @@ const Pager = () => {
             font="/fonts/gnu-unifont/GnuUnifont.ttf"
             fontSize={controls.fontSize}
           >
-            {texts[2]}
+            {texts[1]}
           </Text>
         </group>
       </scene>
