@@ -126,6 +126,8 @@ const Pager = () => {
     e.object.geometry.computeBoundingBox()
     e.object.geometry.boundingBox.getSize(buttonSize)
 
+    if (!e.object.userData.pressed) return
+
     gsap.to(e.object.position, {
       overwrite: true,
       z: `+=${buttonSize.z}`,
@@ -170,7 +172,7 @@ const Pager = () => {
       overwrite: true,
       x: yTilt,
       y: xTilt,
-      duration: 0.1
+      duration: 0.25
     })
   }, [])
 
@@ -179,7 +181,7 @@ const Pager = () => {
       overwrite: true,
       x: 0,
       y: 0,
-      duration: 0.1
+      duration: 0.25
     })
   }, [])
 
