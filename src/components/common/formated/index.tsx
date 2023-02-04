@@ -8,8 +8,6 @@ type FormatedProps = {
   className?: string
 }
 
-const Formated: FC<FormatedProps> = ({ children, className }) => {
+export const Formated: FC<FormatedProps> = ({ children, className }) => {
   return <div className={clsx(s['formated'], className)}>{children}</div>
 }
-
-export default Formated

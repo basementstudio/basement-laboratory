@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React, { FC } from 'react'
 
-import Formated from '~/components/common/formated'
+import { Formated } from '~/components/common/formated'
 import { getExampleGithubUrl } from '~/lib/utils'
 
 import s from './navigation-layout.module.scss'
