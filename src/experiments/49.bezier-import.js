@@ -21,8 +21,10 @@ const navUITunnel = tunnel()
   [..points, controls..]
                         -----> CubicBezierCurve3
   [..points, controls..]
-*/
 
+  Returns an array of connected bezier curves you
+  can then add to a CurvePath to get a path.
+*/
 const getBezierCurves = (curve, scale = 1) => {
   const beziers = []
 
