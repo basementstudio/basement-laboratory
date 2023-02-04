@@ -1,7 +1,7 @@
 import { tunnel } from '@basementstudio/definitive-scroll'
-import {  OrbitControls } from '@react-three/drei'
+import { OrbitControls, PerspectiveCamera } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 import { Formated } from '~/components/common/formated'
@@ -49,6 +49,7 @@ const getBezierCurves = (curve, scale = 1) => {
 
 const up = new THREE.Vector3(0, 0, 1)
 const axis = new THREE.Vector3()
+const initialCamPosition = new THREE.Vector3(-2, 5, 8)
 
 const BezierTests = () => {
   const { handleToggle: toggleCamAttached, isOn: isCamAttached } =
@@ -56,6 +57,7 @@ const BezierTests = () => {
   const { handleToggle: toggleCameraLocked, isOn: cameraLocked } =
     useToggleState()
   const boxRef = useRef()
+  const camRef = useRef()
   const [cameraPositions, setCameraPositions] = useState(() =>
     getBezierCurves(curveComplex, 2)
   )
@@ -82,7 +84,7 @@ const BezierTests = () => {
     )
   }, [cameraPositionsPointsPath])
 
-  useFrame((s) => {
+  useFrame(() => {
     if (!boxRef.current) return
 
     const progress =
@@ -104,16 +106,13 @@ const BezierTests = () => {
     }
 
     if (isCamAttached) {
-      s.camera.position.copy(point)
+      camRef.current.position.copy(point)
 
       if (cameraLocked) {
-        s.camera.lookAt(0, 0, 0)
+        camRef.current.lookAt(0, 0, 0)
       } else {
-        s.camera.quaternion.setFromAxisAngle(axis, radians)
+        camRef.current.quaternion.setFromAxisAngle(axis, radians)
       }
-    } else {
-      s.camera.position.set(-2, 5, 8)
-      s.camera.lookAt(0, 0, 0)
     }
   }, [])
 
@@ -128,15 +127,24 @@ const BezierTests = () => {
     }
   ])
 
+  useEffect(() => {
+    if (!isCamAttached) {
+      camRef.current.position.copy(initialCamPosition)
+      camRef.current.lookAt(0, 0, 0)
+    }
+  }, [isCamAttached])
+
   return (
     <>
-      <OrbitControls />
+      <PerspectiveCamera
+        makeDefault
+        position={initialCamPosition}
+        ref={camRef}
+      />
+      <OrbitControls enabled={!isCamAttached} />
       <axesHelper />
       <gridHelper args={[20, 20]} />
 
-      {/* <Box args={[0.5, 0.5, 0.5]} ref={boxRef}>
-        <meshNormalMaterial />
-      </Box> */}
       <group scale={0.15} visible={!isCamAttached} ref={boxRef}>
         <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 2.5]}>
           <coneGeometry args={[1, 2, 10]} />
