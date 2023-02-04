@@ -1,12 +1,16 @@
+import { tunnel } from '@basementstudio/definitive-scroll'
 import { Box, OrbitControls } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
+import { Formated } from '~/components/common/formated'
 import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useToggleState } from '~/hooks/use-toggle-state'
 
 import curveComplex from '../../public/splines/curve-complex.json'
+
+const navUITunnel = tunnel()
 
 /* 
   This works like:
@@ -41,19 +45,20 @@ const getBezierCurves = (curve, scale = 1) => {
   return beziers
 }
 
-const cameraPositions = getBezierCurves(curveComplex, 2)
-
 const BezierTests = () => {
   const { handleToggle: toggleCamAttached, isOn: isCamAttached } =
     useToggleState()
   const boxRef = useRef()
+  const [cameraPositions, setCameraPositions] = useState(() =>
+    getBezierCurves(curveComplex, 2)
+  )
 
   const pointsPath = useMemo(() => {
     const pointsPath = new THREE.CurvePath()
     cameraPositions.forEach((p) => pointsPath.add(p))
 
     return pointsPath
-  }, [])
+  }, [cameraPositions])
 
   const cameraPositionsPointsPath = useMemo(() => {
     const points = pointsPath.curves.reduce(
@@ -111,12 +116,71 @@ const BezierTests = () => {
           />
         </bufferGeometry>
       </line>
+
+      <navUITunnel.In>
+        <h3>Import your own bezier 👀</h3>
+        <div
+          style={{
+            marginTop: 8,
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px dashed rgba(255, 255, 255, 0.1)',
+            borderRadius: '6px',
+            padding: '14px',
+            position: 'relative'
+          }}
+        >
+          <input
+            type="file"
+            style={{ position: 'absolute', inset: 0, opacity: '0' }}
+            onChange={(e) => {
+              const file = e.target.files[0]
+              const reader = new FileReader()
+
+              reader.onload = (e) => {
+                const json = JSON.parse(e.target.result)
+
+                setCameraPositions(getBezierCurves(json, 1))
+              }
+
+              reader.readAsText(file)
+            }}
+          />
+          <p style={{ fontSize: 14, textAlign: 'center' }}>
+            Drop your own JSON here
+          </p>
+        </div>
+      </navUITunnel.In>
     </>
   )
 }
 
 BezierTests.Title = 'Imported Bezier Curves'
-// BezierTests.Description = 'Bezier curves imported from a JSON file'
+BezierTests.Description = (
+  <Formated>
+    <p>
+      This experiment aims to make using bezier curves much easier giving you
+      the hability to export them from Blender (not supported by{' '}
+      <code>gltf</code>).
+    </p>
+    <p>
+      We acomplish this by exporting a <code>JSON</code> file with points
+      information, then client code interprets that <code>JSON</code> and
+      creates all the ThreeJS necesary instances.
+    </p>
+    <p>
+      You can download the exporter plug-in we made for Blender{' '}
+      <a
+        href="https://github.com/basementstudio/blender-bezier-exporter"
+        target="_blank"
+        rel="noopener"
+      >
+        here
+      </a>
+      .
+    </p>
+    <navUITunnel.Out />
+  </Formated>
+)
 BezierTests.Tags = 'private'
 
 export default BezierTests
