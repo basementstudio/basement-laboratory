@@ -1,5 +1,5 @@
 import { tunnel } from '@basementstudio/definitive-scroll'
-import { Box, OrbitControls } from '@react-three/drei'
+import {  OrbitControls } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -47,8 +47,13 @@ const getBezierCurves = (curve, scale = 1) => {
   return beziers
 }
 
+const up = new THREE.Vector3(0, 0, 1)
+const axis = new THREE.Vector3()
+
 const BezierTests = () => {
   const { handleToggle: toggleCamAttached, isOn: isCamAttached } =
+    useToggleState()
+  const { handleToggle: toggleCameraLocked, isOn: cameraLocked } =
     useToggleState()
   const boxRef = useRef()
   const [cameraPositions, setCameraPositions] = useState(() =>
@@ -80,14 +85,34 @@ const BezierTests = () => {
   useFrame((s) => {
     if (!boxRef.current) return
 
-    const t = Math.sin(Date.now() / 1000) * 0.5 + 0.5
-    const point = pointsPath.getPointAt(t)
+    const progress =
+      Math.sin(Date.now() / 100 / pointsPath.getLength()) * 0.5 + 0.5
+
+    const point = pointsPath.getPointAt(progress)
+    const tangent = pointsPath.getTangent(progress)
+    const radians = Math.acos(up.dot(tangent))
+
+    axis.crossVectors(up, tangent).normalize()
 
     boxRef.current.position.copy(point)
-    boxRef.current.lookAt(0, 0, 0)
+
+    if (cameraLocked) {
+      boxRef.current.up = up
+      boxRef.current.lookAt(0, 0, 0)
+    } else {
+      boxRef.current.quaternion.setFromAxisAngle(axis, radians)
+    }
 
     if (isCamAttached) {
       s.camera.position.copy(point)
+
+      if (cameraLocked) {
+        s.camera.lookAt(0, 0, 0)
+      } else {
+        s.camera.quaternion.setFromAxisAngle(axis, radians)
+      }
+    } else {
+      s.camera.position.set(-2, 5, 8)
       s.camera.lookAt(0, 0, 0)
     }
   }, [])
@@ -96,6 +121,10 @@ const BezierTests = () => {
     {
       keys: 'a',
       callback: toggleCamAttached
+    },
+    {
+      keys: 'l',
+      callback: toggleCameraLocked
     }
   ])
 
@@ -105,9 +134,19 @@ const BezierTests = () => {
       <axesHelper />
       <gridHelper args={[20, 20]} />
 
-      <Box args={[0.5, 0.5, 0.5]} ref={boxRef}>
+      {/* <Box args={[0.5, 0.5, 0.5]} ref={boxRef}>
         <meshNormalMaterial />
-      </Box>
+      </Box> */}
+      <group scale={0.15} visible={!isCamAttached} ref={boxRef}>
+        <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 2.5]}>
+          <coneGeometry args={[1, 2, 10]} />
+          <meshNormalMaterial />
+        </mesh>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.4, 0.6, 3, 10]} />
+          <meshNormalMaterial />
+        </mesh>
+      </group>
 
       <line name="debug-camera-positions">
         <lineBasicMaterial attach="material" color="red" />
@@ -180,6 +219,16 @@ BezierTests.Description = (
       </a>
       .
     </p>
+    <h3>Controls</h3>
+    <ul>
+      <li>
+        <code>A</code> - Toggle camera attached to the bezier curve
+      </li>
+      <li>
+        <code>L</code> - Toggle between camera rotation locked to the bezier
+        curve or (0, 0, 0)
+      </li>
+    </ul>
     <navUITunnel.Out />
   </Formated>
 )
