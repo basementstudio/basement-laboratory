@@ -159,7 +159,7 @@ BezierTests.Description = (
   <Formated>
     <p>
       This experiment aims to make using bezier curves much easier giving you
-      the hability to export them from Blender (not supported by{' '}
+      the ability to export them from Blender (not supported by{' '}
       <code>gltf</code>).
     </p>
     <p>
