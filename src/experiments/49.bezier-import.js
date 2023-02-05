@@ -207,14 +207,14 @@ BezierTests.Title = 'Imported Bezier Curves'
 BezierTests.Description = (
   <Formated>
     <p>
-      This experiment aims to make using bezier curves much easier giving you
+      This experiment aims to make bezier curves much easier to use, giving you
       the ability to export them from Blender (not supported by{' '}
       <code>gltf</code>).
     </p>
     <p>
-      We acomplish this by exporting a <code>JSON</code> file with points
-      information, then client code interprets that <code>JSON</code> and
-      creates all the ThreeJS necesary instances.
+      We acomplish this by exporting a <code>JSON</code> file filled 
+      with data for each point of the curve, that the client code then 
+      interprets and uses to create all the necessary ThreeJS instances.
     </p>
     <p>
       You can download the exporter plug-in we made for Blender{' '}
