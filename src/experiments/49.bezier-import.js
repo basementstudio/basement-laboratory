@@ -227,16 +227,6 @@ BezierTests.Description = (
       </a>
       .
     </p>
-    <h3>Controls</h3>
-    <ul>
-      <li>
-        <code>A</code> - Toggle camera attached to the bezier curve
-      </li>
-      <li>
-        <code>L</code> - Toggle between camera rotation locked to the bezier
-        curve or (0, 0, 0)
-      </li>
-    </ul>
     <navUITunnel.Out />
   </Formated>
 )

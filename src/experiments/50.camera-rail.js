@@ -149,6 +149,7 @@ const BezierTests = () => {
     resultantRotationQuaternion.slerpQuaternions(
       faceTangentRotationQuaternion,
       faceMagnetRotationQuaternion,
+      /* Don't know what it does? Check https://www.desmos.com/calculator/liwtwpl4gq */
       Math.sin(remapedProgress * 2 * Math.PI - Math.PI / 2) * 0.5 + 0.5
     )
 
@@ -346,25 +347,14 @@ BezierTests.Title = 'Camera Rail'
 BezierTests.Description = (
   <Formated>
     <p>
-      This experiment aims to make using bezier curves much easier giving you
-      the ability to export them from Blender (not supported by{' '}
-      <code>gltf</code>).
-    </p>
-    <p>
-      We acomplish this by exporting a <code>JSON</code> file with points
-      information, then client code interprets that <code>JSON</code> and
-      creates all the ThreeJS necesary instances.
-    </p>
-    <p>
-      You can download the exporter plug-in we made for Blender{' '}
-      <a
-        href="https://github.com/basementstudio/blender-bezier-exporter"
-        target="_blank"
-        rel="noopener"
-      >
-        here
-      </a>
-      .
+      This example is based on{' '}
+      <a href="/examples/49.bezier-import" target="_blank">
+        this other example
+      </a>{' '}
+      to show how splines can be used to create a camera rail. The camera will
+      follow the curve and rotate to face the tangent's direction of the current
+      point in the curve. It also modifies the target view in certain points of
+      the curve to face other desired targets.
     </p>
     <h3>Controls</h3>
     <ul>
