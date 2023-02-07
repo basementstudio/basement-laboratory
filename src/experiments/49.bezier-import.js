@@ -4,48 +4,15 @@ import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
+import { BezierDropArea } from '~/components/common/bezier-drop-area'
 import { Formated } from '~/components/common/formated'
 import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useToggleState } from '~/hooks/use-toggle-state'
+import { getBezierCurves } from '~/lib/three'
 
 import curveComplex from '../../public/splines/curve-complex.json'
 
 const navUITunnel = tunnel()
-
-/* 
-  This works like:
-  [..points, controls..]
-                        -----> CubicBezierCurve3
-  [..points, controls..]
-                        -----> CubicBezierCurve3
-  [..points, controls..]
-                        -----> CubicBezierCurve3
-  [..points, controls..]
-
-  Returns an array of connected bezier curves you
-  can then add to a CurvePath to get a path.
-*/
-const getBezierCurves = (curve, scale = 1) => {
-  const beziers = []
-
-  for (let i = 0; i < curve.length; i += 1) {
-    const p1 = curve[i]
-    const p2 = curve[i + 1]
-
-    if (!p2) break
-
-    beziers.push(
-      new THREE.CubicBezierCurve3(
-        new THREE.Vector3(p1.px, p1.pz, p1.py).multiplyScalar(scale),
-        new THREE.Vector3(p1.hrx, p1.hrz, p1.hry).multiplyScalar(scale),
-        new THREE.Vector3(p2.hlx, p2.hlz, p2.hly).multiplyScalar(scale),
-        new THREE.Vector3(p2.px, p2.pz, p2.py).multiplyScalar(scale)
-      )
-    )
-  }
-
-  return beziers
-}
 
 const up = new THREE.Vector3(0, 0, 1)
 const axis = new THREE.Vector3()
@@ -168,36 +135,7 @@ const BezierTests = () => {
 
       <navUITunnel.In>
         <h3>Import your own bezier 👀</h3>
-        <div
-          style={{
-            marginTop: 8,
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px dashed rgba(255, 255, 255, 0.1)',
-            borderRadius: '6px',
-            padding: '14px',
-            position: 'relative'
-          }}
-        >
-          <input
-            type="file"
-            style={{ position: 'absolute', inset: 0, opacity: '0' }}
-            onChange={(e) => {
-              const file = e.target.files[0]
-              const reader = new FileReader()
-
-              reader.onload = (e) => {
-                const json = JSON.parse(e.target.result)
-
-                setCameraPositions(getBezierCurves(json, 1))
-              }
-
-              reader.readAsText(file)
-            }}
-          />
-          <p style={{ fontSize: 14, textAlign: 'center' }}>
-            Drop your own JSON here
-          </p>
-        </div>
+        <BezierDropArea onDrop={setCameraPositions} />
       </navUITunnel.In>
     </>
   )

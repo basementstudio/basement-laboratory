@@ -4,35 +4,15 @@ import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
+import { BezierDropArea } from '~/components/common/bezier-drop-area'
 import { Formated } from '~/components/common/formated'
 import { useMousetrap } from '~/hooks/use-mousetrap'
 import { useToggleState } from '~/hooks/use-toggle-state'
+import { getBezierCurves } from '~/lib/three'
 
 import curveComplex from '../../public/splines/curve-complex.json'
 
 const navUITunnel = tunnel()
-
-const getBezierCurves = (curve, scale = 1) => {
-  const beziers = []
-
-  for (let i = 0; i < curve.length; i += 1) {
-    const p1 = curve[i]
-    const p2 = curve[i + 1]
-
-    if (!p2) break
-
-    beziers.push(
-      new THREE.CubicBezierCurve3(
-        new THREE.Vector3(p1.px, p1.pz, p1.py).multiplyScalar(scale),
-        new THREE.Vector3(p1.hrx, p1.hrz, p1.hry).multiplyScalar(scale),
-        new THREE.Vector3(p2.hlx, p2.hlz, p2.hly).multiplyScalar(scale),
-        new THREE.Vector3(p2.px, p2.pz, p2.py).multiplyScalar(scale)
-      )
-    )
-  }
-
-  return beziers
-}
 
 /* Set an up to rotate the view pi radians on the x axis */
 const initialCamPosition = new THREE.Vector3(-2, 5, 8)
@@ -81,8 +61,8 @@ const BezierTests = () => {
   const magnetLineRef = useRef()
   const tangentLineRef = useRef()
   const closestPointRef = useRef()
-  const progress = useRef(0)
-  const targetProgress = useRef(0)
+  const progress = useRef({ value: 0, target: 0 })
+  const nextTargetProgress = useRef(0)
 
   const pointsPath = useMemo(() => {
     const pointsPath = new THREE.CurvePath()
@@ -105,14 +85,14 @@ const BezierTests = () => {
   )
 
   useFrame(() => {
-    progress.current = THREE.MathUtils.lerp(
-      progress.current,
-      targetProgress.current,
+    progress.current.value = THREE.MathUtils.lerp(
+      progress.current.value,
+      progress.current.target,
       0.1
     )
-    const remapedProgress = THREE.MathUtils.clamp(
+    nextTargetProgress.current = THREE.MathUtils.clamp(
       THREE.MathUtils.mapLinear(
-        progress.current,
+        progress.current.value,
         magnetClosestPoint.t - magnetThreshold,
         magnetClosestPoint.t + magnetThreshold,
         0,
@@ -122,9 +102,14 @@ const BezierTests = () => {
       1
     )
 
+    /* Don't know what this does? Check https://www.desmos.com/calculator/ma7ygbq9yj */
+    const magnetDistCurve =
+      Math.sin(nextTargetProgress.current * 2 * Math.PI - Math.PI / 2) * 0.5 +
+      0.5
+
     /* Calc faceTangentRotationQuaternion */
-    const point = pointsPath.getPointAt(progress.current)
-    const tangent = pointsPath.getTangent(progress.current)
+    const point = pointsPath.getPointAt(progress.current.value)
+    const tangent = pointsPath.getTangent(progress.current.value)
 
     if (isCamAttached) {
       lookAtMatrix.lookAt(point, point.clone().add(tangent), camRef.current.up)
@@ -149,8 +134,7 @@ const BezierTests = () => {
     resultantRotationQuaternion.slerpQuaternions(
       faceTangentRotationQuaternion,
       faceMagnetRotationQuaternion,
-      /* Don't know what it does? Check https://www.desmos.com/calculator/liwtwpl4gq */
-      Math.sin(remapedProgress * 2 * Math.PI - Math.PI / 2) * 0.5 + 0.5
+      magnetDistCurve
     )
 
     /* Update position */
@@ -181,10 +165,19 @@ const BezierTests = () => {
     }
 
     if (
-      progress.current >= magnetClosestPoint.t - magnetThreshold &&
-      progress.current <= magnetClosestPoint.t + magnetThreshold
+      progress.current.value >= magnetClosestPoint.t - magnetThreshold &&
+      progress.current.value <= magnetClosestPoint.t + magnetThreshold
     ) {
       magnetLineRef.current.geometry.setFromPoints([magnetTarget, point])
+
+      /* Apply magnet atraction */
+      const atractionForce = 0.0005
+      /* Don't know what this does? https://www.desmos.com/calculator/h4rvidjjcx */
+      const atractionResult =
+        Math.sin(nextTargetProgress.current * Math.PI + Math.PI / 2) *
+        atractionForce
+
+      progress.current.target += atractionResult
     }
   }, [])
 
@@ -216,8 +209,8 @@ const BezierTests = () => {
     /* Set progress from 0 to 1 based on wheel events */
     const pxDuration = 16000
     const handleWheel = (e) => {
-      targetProgress.current = THREE.MathUtils.clamp(
-        targetProgress.current + e.deltaY / pxDuration,
+      progress.current.target = THREE.MathUtils.clamp(
+        progress.current.target + e.deltaY / pxDuration,
         0,
         1
       )
@@ -308,36 +301,7 @@ const BezierTests = () => {
 
       <navUITunnel.In>
         <h3>Import your own bezier 👀</h3>
-        <div
-          style={{
-            marginTop: 8,
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px dashed rgba(255, 255, 255, 0.1)',
-            borderRadius: '6px',
-            padding: '14px',
-            position: 'relative'
-          }}
-        >
-          <input
-            type="file"
-            style={{ position: 'absolute', inset: 0, opacity: '0' }}
-            onChange={(e) => {
-              const file = e.target.files[0]
-              const reader = new FileReader()
-
-              reader.onload = (e) => {
-                const json = JSON.parse(e.target.result)
-
-                setCameraPositions(getBezierCurves(json, 1))
-              }
-
-              reader.readAsText(file)
-            }}
-          />
-          <p style={{ fontSize: 14, textAlign: 'center' }}>
-            Drop your own JSON here
-          </p>
-        </div>
+        <BezierDropArea onDrop={setCameraPositions} />
       </navUITunnel.In>
     </>
   )
@@ -363,7 +327,8 @@ BezierTests.Description = (
       </li>
       <li>
         <code>L</code> - Toggle between camera rotation locked to the bezier
-        curve or (0, 0, 0)
+        curve tangent's direction or world's{' '}
+        <code style={{ whiteSpace: 'nowrap' }}>(0, 0, 0)</code>
       </li>
     </ul>
     <navUITunnel.Out />
