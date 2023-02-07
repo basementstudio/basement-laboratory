@@ -18,7 +18,7 @@ const navUITunnel = tunnel()
 const initialCamPosition = new THREE.Vector3(-2, 5, 8)
 
 const magnetTarget = new THREE.Vector3(4, 3, 2)
-const magnetThreshold = 0.03
+const magnetThreshold = 0.02
 
 const faceTangentRotationQuaternion = new THREE.Quaternion()
 const faceMagnetRotationQuaternion = new THREE.Quaternion()
@@ -102,7 +102,7 @@ const BezierTests = () => {
       1
     )
 
-    /* Don't know what this does? Check https://www.desmos.com/calculator/ma7ygbq9yj */
+    /* Don't know what this does? https://www.desmos.com/calculator/h4rvidjjcx */
     const magnetDistCurve =
       Math.sin(nextTargetProgress.current * 2 * Math.PI - Math.PI / 2) * 0.5 +
       0.5
