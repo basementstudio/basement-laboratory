@@ -150,9 +150,9 @@ BezierTests.Description = (
       <code>gltf</code>).
     </p>
     <p>
-      We acomplish this by exporting a <code>JSON</code> file filled 
-      with data for each point of the curve, that the client code then 
-      interprets and uses to create all the necessary ThreeJS instances.
+      We acomplish this by exporting a <code>JSON</code> file filled with data
+      for each point of the curve, that the client code then interprets and uses
+      to create all the necessary ThreeJS instances.
     </p>
     <p>
       You can download the exporter plug-in we made for Blender{' '}
