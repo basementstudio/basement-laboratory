@@ -1,4 +1,5 @@
 import { Euler, Matrix4, Vector3 } from 'three'
+import * as THREE from 'three'
 import { PerspectiveCamera } from 'three/src/cameras/PerspectiveCamera'
 import { Clock } from 'three/src/core/Clock'
 import { Raycaster } from 'three/src/core/Raycaster'
@@ -271,4 +272,53 @@ export const setCameraLookAtEuler = (position: Vector3, target: Vector3) => {
   m.lookAt(position, target, new Vector3(0, 1, 0))
 
   return new Euler().setFromRotationMatrix(m)
+}
+
+type Curve = {
+  id: number
+  px: number
+  py: number
+  pz: number
+  hlx: number
+  hly: number
+  hlz: number
+  hrx: number
+  hry: number
+  hrz: number
+}
+
+/* 
+  This works like:
+  [..points, controls..]
+                        -----> CubicBezierCurve3
+  [..points, controls..]
+                        -----> CubicBezierCurve3
+  [..points, controls..]
+                        -----> CubicBezierCurve3
+  [..points, controls..]
+
+  Returns an array of connected bezier curves you
+  can then add to a CurvePath to get a path.
+*/
+
+export const getBezierCurves = (curve: Curve[], scale = 1) => {
+  const beziers = []
+
+  for (let i = 0; i < curve.length; i += 1) {
+    const p1 = curve[i]
+    const p2 = curve[i + 1]
+
+    if (!p2) break
+
+    beziers.push(
+      new THREE.CubicBezierCurve3(
+        new THREE.Vector3(p1.px, p1.pz, p1.py).multiplyScalar(scale),
+        new THREE.Vector3(p1.hrx, p1.hrz, p1.hry).multiplyScalar(scale),
+        new THREE.Vector3(p2.hlx, p2.hlz, p2.hly).multiplyScalar(scale),
+        new THREE.Vector3(p2.px, p2.pz, p2.py).multiplyScalar(scale)
+      )
+    )
+  }
+
+  return beziers
 }
