@@ -1,13 +1,10 @@
 import { useFrame, useLoader } from '@react-three/fiber'
 import React, { useRef, useEffect, useLayoutEffect, Suspense } from 'react'
-import { RGBELoader } from 'three-stdlib'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { extend } from '@react-three/fiber'
 import { R3FCanvasLayout } from '../components/layout/r3f-canvas-layout'
 import {
-  MeshTransmissionMaterial,
   Instance,
   OrbitControls,
   Instances,
@@ -28,7 +25,6 @@ const Text = ({ config }) => {
     '/fonts/grotesque/BasementGrotesqueRoman_Bold.json'
   )
 
-  const texture = useLoader(TextureLoader, '/images/metal_copper_flamed.png')
   let geo = new TextGeometry(config.text, {
     font,
     size: config.fontSize,
