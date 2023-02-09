@@ -13,7 +13,6 @@ import {
   Lightformer
 } from '@react-three/drei'
 import { useControls, Leva } from 'leva'
-import { TextureLoader } from 'three'
 
 extend({ TextGeometry })
 
