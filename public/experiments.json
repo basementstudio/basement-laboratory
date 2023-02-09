@@ -1035,10 +1035,11 @@
   },
   {
     "filename": "52.rotating-twisted-3d-typography.js",
-    "title": "Plain ThreeJS (example)",
+    "title": "Rotating Twisted 3D Text",
     "href": "/experiments/52.rotating-twisted-3d-typography.js",
     "tags": [
-      "example"
+      "three",
+      "typography"
     ],
     "number": 50,
     "contributors": []
