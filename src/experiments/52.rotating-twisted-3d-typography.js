@@ -1,18 +1,18 @@
-import { useFrame, useLoader } from '@react-three/fiber'
-import React, { useRef, useEffect, useLayoutEffect, Suspense } from 'react'
+import {
+  Environment,
+  Instance,
+  Instances,
+  Lightformer,
+  OrbitControls,
+  Stats
+} from '@react-three/drei'
+import { extend, useFrame, useLoader } from '@react-three/fiber'
+import { Leva, useControls } from 'leva'
+import React, { Suspense, useEffect, useLayoutEffect, useRef } from 'react'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader'
-import { extend } from '@react-three/fiber'
+
 import { R3FCanvasLayout } from '../components/layout/r3f-canvas-layout'
-import {
-  Instance,
-  OrbitControls,
-  Instances,
-  Stats,
-  Environment,
-  Lightformer
-} from '@react-three/drei'
-import { useControls, Leva } from 'leva'
 
 extend({ TextGeometry })
 
@@ -152,9 +152,14 @@ const Text = ({ config }) => {
     refMaterial.current.userData.shader = shader
   }
 
-  const result = (
-    <mesh ref={refMesh} castShadow position={[0, 0, 0.6]} rotation={[1.2, 0, 0]}>
-      <bufferGeometry attach="geometry" geometry={geo} />
+  return (
+    <mesh
+      ref={refMesh}
+      castShadow
+      position={[0, 0, 0.6]}
+      rotation={[1.2, 0, 0]}
+      geometry={geo}
+    >
       <meshStandardMaterial
         onBeforeCompile={onBeforeCompile}
         ref={refMaterial}
@@ -163,7 +168,6 @@ const Text = ({ config }) => {
       />
     </mesh>
   )
-  return result
 }
 
 const Grid = ({ number = 23, lineWidth = 0.026, height = 0.5 }) => (
