@@ -1042,6 +1042,23 @@
       "typography"
     ],
     "number": 50,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "53.rapid-image-layers-animation.js",
+    "title": "Rapid Image Layers Animation",
+    "href": "/experiments/53.rapid-image-layers-animation.js",
+    "tags": [],
+    "number": 51,
     "contributors": []
   }
 ]
