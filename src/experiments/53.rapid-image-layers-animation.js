@@ -39,7 +39,7 @@ const RapidImageLayersAnimation = () => {
         [layers[i].el, layers[i].image],
         {
           duration: tlOptions.duration,
-          ease: 'Power2.easeInOut',
+          ease: 'power2.inOut',
           opacity: 1,
           y: 0,
           filter: 'blur(0px)'
@@ -69,7 +69,7 @@ const RapidImageLayersAnimation = () => {
         [layers[layersNumber - 1].el, layers[layersNumber - 1].image],
         {
           duration: tlOptions.duration,
-          ease: 'Expo.easeInOut',
+          ease: 'expo.inOut',
           y: (index) => (index ? '101%' : '-101%')
         },
         'halfway'
