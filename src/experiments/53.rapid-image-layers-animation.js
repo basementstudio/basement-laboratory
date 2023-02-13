@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 
+import { Loader, useLoader } from '~/components/common/loader'
 import s from '~/css/experiments/rapid-image-layers-animation.module.scss'
 
 import { SmoothScrollLayout } from '../components/layout/smooth-scroll-layout'
@@ -17,6 +18,7 @@ const RapidImageLayersAnimation = () => {
   const containerRef = useRef()
   const timelineRef = useRef()
   const { isOn: startAnimation, handleOff, handleOn } = useToggleState(false)
+  const setLoaded = useLoader((s) => s.setLoaded)
 
   useGsapContext(() => {
     if (!containerRef.current) return
@@ -76,6 +78,22 @@ const RapidImageLayersAnimation = () => {
       )
   }, [])
 
+  // Preload images
+  useEffect(() => {
+    const promiseArray = [...Array(layersNumber)].map(
+      (_, i) =>
+        new Promise((resolve) => {
+          const img = new Image()
+          img.onload = resolve
+          img.src = `../images/rapid-image-layers/${i + 1}.jpg`
+        })
+    )
+
+    Promise.all(promiseArray).then(() => {
+      setLoaded(true)
+    })
+  }, [setLoaded])
+
   useEffect(() => {
     if (!timelineRef.current) return
 
@@ -86,6 +104,7 @@ const RapidImageLayersAnimation = () => {
 
   return (
     <div style={{ position: 'relative', height: '100vh' }}>
+      <Loader />
       <button className={s.button} onClick={handleOn}>
         Start Animation
       </button>
