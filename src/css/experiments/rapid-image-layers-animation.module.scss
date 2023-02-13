@@ -30,6 +30,7 @@
   height: 100%;
   overflow: hidden;
   transform: translate3d(0, 101%, 0);
+  will-change: transform;
 
   &:last-child {
     .layers__item-img {
@@ -44,4 +45,5 @@
   background-size: cover;
   background-position: 50% 50%;
   transform: translate3d(0, -101%, 0);
+  will-change: transform;
 }
