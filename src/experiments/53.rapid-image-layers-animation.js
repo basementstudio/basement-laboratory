@@ -71,6 +71,12 @@ const RapidImageLayersAnimation = () => {
       step: 0.1,
       value: DURATION * 1.5,
       max: 20
+    },
+    lastPanelDelay: {
+      min: 0.1,
+      step: 0.1,
+      value: (DURATION * 5) / 2.5,
+      max: 20
     }
   })
 
@@ -160,7 +166,7 @@ const RapidImageLayersAnimation = () => {
         [layers[layers.length - 1].el, layers[layers.length - 1].image],
         {
           duration: tlOptions.duration / 2.5,
-          delay: tlOptions.duration / 2.5,
+          delay: tlOptions.lastPanelDelay,
           ease: 'expo.inOut',
           y: (index) => (index ? '101%' : '-101%')
         },
