@@ -40,11 +40,15 @@
   }
 }
 
-.layers__item-img {
+.layers__item-asset {
   width: 100%;
   height: 100%;
   background-size: cover;
   background-position: 50% 50%;
   transform: translate3d(0, -101%, 0);
   will-change: transform;
+
+  &.video {
+    transform: translate3d(0, -101%, 0) scale(1.11);
+  }
 }

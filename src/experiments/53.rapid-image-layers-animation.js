@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react'
+import clsx from 'clsx'
+import { Leva, useControls } from 'leva'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { Loader, useLoader } from '~/components/common/loader'
 import s from '~/css/experiments/rapid-image-layers-animation.module.scss'
@@ -8,17 +10,104 @@ import { useGsapContext } from '../hooks/use-gsap-context'
 import { useToggleState } from '../hooks/use-toggle-state'
 import { DURATION, gsap } from '../lib/gsap'
 
-const layersNumber = 10
-const tlOptions = {
-  duration: DURATION * 2,
-  panelDelay: 0.18
-}
+const layers = [
+  {
+    assetName: '1',
+    format: 'jpg'
+  },
+  {
+    assetName: '2',
+    format: 'jpg'
+  },
+  {
+    assetName: '3',
+    format: 'jpg'
+  },
+  {
+    assetName: '4',
+    format: 'jpg'
+  },
+  {
+    assetName: '5',
+    format: 'jpg'
+  },
+  {
+    assetName: '6',
+    format: 'jpg'
+  },
+  {
+    assetName: '7',
+    format: 'jpg'
+  },
+  {
+    assetName: '8',
+    format: 'jpg'
+  },
+  {
+    assetName: '9',
+    format: 'jpg'
+  },
+  {
+    assetName: 'hennessy-bruto',
+    format: 'mp4'
+  }
+]
 
 const RapidImageLayersAnimation = () => {
   const containerRef = useRef()
   const timelineRef = useRef()
   const { isOn: startAnimation, handleOff, handleOn } = useToggleState(false)
   const setLoaded = useLoader((s) => s.setLoaded)
+
+  const tlOptions = useControls({
+    duration: {
+      min: 0.1,
+      step: 0.1,
+      value: DURATION * 5,
+      max: 20
+    },
+    panelDelay: {
+      min: 0.1,
+      step: 0.1,
+      value: DURATION * 1.5,
+      max: 20
+    }
+  })
+
+  const getLayerItem = useCallback((item) => {
+    const baseProps = {
+      id: 'layers-item-asset',
+      className: s['layers__item-asset'],
+      assetUrl: `../images/rapid-image-layers/${item.assetName}.${item.format}`
+    }
+
+    switch (item.format) {
+      case 'jpg': {
+        return (
+          <div
+            id={baseProps.id}
+            className={baseProps.className}
+            style={{
+              backgroundImage: `url(${baseProps.assetUrl})`
+            }}
+          />
+        )
+      }
+      case 'mp4': {
+        return (
+          <video
+            id={baseProps.id}
+            className={clsx(baseProps.className, s.video)}
+            src={baseProps.assetUrl}
+            muted
+            loop
+            playsInline
+            autoPlay
+          />
+        )
+      }
+    }
+  }, [])
 
   useGsapContext(() => {
     if (!containerRef.current) return
@@ -27,7 +116,7 @@ const RapidImageLayersAnimation = () => {
     containerRef.current.querySelectorAll('#layers-item').forEach((item) =>
       layers.push({
         el: item,
-        image: item.querySelector('#layers-item-img')
+        image: item.querySelector('#layers-item-asset')
       })
     )
 
@@ -36,7 +125,7 @@ const RapidImageLayersAnimation = () => {
       onComplete: handleOff
     })
 
-    for (let i = 0, len = layersNumber; i <= len - 1; ++i) {
+    for (let i = 0, len = layers.length; i <= len - 1; ++i) {
       timelineRef.current.to(
         [layers[i].el, layers[i].image],
         {
@@ -53,13 +142,13 @@ const RapidImageLayersAnimation = () => {
     timelineRef.current
       .addLabel(
         'halfway',
-        tlOptions.panelDelay * (layersNumber - 1) + tlOptions.duration
+        tlOptions.panelDelay * (layers.length - 1) + tlOptions.duration
       )
       .call(
         () => {
           // hide all Image layers except the last one (at this point the last Image layer is visible fullscreen)
           layers
-            .filter((_, pos) => pos != layersNumber - 1)
+            .filter((_, pos) => pos != layers.length - 1)
             .forEach((panel) => {
               gsap.set(panel.el, { opacity: 0 })
             })
@@ -68,26 +157,28 @@ const RapidImageLayersAnimation = () => {
         'halfway'
       )
       .to(
-        [layers[layersNumber - 1].el, layers[layersNumber - 1].image],
+        [layers[layers.length - 1].el, layers[layers.length - 1].image],
         {
-          duration: tlOptions.duration,
+          duration: tlOptions.duration / 2.5,
+          delay: tlOptions.duration / 2.5,
           ease: 'expo.inOut',
           y: (index) => (index ? '101%' : '-101%')
         },
         'halfway'
       )
-  }, [])
+  }, [tlOptions])
 
   // Preload images
   useEffect(() => {
-    const promiseArray = [...Array(layersNumber)].map(
-      (_, i) =>
-        new Promise((resolve) => {
+    const promiseArray = layers.map((layer) => {
+      if (layer.format === 'jpg') {
+        return new Promise((resolve) => {
           const img = new Image()
           img.onload = resolve
-          img.src = `../images/rapid-image-layers/${i + 1}.jpg`
+          img.src = `../images/rapid-image-layers/${layer.assetName}.${layer.format}`
         })
-    )
+      }
+    })
 
     Promise.all(promiseArray).then(() => {
       setLoaded(true)
@@ -104,22 +195,15 @@ const RapidImageLayersAnimation = () => {
 
   return (
     <div style={{ position: 'relative', height: '100vh' }}>
+      <Leva />
       <Loader />
       <button className={s.button} onClick={handleOn}>
         Start Animation
       </button>
       <div ref={containerRef} className={s.layers}>
-        {[...Array(layersNumber)].map((_, idx) => (
+        {layers.map((layer, idx) => (
           <div id="layers-item" key={idx} className={s['layers__item']}>
-            <div
-              id="layers-item-img"
-              className={s['layers__item-img']}
-              style={{
-                backgroundImage: `url(../images/rapid-image-layers/${
-                  idx + 1
-                }.jpg)`
-              }}
-            />
+            {getLayerItem(layer)}
           </div>
         ))}
       </div>
