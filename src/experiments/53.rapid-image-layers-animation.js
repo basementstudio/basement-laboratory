@@ -77,6 +77,12 @@ const RapidImageLayersAnimation = () => {
       step: 0.1,
       value: (DURATION * 5) / 2.5,
       max: 20
+    },
+    timeScale: {
+      min: 0.1,
+      step: 0.1,
+      value: 1,
+      max: 20
     }
   })
 
@@ -195,9 +201,9 @@ const RapidImageLayersAnimation = () => {
     if (!timelineRef.current) return
 
     if (startAnimation) {
-      timelineRef.current.seek(0).play()
+      timelineRef.current.seek(0).timeScale(tlOptions.timeScale).play()
     }
-  }, [startAnimation])
+  }, [startAnimation, tlOptions.timeScale])
 
   return (
     <div style={{ position: 'relative', height: '100vh' }}>
