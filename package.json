@@ -19,8 +19,8 @@
   "dependencies": {
     "@basementstudio/definitive-scroll": "^0.1.7",
     "@liveblocks/client": "^0.17.4",
-    "@react-three/drei": "^9.50.4",
-    "@react-three/fiber": "^8.10.0",
+    "@react-three/drei": "^9.56.28",
+    "@react-three/fiber": "^8.11.5",
     "@react-three/gltfjsx": "^4.3.4",
     "@react-three/postprocessing": "^2.7.0",
     "@react-three/rapier": "^0.9.0",

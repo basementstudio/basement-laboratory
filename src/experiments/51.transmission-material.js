@@ -2,16 +2,17 @@ import {
   Environment,
   Float,
   MeshTransmissionMaterial,
+  OrbitControls,
   PerspectiveCamera,
   useGLTF,
-  // useTexture
+  useTexture
 } from '@react-three/drei'
 import { useControls } from 'leva'
 import React from 'react'
 
 const TransmissionMaterial = () => {
   const { nodes } = useGLTF('/models/lente.glb')
-  // const environment = useTexture('/textures/environment.jpg')
+  const roughnessMap = useTexture('/textures/dirtness.jpg')
 
   const config = useControls({
     meshPhysicalMaterial: false,
@@ -21,7 +22,7 @@ const TransmissionMaterial = () => {
     resolution: { value: 2048, min: 256, max: 2048, step: 256 },
     transmission: { value: 1, min: 0, max: 1 },
     roughness: { value: 0.0, min: 0, max: 1, step: 0.01 },
-    thickness: { value: 3.5, min: 0, max: 10, step: 0.01 },
+    thickness: { value: 1, min: 0, max: 10, step: 0.01 },
     ior: { value: 1.14, min: 1, max: 5, step: 0.01 },
     chromaticAberration: { value: 0.04, min: 0, max: 1 },
     anisotropy: { value: 0.1, min: 0, max: 1, step: 0.01 },
@@ -33,7 +34,7 @@ const TransmissionMaterial = () => {
     // color: '#c9ffa1',
     // bg: '#839681'
   })
-  
+
   return (
     <>
       {/* <axesHelper />
@@ -43,7 +44,7 @@ const TransmissionMaterial = () => {
         blur={10}
       />
 
-      {/* <OrbitControls /> */}
+      <OrbitControls />
       <PerspectiveCamera makeDefault position={[0, 0, 5]} />
 
       <Float>
@@ -53,7 +54,7 @@ const TransmissionMaterial = () => {
           scale={[0.5, 0.5, 0.25]}
           rotation={[-0.4, -0.35, 0]}
         >
-          <MeshTransmissionMaterial {...config} />
+          <MeshTransmissionMaterial {...config} roughnessMap={roughnessMap} />
         </mesh>
       </Float>
 
@@ -63,7 +64,7 @@ const TransmissionMaterial = () => {
           rotation={[-0.6, -0.8, 0]}
           geometry={nodes.Cylinder001_1.geometry}
         >
-          <MeshTransmissionMaterial {...config} />
+          <MeshTransmissionMaterial {...config} roughnessMap={roughnessMap} />
         </mesh>
       </Float>
     </>
