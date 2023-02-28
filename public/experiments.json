@@ -842,5 +842,232 @@
         "company": "@basementstudio"
       }
     ]
+  },
+  {
+    "filename": "40.carpenter.js",
+    "title": "Carpenter",
+    "href": "/experiments/40.carpenter.js",
+    "tags": [
+      "private"
+    ],
+    "number": 40,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "41.infinite-render.js",
+    "title": "InfiniteRender Technique",
+    "href": "/experiments/41.infinite-render.js",
+    "tags": [],
+    "number": 41,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "43.depth-shader.js",
+    "title": "Depth Shader",
+    "href": "/experiments/43.depth-shader.js",
+    "tags": [
+      "shaders"
+    ],
+    "number": 42,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "45.fake-window.js",
+    "title": "FakeWindow",
+    "href": "/experiments/45.fake-window.js",
+    "tags": [
+      "private"
+    ],
+    "number": 43,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "46.layered-video.js",
+    "title": "Layered Video",
+    "href": "/experiments/46.layered-video.js",
+    "tags": [],
+    "number": 44,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "47.refraction.js",
+    "title": "Refraction",
+    "href": "/experiments/47.refraction.js",
+    "tags": [],
+    "number": 45,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "48.pager.js",
+    "title": "Pager",
+    "href": "/experiments/48.pager.js",
+    "tags": [
+      "private"
+    ],
+    "number": 46,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "49.bezier-import.js",
+    "title": "Imported Bezier Curves",
+    "href": "/experiments/49.bezier-import.js",
+    "tags": [
+      "private"
+    ],
+    "number": 47,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "joaquin@basement.studio",
+        "company": "@basementstudio "
+      }
+    ]
+  },
+  {
+    "filename": "50.camera-rail.js",
+    "title": "Camera Rail",
+    "href": "/experiments/50.camera-rail.js",
+    "tags": [
+      "private"
+    ],
+    "number": 48,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "51.transmission-material.js",
+    "title": "Drei's Transmision Material Tests",
+    "href": "/experiments/51.transmission-material.js",
+    "tags": [],
+    "number": 49,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "52.rotating-twisted-3d-typography.js",
+    "title": "Rotating Twisted 3D Text",
+    "href": "/experiments/52.rotating-twisted-3d-typography.js",
+    "tags": [
+      "three",
+      "typography"
+    ],
+    "number": 50,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "53.rapid-image-layers-animation.js",
+    "title": "Rapid Image Layers Animation",
+    "href": "/experiments/53.rapid-image-layers-animation.js",
+    "tags": [],
+    "number": 51,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
   }
 ]
