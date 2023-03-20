@@ -13,7 +13,7 @@ const ScaleTransmissionMaterial = () => {
   const { nodes } = useGLTF('/models/hero-scale.gltf')
   const roughnessMap = useTexture('/textures/dirtness.jpg')
 
-  // const texture = useTexture('/images/matcap/CL-107.png')`
+  const texture = useTexture('/images/matcap/CL-107.png')
 
   const config = useControls({
     meshPhysicalMaterial: false,
@@ -67,8 +67,8 @@ const ScaleTransmissionMaterial = () => {
             position={[377.31, 407.41, -112.79]}
             rotation={[-0.22, -0.49, 0.91]}
           >
-            <MeshTransmissionMaterial {...config} roughnessMap={roughnessMap} />
-            {/* <meshMatcapMaterial matcap={texture} /> */}
+            {/* <MeshTransmissionMaterial {...config} roughnessMap={roughnessMap} /> */}
+            <meshMatcapMaterial matcap={texture} />
           </mesh>
           <mesh
             castShadow
