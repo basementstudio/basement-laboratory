@@ -12,25 +12,25 @@ import React from 'react'
 
 const ScaleTransmissionMaterial = () => {
   const { nodes } = useGLTF('/models/hero-scale-v3.gltf')
-  const roughnessMap = useTexture('/textures/dirtness.jpg')
+  const roughnessMap = useTexture('/images/scale-transmission/displacement.png')
 
-  const texture = useTexture('/images/matcap/CL-107.png')
+  const texture = useTexture('/images/scale-transmission/matcap.png')
 
   const config = useControls({
     meshPhysicalMaterial: false,
     transmissionSampler: false,
     backside: false,
-    samples: { value: 7, min: 1, max: 32, step: 1 },
-    resolution: { value: 1024, min: 256, max: 2048, step: 256 },
+    samples: { value: 5, min: 1, max: 32, step: 1 },
+    resolution: { value: 2048, min: 256, max: 2048, step: 256 },
     transmission: { value: 1, min: 0, max: 1 },
     roughness: { value: 1.0, min: 0, max: 1, step: 0.01 },
-    thickness: { value: 1, min: 0, max: 10, step: 0.01 },
-    ior: { value: 1.14, min: 1, max: 5, step: 0.01 },
+    thickness: { value: 4, min: 0, max: 10, step: 0.01 },
+    ior: { value: 1.2, min: 1, max: 5, step: 0.01 },
     chromaticAberration: { value: 1.0, min: 0, max: 1 },
     anisotropy: { value: 0.1, min: 0, max: 1, step: 0.01 },
-    distortion: { value: 0.0, min: 0, max: 1, step: 0.01 },
-    distortionScale: { value: 0.3, min: 0.01, max: 1, step: 0.01 },
-    temporalDistortion: { value: 0.5, min: 0, max: 1, step: 0.01 },
+    distortion: { value: 0.6, min: 0, max: 1, step: 0.01 },
+    distortionScale: { value: 0.5, min: 0.01, max: 1, step: 0.01 },
+    temporalDistortion: { value: 1, min: 0, max: 1, step: 0.01 },
     attenuationDistance: { value: 0.5, min: 0, max: 10, step: 0.01 },
     attenuationColor: '#ffffff'
     // color: '#c9ffa1',
@@ -41,7 +41,7 @@ const ScaleTransmissionMaterial = () => {
     <>
       {/* <axesHelper />
       <gridHelper /> */}
-      <Environment files="/images/studio.hdr" blur={1} />
+      <Environment files="/images/scale-transmission/studio.hdr" blur={2} />
 
       <OrbitControls />
       <PerspectiveCamera makeDefault position={[0, 0, 10]} />
@@ -111,35 +111,6 @@ const ScaleTransmissionMaterial = () => {
           >
             <MeshTransmissionMaterial {...config} roughnessMap={roughnessMap} />
           </mesh>
-          {/* <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Top.geometry}
-            position={[88.96, 407.41, -296.84]}
-            rotation={[-0.74, 0.4, -2.73]}
-          >
-            <MeshTransmissionMaterial {...config} roughnessMap={roughnessMap} />
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Middle.geometry}
-            position={[377.31, 407.41, -112.79]}
-            rotation={[-0.22, -0.49, 0.91]}
-          >
-            <MeshTransmissionMaterial {...config} roughnessMap={roughnessMap} />
-            <meshMatcapMaterial matcap={texture} />
-          </mesh>
-          <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Bottom.geometry}
-            position={[723.95, 407.41, 479.25]}
-            rotation={[-1.19, 0.38, -2.66]}
-          >
-            <MeshTransmissionMaterial {...config} roughnessMap={roughnessMap} />
-            <meshMatcapMaterial matcap={texture} />
-          </mesh> */}
         </group>
       </Float>
     </>
