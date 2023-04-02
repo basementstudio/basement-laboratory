@@ -45,6 +45,7 @@
     "next-qrcode": "^2.1.0",
     "next-real-viewport": "^0.7.0",
     "ogl": "^0.0.93",
+    "p2-es": "^1.1.7",
     "r3f-perf": "^6.5.0",
     "react": "^18.2.0",
     "react-device-detect": "2.1.2",
