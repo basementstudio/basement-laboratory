@@ -880,21 +880,13 @@
     ]
   },
   {
-    "filename": "42.svg-morphing-mask.js",
-    "title": "SVG Morphing Mask",
-    "href": "/experiments/42.svg-morphing-mask.js",
-    "tags": [],
-    "number": 42,
-    "contributors": []
-  },
-  {
     "filename": "43.depth-shader.js",
     "title": "Depth Shader",
     "href": "/experiments/43.depth-shader.js",
     "tags": [
       "shaders"
     ],
-    "number": 43,
+    "number": 42,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -913,7 +905,7 @@
     "tags": [
       "private"
     ],
-    "number": 44,
+    "number": 43,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -930,7 +922,7 @@
     "title": "Layered Video",
     "href": "/experiments/46.layered-video.js",
     "tags": [],
-    "number": 45,
+    "number": 44,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -947,7 +939,7 @@
     "title": "Refraction",
     "href": "/experiments/47.refraction.js",
     "tags": [],
-    "number": 46,
+    "number": 45,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -966,7 +958,7 @@
     "tags": [
       "private"
     ],
-    "number": 47,
+    "number": 46,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -985,7 +977,7 @@
     "tags": [
       "private"
     ],
-    "number": 48,
+    "number": 47,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -1012,7 +1004,7 @@
     "tags": [
       "private"
     ],
-    "number": 49,
+    "number": 48,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -1029,7 +1021,7 @@
     "title": "Drei's Transmision Material Tests",
     "href": "/experiments/51.transmission-material.js",
     "tags": [],
-    "number": 50,
+    "number": 49,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -1049,7 +1041,7 @@
       "three",
       "typography"
     ],
-    "number": 51,
+    "number": 50,
     "contributors": [
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -1066,7 +1058,7 @@
     "title": "Rapid Image Layers Animation",
     "href": "/experiments/53.rapid-image-layers-animation.js",
     "tags": [],
-    "number": 52,
+    "number": 51,
     "contributors": [
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -1079,11 +1071,22 @@
     ]
   },
   {
-    "filename": "54.computer-vision.js",
-    "title": "Computer Vision",
-    "href": "/experiments/54.computer-vision.js",
-    "tags": [],
-    "number": 53,
-    "contributors": []
+    "filename": "54.scale-transmission-material.js",
+    "title": "Scale Transmision Material Hero",
+    "href": "/experiments/54.scale-transmission-material.js",
+    "tags": [
+      "transmision"
+    ],
+    "number": 52,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjgyOTMxNDY=",
+        "url": "https://github.com/nazarenooviedo",
+        "name": "Nazareno Oviedo",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/8293146?u=82d066184b0f1562e41eb03b7819690593e62858&v=4",
+        "email": "nazareno@basement.studio",
+        "company": "@basementstudio"
+      }
+    ]
   }
 ]
