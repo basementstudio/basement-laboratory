@@ -1,4 +1,4 @@
-import { isDev } from 'lib/constants'
+import { isDev, siteOrigin } from 'lib/constants'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 
 import { Meta } from '~/components/common/meta'
@@ -46,6 +46,21 @@ export const getStaticProps: GetStaticProps = async () => {
     .sort((a, b) =>
       a.filename.localeCompare(b.filename, undefined, { numeric: true })
     )
+
+  // Add og images
+  const ogFiles = fs.readdirSync(process.cwd() + '/public/ogs')
+
+  experiments = experiments.map((e) => {
+    // Remove extension
+    const filename = e.filename.split('.')[0]
+    const matchingOgFile = ogFiles.find((f) => f.startsWith(filename))
+    const og = matchingOgFile ? `${siteOrigin}/ogs/${matchingOgFile}` : null
+
+    return {
+      ...e,
+      og
+    }
+  })
 
   if (!isDev) {
     // Filter privates
