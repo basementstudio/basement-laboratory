@@ -6,7 +6,7 @@
     "tags": [
       "example"
     ],
-    "og": "http://localhost:3000/ogs/13.sculpture-gallery.jpg",
+    "og": null,
     "number": 1,
     "contributors": [
       {
@@ -26,7 +26,7 @@
     "tags": [
       "example"
     ],
-    "og": "http://localhost:3000/ogs/23.cupcake.jpg",
+    "og": null,
     "number": 2,
     "contributors": [
       {
@@ -46,7 +46,7 @@
     "tags": [
       "example"
     ],
-    "og": "http://localhost:3000/ogs/35.gradient-svg.jpg",
+    "og": null,
     "number": 3,
     "contributors": [
       {
@@ -66,7 +66,7 @@
     "tags": [
       "example"
     ],
-    "og": "http://localhost:3000/ogs/47.refraction.jpg",
+    "og": null,
     "number": 4,
     "contributors": [
       {

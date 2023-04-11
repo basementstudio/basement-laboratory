@@ -52,7 +52,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   experiments = experiments.map((e) => {
     // Remove extension
-    const filename = e.filename.split('.')[0]
+    const filename = e.filename.split(/.(jsx|js|ts|tsx)/)[0]
     const matchingOgFile = ogFiles.find((f) => f.startsWith(filename))
     const og = matchingOgFile ? `${siteOrigin}/ogs/${matchingOgFile}` : null
 
