@@ -880,13 +880,21 @@
     ]
   },
   {
+    "filename": "42.svg-morphing-mask.js",
+    "title": "SVG Morphing Mask",
+    "href": "/experiments/42.svg-morphing-mask.js",
+    "tags": [],
+    "number": 42,
+    "contributors": []
+  },
+  {
     "filename": "43.depth-shader.js",
     "title": "Depth Shader",
     "href": "/experiments/43.depth-shader.js",
     "tags": [
       "shaders"
     ],
-    "number": 42,
+    "number": 43,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -905,7 +913,7 @@
     "tags": [
       "private"
     ],
-    "number": 43,
+    "number": 44,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -922,7 +930,7 @@
     "title": "Layered Video",
     "href": "/experiments/46.layered-video.js",
     "tags": [],
-    "number": 44,
+    "number": 45,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -939,7 +947,7 @@
     "title": "Refraction",
     "href": "/experiments/47.refraction.js",
     "tags": [],
-    "number": 45,
+    "number": 46,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -958,7 +966,7 @@
     "tags": [
       "private"
     ],
-    "number": 46,
+    "number": 47,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -977,7 +985,7 @@
     "tags": [
       "private"
     ],
-    "number": 47,
+    "number": 48,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -1004,7 +1012,7 @@
     "tags": [
       "private"
     ],
-    "number": 48,
+    "number": 49,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -1021,7 +1029,7 @@
     "title": "Drei's Transmision Material Tests",
     "href": "/experiments/51.transmission-material.js",
     "tags": [],
-    "number": 49,
+    "number": 50,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -1041,7 +1049,7 @@
       "three",
       "typography"
     ],
-    "number": 50,
+    "number": 51,
     "contributors": [
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -1058,7 +1066,7 @@
     "title": "Rapid Image Layers Animation",
     "href": "/experiments/53.rapid-image-layers-animation.js",
     "tags": [],
-    "number": 51,
+    "number": 52,
     "contributors": [
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -1069,5 +1077,13 @@
         "company": "@basementstudio"
       }
     ]
+  },
+  {
+    "filename": "54.computer-vision.js",
+    "title": "Computer Vision",
+    "href": "/experiments/54.computer-vision.js",
+    "tags": [],
+    "number": 53,
+    "contributors": []
   }
 ]
