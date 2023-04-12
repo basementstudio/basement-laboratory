@@ -10,7 +10,7 @@ const BOX = model('box.glb', {
 })
 
 BOX.Layout = (props) => <R3FCanvasLayout {...props} htmlChildren={<Loader />} />
-BOX.Title = 'Hologram using Normals and HDRI Test'
+BOX.Title = 'Normals & HDRI Hologram'
 BOX.Tags = '3d'
 
 export default BOX
