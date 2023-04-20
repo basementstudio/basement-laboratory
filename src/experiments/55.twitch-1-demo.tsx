@@ -31,7 +31,6 @@ const Twitch1Demo = () => {
 
     /* SCENE SETUP */
     const scene = new THREE.Scene()
-    // scene.background = new THREE.Color('white')
 
     const ambLight = new THREE.AmbientLight('white', 1)
     scene.add(ambLight)
@@ -151,12 +150,22 @@ Twitch1Demo.Description = (
     <p>Key points to learn with this demo:</p>
     <ul>
       <li>
+        Initial setup of a ThreeJS scene with <code>WebGLRenderer</code>
+      </li>
+      <li>
         Basic ThreeJS concepts like <code>Mesh</code> <code>Geometry</code>{' '}
         <code>Material</code>
+      </li>
+      <li>
+        How to load a <code>GLTF</code> model with <code>GLTFLoader</code>
+      </li>
+      <li>
+        Understand the <code>%</code> module operation applied to range looping.
       </li>
     </ul>
   </>
 )
+
 Twitch1Demo.Tags = 'threejs'
 Twitch1Demo.Layout = HTMLLayout
 

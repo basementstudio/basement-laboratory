@@ -13,7 +13,16 @@
 
   ol {
     list-style: decimal;
-    list-style-position: inside;
+    padding-inline-start: 1em;
+  }
+
+  ul {
+    list-style: disc;
+    padding-inline-start: 1em;
+  }
+
+  li {
+    margin-block-end: 0.4em;
   }
 
   h3 {
@@ -23,8 +32,17 @@
     font-size: 18px;
   }
 
-  p + p {
-    margin-top: 8px;
+  p {
+    &:first-child {
+      margin-block-start: 0;
+    }
+  }
+
+  ol,
+  ul,
+  p {
+    margin-block-start: 0.8em;
+    margin-block-end: 0.8em;
   }
 
   a {
