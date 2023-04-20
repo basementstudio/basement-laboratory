@@ -9,7 +9,6 @@ import { HTMLLayout } from '~/components/layout/html-layout'
 import { getWorld } from '~/lib/three'
 
 const Twitch1Demo = () => {
-  const { innerWidth, innerHeight } = window
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -17,13 +16,16 @@ const Twitch1Demo = () => {
 
     if (!canvas) return
 
+    const { width: canvasWidth, height: canvasHeight } =
+      canvas.getBoundingClientRect()
+
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
-    renderer.setSize(innerWidth, innerHeight)
+    renderer.setSize(canvasWidth, canvasHeight, false)
     renderer.setPixelRatio(window.devicePixelRatio)
 
     /* CAMERA SETUP */
     const fov = 20
-    const aspect = innerWidth / innerHeight
+    const aspect = canvasWidth / canvasHeight
     const near = 0.1
     const far = 100
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
@@ -134,12 +136,25 @@ const Twitch1Demo = () => {
         frameId = requestAnimationFrame(render)
       })
 
+    const resizeHandler = () => {
+      const { width, height } = canvas.getBoundingClientRect()
+
+      camera.aspect = width / height
+      camera.updateProjectionMatrix()
+
+      renderer.setSize(width, height, false)
+      renderer.setPixelRatio(window.devicePixelRatio)
+    }
+
+    window.addEventListener('resize', resizeHandler, { passive: true })
+
     return () => {
+      window.removeEventListener('resize', resizeHandler)
       cancelAnimationFrame(frameId)
       renderer.dispose()
       world.destroy()
     }
-  }, [innerWidth, innerHeight])
+  }, [])
 
   return <canvas style={{ width: '100%', height: '100vh' }} ref={canvasRef} />
 }
@@ -166,7 +181,7 @@ Twitch1Demo.Description = (
   </>
 )
 
-Twitch1Demo.Tags = 'threejs'
+Twitch1Demo.Tags = 'threejs,twitch'
 Twitch1Demo.Layout = HTMLLayout
 
 export default Twitch1Demo

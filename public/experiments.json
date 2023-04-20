@@ -1168,14 +1168,23 @@
     ]
   },
   {
-    "filename": "55.twitch-1-demo.tsx",
+    "filename": "55.twitch-demo-1.tsx",
     "title": "Twitch Demo No. 1",
-    "href": "/experiments/55.twitch-1-demo.tsx",
+    "href": "/experiments/55.twitch-demo-1.tsx",
     "tags": [
       "threejs"
     ],
     "og": null,
     "number": 54,
-    "contributors": []
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
   }
 ]
