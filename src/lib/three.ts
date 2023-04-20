@@ -1,4 +1,3 @@
-import { Euler, Matrix4, Vector3 } from 'three'
 import * as THREE from 'three'
 import { PerspectiveCamera } from 'three/src/cameras/PerspectiveCamera'
 import { Clock } from 'three/src/core/Clock'
@@ -124,20 +123,35 @@ type Rect = {
   top?: number
 }
 
+const defaultTarget = new THREE.Vector3()
+const position = new THREE.Vector3()
+const tempTarget = new THREE.Vector3()
+
 export const getWorld = (camera: THREE.PerspectiveCamera) => {
   const viewport = getViewport()
 
-  const getHeight = (camera: THREE.PerspectiveCamera) => {
-    const distance = camera.position.z
-    const vFov = (camera.fov * Math.PI) / 180
+  const getViewportSizeInWorldUnits = (
+    camera: THREE.PerspectiveCamera,
+    target: THREE.Vector3 | Parameters<THREE.Vector3['set']> = defaultTarget
+  ) => {
+    if (target instanceof THREE.Vector3) {
+      tempTarget.copy(target)
+    } else {
+      tempTarget.set(...target)
+    }
 
-    return 2 * Math.tan(vFov / 2) * distance
+    const distance = camera.getWorldPosition(position).distanceTo(tempTarget)
+
+    const vFov = (camera.fov * Math.PI) / 180
+    const height = 2 * Math.tan(vFov / 2) * distance
+    const width = height * viewport.size.ratio
+
+    return { width, height, ratio: viewport.size.ratio }
   }
 
-  const height = getHeight(camera as THREE.PerspectiveCamera)
-  const width = height * viewport.size.ratio
-
   const fromViewport = (rect: Pick<Rect, 'height' | 'width'>) => {
+    const { height, width } = getViewportSizeInWorldUnits(camera)
+
     const _width = (width * (rect?.width || 0)) / (viewport.size.width || 1)
     const _height = (height * (rect?.height || 0)) / (viewport.size.height || 1)
 
@@ -145,6 +159,8 @@ export const getWorld = (camera: THREE.PerspectiveCamera) => {
   }
 
   const fromBoundingRect = (rect: Rect) => {
+    const { height, width } = getViewportSizeInWorldUnits(camera)
+
     const size = fromViewport({
       width: rect.width,
       height: rect.height
@@ -165,6 +181,7 @@ export const getWorld = (camera: THREE.PerspectiveCamera) => {
   }
 
   return {
+    getViewport: getViewportSizeInWorldUnits,
     fromViewport,
     fromBoundingRect,
     destroy: viewport.destroy
@@ -259,7 +276,10 @@ export const createWorld = ({
   }
 }
 
-export const setCameraLookAtEuler = (position: Vector3, target: Vector3) => {
+export const getCameraLookAtEuler = (
+  position: THREE.Vector3,
+  target: THREE.Vector3
+) => {
   /*
   Camera records towards z: -1 of its own coordinate system so we need to use the Matrix4 transformation API
   wich supports this eye -> target coordinate system using the lookAt method. See the source code of the Object3D
@@ -267,11 +287,11 @@ export const setCameraLookAtEuler = (position: Vector3, target: Vector3) => {
   
   https://github.com/mrdoob/three.js/blob/f021ec0c9051eb11d110b0c2b93305bffd0942e0/src/core/Object3D.js#L260
 */
-  const m = new Matrix4()
+  const m = new THREE.Matrix4()
 
-  m.lookAt(position, target, new Vector3(0, 1, 0))
+  m.lookAt(position, target, new THREE.Vector3(0, 1, 0))
 
-  return new Euler().setFromRotationMatrix(m)
+  return new THREE.Euler().setFromRotationMatrix(m)
 }
 
 type Curve = {
@@ -300,7 +320,6 @@ type Curve = {
   Returns an array of connected bezier curves you
   can then add to a CurvePath to get a path.
 */
-
 export const getBezierCurves = (curve: Curve[], scale = 1) => {
   const beziers = []
 

@@ -299,6 +299,28 @@
     ]
   },
   {
+    "filename": "14.shader-butterfly.js",
+    "title": "Shader Butterfly (in progress)",
+    "href": "/experiments/14.shader-butterfly.js",
+    "tags": [
+      "shader",
+      "threejs",
+      "private"
+    ],
+    "og": null,
+    "number": 14,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
     "filename": "15.unicorn-model.js",
     "title": "This is a Unicorn",
     "href": "/experiments/15.unicorn-model.js",
@@ -306,7 +328,7 @@
       "3d"
     ],
     "og": null,
-    "number": 14,
+    "number": 15,
     "contributors": [
       {
         "id": "MDQ6VXNlcjc4MzY2Nzk2",
@@ -335,7 +357,7 @@
       "animation"
     ],
     "og": null,
-    "number": 15,
+    "number": 16,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -348,6 +370,35 @@
     ]
   },
   {
+    "filename": "17.next.js",
+    "title": "Next.js 3d model",
+    "href": "/experiments/17.next.js",
+    "tags": [
+      "3d",
+      "private"
+    ],
+    "og": null,
+    "number": 17,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "U_kgDOBlLnQQ",
+        "url": "https://github.com/tteFluten",
+        "name": "Juan Lautaro Martin",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/106096449?u=8c30c69d9a76276b7203a776a6fb77ed53ee3e09&v=4",
+        "email": "",
+        "company": "basement."
+      }
+    ]
+  },
+  {
     "filename": "18.CD.js",
     "title": "CD found under the desk",
     "href": "/experiments/18.CD.js",
@@ -355,7 +406,7 @@
       "3d"
     ],
     "og": "http://localhost:3000/ogs/18.CD.jpg",
-    "number": 16,
+    "number": 18,
     "contributors": [
       {
         "id": "MDQ6VXNlcjc4MzY2Nzk2",
@@ -385,14 +436,22 @@
   },
   {
     "filename": "19.Box.js",
-    "title": "Hologram using Normals and HDRI Test",
+    "title": "Normals & HDRI Hologram",
     "href": "/experiments/19.Box.js",
     "tags": [
       "3d"
     ],
     "og": "http://localhost:3000/ogs/19.Box.jpg",
-    "number": 17,
+    "number": 19,
     "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
       {
         "id": "U_kgDOBlLnQQ",
         "url": "https://github.com/tteFluten",
@@ -411,7 +470,7 @@
       "example"
     ],
     "og": null,
-    "number": 18,
+    "number": 20,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -431,7 +490,7 @@
       "webrtc"
     ],
     "og": null,
-    "number": 19,
+    "number": 21,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -451,7 +510,7 @@
       "example"
     ],
     "og": null,
-    "number": 20,
+    "number": 22,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQwMDM0MTE1",
@@ -471,7 +530,65 @@
       "3d"
     ],
     "og": "http://localhost:3000/ogs/23.cupcake.jpg",
-    "number": 21,
+    "number": 23,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "U_kgDOBlLnQQ",
+        "url": "https://github.com/tteFluten",
+        "name": "Juan Lautaro Martin",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/106096449?u=8c30c69d9a76276b7203a776a6fb77ed53ee3e09&v=4",
+        "email": "",
+        "company": "basement."
+      }
+    ]
+  },
+  {
+    "filename": "24.dagger.js",
+    "title": "Dagger",
+    "href": "/experiments/24.dagger.js",
+    "tags": [
+      "3d",
+      "private"
+    ],
+    "og": null,
+    "number": 24,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "U_kgDOBlLnQQ",
+        "url": "https://github.com/tteFluten",
+        "name": "Juan Lautaro Martin",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/106096449?u=8c30c69d9a76276b7203a776a6fb77ed53ee3e09&v=4",
+        "email": "",
+        "company": "basement."
+      }
+    ]
+  },
+  {
+    "filename": "25.ring.js",
+    "title": "The Ring",
+    "href": "/experiments/25.ring.js",
+    "tags": [
+      "3d",
+      "private"
+    ],
+    "og": null,
+    "number": 25,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -497,7 +614,7 @@
     "href": "/experiments/26.sticky-scroll-trigger.js",
     "tags": [],
     "og": null,
-    "number": 22,
+    "number": 26,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -515,7 +632,27 @@
     "href": "/experiments/27.reflective-effect.js",
     "tags": [],
     "og": null,
-    "number": 23,
+    "number": 27,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "28.image-mask-effect.js",
+    "title": "Image Mask Effect",
+    "href": "/experiments/28.image-mask-effect.js",
+    "tags": [
+      "private"
+    ],
+    "og": null,
+    "number": 28,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -535,7 +672,28 @@
       "shaders"
     ],
     "og": "http://localhost:3000/ogs/29.circular-fog.jpg",
-    "number": 24,
+    "number": 29,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "30.wireframe-reveal.js",
+    "title": "Wireframe model reveal",
+    "href": "/experiments/30.wireframe-reveal.js",
+    "tags": [
+      "shaders",
+      "private"
+    ],
+    "og": null,
+    "number": 30,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -553,7 +711,70 @@
     "href": "/experiments/31.footer-trigger.js",
     "tags": [],
     "og": null,
-    "number": 25,
+    "number": 31,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "32.bunker-scene.js",
+    "title": "Bunker Scene",
+    "href": "/experiments/32.bunker-scene.js",
+    "tags": [
+      "three",
+      "private"
+    ],
+    "og": null,
+    "number": 32,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "33.drone-animation.js",
+    "title": "Drone Animation",
+    "href": "/experiments/33.drone-animation.js",
+    "tags": [
+      "animation",
+      "private"
+    ],
+    "og": null,
+    "number": 33,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "34.svg-rain.js",
+    "title": "Glyph Rain",
+    "href": "/experiments/34.svg-rain.js",
+    "tags": [
+      "animation",
+      "private"
+    ],
+    "og": null,
+    "number": 34,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -574,7 +795,7 @@
       "public"
     ],
     "og": "http://localhost:3000/ogs/35.gradient-svg.jpg",
-    "number": 26,
+    "number": 35,
     "contributors": [
       {
         "id": "MDQ6VXNlcjUwOTcwMzQ0",
@@ -582,6 +803,27 @@
         "name": "Santiago Moran",
         "avatarUrl": "https://avatars.githubusercontent.com/u/50970344?u=1b382b3a855dd6f0505148f13c50ab0d5494366a&v=4",
         "email": "morangsantiago@gmail.com",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "36.xero-scene.js",
+    "title": "Xero Scene",
+    "href": "/experiments/36.xero-scene.js",
+    "tags": [
+      "three",
+      "private"
+    ],
+    "og": null,
+    "number": 36,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
         "company": "@basementstudio"
       }
     ]
@@ -595,7 +837,68 @@
       "three"
     ],
     "og": null,
-    "number": 27,
+    "number": 37,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "38.grotesque-scene.js",
+    "title": "Grotesque Scene",
+    "href": "/experiments/38.grotesque-scene.js",
+    "tags": [
+      "three",
+      "private"
+    ],
+    "og": null,
+    "number": 38,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "39.ffflauta-scene.js",
+    "title": "FFFlauta Scene",
+    "href": "/experiments/39.ffflauta-scene.js",
+    "tags": [
+      "private"
+    ],
+    "og": null,
+    "number": 39,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "40.carpenter.js",
+    "title": "Carpenter",
+    "href": "/experiments/40.carpenter.js",
+    "tags": [
+      "private"
+    ],
+    "og": null,
+    "number": 40,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -613,7 +916,7 @@
     "href": "/experiments/41.infinite-render.js",
     "tags": [],
     "og": null,
-    "number": 28,
+    "number": 41,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -633,7 +936,27 @@
       "shaders"
     ],
     "og": null,
-    "number": 29,
+    "number": 42,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "45.fake-window.js",
+    "title": "FakeWindow",
+    "href": "/experiments/45.fake-window.js",
+    "tags": [
+      "private"
+    ],
+    "og": null,
+    "number": 43,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -651,7 +974,7 @@
     "href": "/experiments/46.layered-video.js",
     "tags": [],
     "og": null,
-    "number": 30,
+    "number": 44,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -669,7 +992,75 @@
     "href": "/experiments/47.refraction.js",
     "tags": [],
     "og": "http://localhost:3000/ogs/47.refraction.jpg",
-    "number": 31,
+    "number": 45,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "48.pager.js",
+    "title": "Pager",
+    "href": "/experiments/48.pager.js",
+    "tags": [
+      "private"
+    ],
+    "og": null,
+    "number": 46,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "49.bezier-import.js",
+    "title": "Imported Bezier Curves",
+    "href": "/experiments/49.bezier-import.js",
+    "tags": [
+      "private"
+    ],
+    "og": null,
+    "number": 47,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      },
+      {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "joaquin@basement.studio",
+        "company": "@basementstudio "
+      }
+    ]
+  },
+  {
+    "filename": "50.camera-rail.js",
+    "title": "Camera Rail",
+    "href": "/experiments/50.camera-rail.js",
+    "tags": [
+      "private"
+    ],
+    "og": null,
+    "number": 48,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -687,7 +1078,7 @@
     "href": "/experiments/51.transmission-material.js",
     "tags": [],
     "og": null,
-    "number": 32,
+    "number": 49,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -708,7 +1099,7 @@
       "typography"
     ],
     "og": null,
-    "number": 33,
+    "number": 50,
     "contributors": [
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -726,7 +1117,7 @@
     "href": "/experiments/53.rapid-image-layers-animation.js",
     "tags": [],
     "og": null,
-    "number": 34,
+    "number": 51,
     "contributors": [
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -744,7 +1135,7 @@
     "href": "/experiments/54.computer-vision.js",
     "tags": [],
     "og": null,
-    "number": 35,
+    "number": 52,
     "contributors": [
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
@@ -764,7 +1155,7 @@
       "transmision"
     ],
     "og": null,
-    "number": 36,
+    "number": 53,
     "contributors": [
       {
         "id": "MDQ6VXNlcjgyOTMxNDY=",
@@ -775,5 +1166,16 @@
         "company": "@basementstudio"
       }
     ]
+  },
+  {
+    "filename": "55.twitch-1-demo.tsx",
+    "title": "Twitch 1 Demo",
+    "href": "/experiments/55.twitch-1-demo.tsx",
+    "tags": [
+      "threejs"
+    ],
+    "og": null,
+    "number": 54,
+    "contributors": []
   }
 ]

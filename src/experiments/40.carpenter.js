@@ -11,7 +11,7 @@ import * as THREE from 'three'
 import { AspectCanvas } from '~/components/common/aspect-canvas'
 import { HTMLLayout } from '~/components/layout/html-layout'
 import { useUniforms } from '~/hooks/use-uniforms'
-import { setCameraLookAtEuler } from '~/lib/three'
+import { getCameraLookAtEuler } from '~/lib/three'
 
 const config = {
   modelSrc: 'carpenter.glb',
@@ -27,7 +27,7 @@ const config = {
 }
 
 config.camera.rotation.copy(
-  setCameraLookAtEuler(config.camera.position, config.camera.target)
+  getCameraLookAtEuler(config.camera.position, config.camera.target)
 )
 
 const Model = memo(
