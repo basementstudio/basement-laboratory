@@ -1,5 +1,6 @@
 import { useThree } from '@react-three/fiber'
 import { render } from '@react-three/offscreen'
+import { set } from 'lodash'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import * as THREE from 'three'
 
@@ -52,7 +53,7 @@ const Scene = () => {
     const world = getWorld(gl, camera)
 
     self.addEventListener('message', (event) => {
-      if (event.data.type === 'mesh-update') {
+      if (event.data.type === 'scroll-track') {
         const payload = event.data.payload
 
         const threeBounds = world.fromBoundingRect({
@@ -67,17 +68,30 @@ const Scene = () => {
         myMesh.position.set(threeBounds.position.x, threeBounds.position.y, 0)
         myMesh.scale.set(threeBounds.size.width, threeBounds.size.height, 1)
       }
+
+      if (event.data.type === 'set') {
+        const payload = event.data.payload
+
+        const target = scene.getObjectByName(payload.target) as THREE.Mesh
+
+        set(target, payload.path, payload.value)
+      }
     })
   }, [scene, camera, gl])
 
   return (
     <>
       <Scroll>
-        <mesh name="my-mesh">
+        <mesh name="scroll-mesh">
           <planeGeometry />
           <meshBasicMaterial color="blue" />
         </mesh>
       </Scroll>
+
+      <mesh name="rotate-mesh">
+        <boxGeometry />
+        <meshBasicMaterial color="red" />
+      </mesh>
     </>
   )
 }
