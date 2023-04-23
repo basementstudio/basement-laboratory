@@ -921,6 +921,13 @@
     three "0.122.0"
     use-error-boundary "2.0.6"
 
+"@react-three/offscreen@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@react-three/offscreen/-/offscreen-0.0.1.tgz#aaa3e1f83748abfca0b18258ed46c226e498e89d"
+  integrity sha512-9ZQ6iNbTjMj74OygqPJpf6yDLDPuQSjnKoNjKkW8FsDhFXHGow/MdisdR6zHqUCMW8It051bba1KPDF0T2g3WA==
+  dependencies:
+    mitt "^3.0.0"
+
 "@react-three/postprocessing@^2.7.0":
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/@react-three/postprocessing/-/postprocessing-2.7.0.tgz#bae6be248bdb43cbab3d125b23ba5b0de4d934d2"
@@ -950,13 +957,10 @@
   resolved "https://registry.yarnpkg.com/@stitches/react/-/react-1.2.8.tgz#954f8008be8d9c65c4e58efa0937f32388ce3a38"
   integrity sha512-9g9dWI4gsSVe8bNLlb+lMkBYsnIKCZTmvqvDG+Avnn69XfmHZKiaMrx7cgTaddq7aTPPmXiTsbFcUy0xgI4+wA==
 
-"@studio-freight/lenis@^0.2.19":
-  version "0.2.19"
-  resolved "https://registry.yarnpkg.com/@studio-freight/lenis/-/lenis-0.2.19.tgz#3d9e9233977dc553b03ff05e5b1150d3958481c0"
-  integrity sha512-1xy7MfJ1rKtx0QdAc1J3YvTp/GzU9d6GjbuS5vyWGDvEkGE+FE0eQ41i9hN26aNEQTIH6fwIm4vsOeJIGNjysw==
-  dependencies:
-    tiny-emitter "^2.1.0"
-    virtual-scroll "^2.2.1"
+"@studio-freight/lenis@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@studio-freight/lenis/-/lenis-1.0.10.tgz#310275c2c8672853ff19b30f506953ba12205f14"
+  integrity sha512-OSNabFkLD9EgIxqmwVrcSikPwR7k07gTuEYg0fibSvULz3zpaN6PxlyJ1T4N4HuN5EGAG2jN6DIytZWKqdc/Jw==
 
 "@swc/helpers@0.4.11":
   version "0.4.11"
@@ -4215,6 +4219,11 @@ minimist@^1.2.0, minimist@^1.2.5, minimist@^1.2.6:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
   integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
+mitt@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-3.0.0.tgz#69ef9bd5c80ff6f57473e8d89326d01c414be0bd"
+  integrity sha512-7dX2/10ITVyqh4aOSVI9gdape+t9l2/8QxHrFmUXu4EEUpdlxl6RudZUPZoc+zuY2hk1j7XxVroIVIan/pD/SQ==
+
 mixin-deep@^1.2.0:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/mixin-deep/-/mixin-deep-1.3.2.tgz#1120b43dc359a785dce65b55b82e257ccf479566"
@@ -6402,9 +6411,9 @@ zustand@^3.5.13, zustand@^3.6.9, zustand@^3.7.1:
   resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.7.2.tgz#7b44c4f4a5bfd7a8296a3957b13e1c346f42514d"
   integrity sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==
 
-zustand@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.1.1.tgz#5a61cc755a002df5f041840a414ae6e9a99ee22b"
-  integrity sha512-h4F3WMqsZgvvaE0n3lThx4MM81Ls9xebjvrABNzf5+jb3/03YjNTSgZXeyrvXDArMeV9untvWXRw1tY+ntPYbA==
+zustand@^4.3.7:
+  version "4.3.7"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.3.7.tgz#501b1f0393a7f1d103332e45ab574be5747fedce"
+  integrity sha512-dY8ERwB9Nd21ellgkBZFhudER8KVlelZm8388B5nDAXhO/+FZDhYMuRnqDgu5SYyRgz/iaf8RKnbUs/cHfOGlQ==
   dependencies:
     use-sync-external-store "1.2.0"

@@ -49,7 +49,7 @@ const Twitch1Demo = () => {
     // const controls = new OrbitControls(camera, canvas)
     // controls.target.set(0, 0, 0)
 
-    const world = getWorld(camera)
+    const world = getWorld(renderer, camera)
 
     /* RENDER LOOP */
     let frameId: number

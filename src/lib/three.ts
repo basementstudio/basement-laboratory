@@ -75,9 +75,9 @@ export const getViewport = () => {
   const CALL_THRESHOLD_MS = 100
   const resizeTimeout: NodeJS.Timeout | null = null
   const size: WindowSize = {
-    width: 0,
-    height: 0,
-    ratio: 0
+    width: window.innerWidth,
+    height: window.innerHeight,
+    ratio: window.innerWidth / window.innerHeight
   }
 
   const handleResize = (_e: any, immediate = false) => {
@@ -126,9 +126,21 @@ type Rect = {
 const defaultTarget = new THREE.Vector3()
 const position = new THREE.Vector3()
 const tempTarget = new THREE.Vector3()
+const canvasSize = new THREE.Vector2()
 
-export const getWorld = (camera: THREE.PerspectiveCamera) => {
-  const viewport = getViewport()
+export const getWorld = (
+  gl: THREE.WebGLRenderer,
+  camera: THREE.PerspectiveCamera
+) => {
+  const getCanvasSize = () => {
+    gl.getSize(canvasSize)
+
+    return {
+      width: canvasSize.x,
+      height: canvasSize.y,
+      ratio: canvasSize.x / canvasSize.y
+    }
+  }
 
   const getViewportSizeInWorldUnits = (
     camera: THREE.PerspectiveCamera,
@@ -140,20 +152,22 @@ export const getWorld = (camera: THREE.PerspectiveCamera) => {
       tempTarget.set(...target)
     }
 
+    const canvas = getCanvasSize()
     const distance = camera.getWorldPosition(position).distanceTo(tempTarget)
 
     const vFov = (camera.fov * Math.PI) / 180
     const height = 2 * Math.tan(vFov / 2) * distance
-    const width = height * viewport.size.ratio
+    const width = height * canvas.ratio
 
-    return { width, height, ratio: viewport.size.ratio }
+    return { width, height, ratio: canvas.ratio }
   }
 
   const fromViewport = (rect: Pick<Rect, 'height' | 'width'>) => {
+    const canvas = getCanvasSize()
     const { height, width } = getViewportSizeInWorldUnits(camera)
 
-    const _width = (width * (rect?.width || 0)) / (viewport.size.width || 1)
-    const _height = (height * (rect?.height || 0)) / (viewport.size.height || 1)
+    const _width = (width * (rect?.width || 0)) / (canvas.width || 1)
+    const _height = (height * (rect?.height || 0)) / (canvas.height || 1)
 
     return { width: _width, height: _height, x: _width, y: _height }
   }
@@ -184,7 +198,9 @@ export const getWorld = (camera: THREE.PerspectiveCamera) => {
     getViewport: getViewportSizeInWorldUnits,
     fromViewport,
     fromBoundingRect,
-    destroy: viewport.destroy
+    destroy: () => {
+      // noop
+    }
   }
 }
 
