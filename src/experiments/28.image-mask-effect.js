@@ -7,7 +7,7 @@ import {
 import { useTexture } from '@react-three/drei'
 import glsl from 'glslify'
 import { button, folder } from 'leva'
-import Image from 'next/future/image'
+import Image from 'next/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Vector2 } from 'three/src/math/Vector2'
 

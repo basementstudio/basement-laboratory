@@ -1,6 +1,5 @@
 const withPlugins = require('next-compose-plugins')
 const withBundleAnalyzer = require('@next/bundle-analyzer')
-const withTM = require('next-transpile-modules')
 
 /**
  * @type {import('next').NextConfig}
@@ -19,7 +18,7 @@ const config = {
     domains: ['avatars.githubusercontent.com'],
     formats: ['image/avif', 'image/webp']
   },
-  experimental: { images: { allowFutureImage: true }, esmExternals: 'loose' },
+  experimental: { esmExternals: 'loose' },
   async redirects() {
     return [
       {
@@ -28,13 +27,11 @@ const config = {
         permanent: true
       }
     ]
-  }
+  },
+  transpilePackages: ['ogl', 'react-ogl', '@basementstudio/definitive-scroll']
 }
 
 module.exports = withPlugins(
-  [
-    withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' }),
-    withTM(['ogl', 'react-ogl', '@basementstudio/definitive-scroll'])
-  ],
+  [withBundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })],
   config
 )

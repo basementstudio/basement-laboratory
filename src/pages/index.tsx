@@ -23,22 +23,18 @@ export const getStaticProps: GetStaticProps = async () => {
   const fs = await import('fs')
   const allSlugs = await getAllExperimentSlugs()
 
-  const modules = await Promise.all(
-    allSlugs.map((slug) =>
-      import(`~/experiments/${slug}`).then((m) => [slug, m.default])
-    )
-  )
+  const modules = await Promise.all(allSlugs.map((slug) => [slug]))
 
   let experiments = modules
     .map((exp) => {
-      const title: string = exp[1].Title || exp[0]
+      const title: string = exp?.[1]?.Title || exp[0]
 
       return {
         filename: exp[0],
         title,
         href: `/experiments/${exp[0]}`,
         tags:
-          (exp[1].Tags as string)
+          (exp?.[1]?.Tags as string)
             ?.split(',')
             ?.map((tag) => tag.toLowerCase().trim()) || []
       }

@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import Image from 'next/future/image'
+import Image from 'next/image'
 import Link from 'next/link'
 import { FC, useState } from 'react'
 
@@ -65,10 +65,8 @@ const ExperimentsSection: FC<ExperimentsSectionProps> = ({ experiments }) => {
                 <div className={s.experimentInner}>
                   <div className={s.info}>
                     <Link href={href}>
-                      <a>
-                        <span className={s.leftSign}>{number}</span>
-                        <h4>{title}</h4>
-                      </a>
+                      <span className={s.leftSign}>{number}</span>
+                      <h4>{title}</h4>
                     </Link>
                   </div>
 
@@ -93,15 +91,13 @@ const ExperimentsSection: FC<ExperimentsSectionProps> = ({ experiments }) => {
                         title={user.name}
                       >
                         <Link href={user.url}>
-                          <a>
-                            <Image
-                              // @ts-ignore
-                              layout="raw"
-                              width={32}
-                              height={32}
-                              src={user.avatarUrl}
-                            />
-                          </a>
+                          <Image
+                            // @ts-ignore
+                            width={32}
+                            height={32}
+                            src={user.avatarUrl}
+                            alt="avatar"
+                          />
                         </Link>
                       </span>
                     ))}

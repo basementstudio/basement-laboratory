@@ -1,4 +1,4 @@
-import create from 'zustand'
+import { create } from 'zustand'
 
 // Extend this store if you need!
 

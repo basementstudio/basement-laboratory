@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer } from 'react'
-import create from 'zustand'
+import { create } from 'zustand'
 
 type State = {
   store: Record<string, { object: any; complete: boolean }>

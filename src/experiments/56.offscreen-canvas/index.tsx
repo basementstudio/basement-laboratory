@@ -83,8 +83,6 @@ const R3FWorkerScrollProxy = ({
       })
     }
 
-    update()
-
     const observer = new ResizeObserver(update)
 
     observer.observe(track.current)
@@ -174,7 +172,7 @@ const OffscreenCanvas = () => {
         }}
       >
         <div
-          style={{ width: 300, height: 300, border: '1px solid red' }}
+          style={{ width: '20vw', aspectRatio: 1, border: '1px solid red' }}
           ref={divRef}
         />
       </div>
