@@ -353,8 +353,9 @@ const StaggeredSlider = () => {
           top: 0,
           left: 0,
           width: '100vw',
-          height: '100vh',
-          objectFit: 'cover'
+          minHeight: '100vh',
+          objectFit: 'cover',
+          height: '100%'
         }}
       />
       <section
