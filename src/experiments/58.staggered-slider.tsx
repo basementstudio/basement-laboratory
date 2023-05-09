@@ -80,17 +80,12 @@ const MobileSlider = ({ images }: SliderProps) => {
               <Scrollytelling.Animation tween={tween} key={idx}>
                 <figure
                   key={`figure-${idx}`}
+                  className="w-full h-screen border border-[#FFFFFF66] overflow-hidden rounded-2xl max-h-[500px]"
                   style={{
                     zIndex: 10 - idx,
                     transformOrigin: 'bottom',
                     transform: `scale(calc(1 - 0.05 * ${idx})) translateY(calc(25px * ${idx}))`,
-                    position: idx ? 'absolute' : 'relative',
-                    width: '100%',
-                    height: '100vh',
-                    maxHeight: 500,
-                    borderRadius: 16,
-                    border: '1px solid #FFFFFF66',
-                    overflow: 'hidden'
+                    position: idx ? 'absolute' : 'relative'
                   }}
                 >
                   <Image
@@ -330,7 +325,7 @@ const StaggeredSlider = () => {
       style={{
         display: 'flex',
         alignItems: 'center',
-        padding: 64,
+        padding: isMobile ? 24 : 64,
         position: 'relative',
         background: 'black'
       }}
@@ -383,22 +378,7 @@ const StaggeredSlider = () => {
                   />
                   {idx === 0 && (
                     <Portal id="next-image">
-                      <div
-                        style={{
-                          display: isMobile ? 'none' : 'grid',
-                          position: 'absolute',
-                          width: 120,
-                          padding: '20px 8px',
-                          gap: 8,
-                          zIndex: 80,
-                          backgroundColor: '#0f0f0f50',
-                          border: '1px solid #262626',
-                          bottom: 10,
-                          right: 10,
-                          borderRadius: 10,
-                          backdropFilter: 'blur(10px)'
-                        }}
-                      >
+                      <div className="grid rounded backdrop-blur absolute w-[120px] bottom-[10px] right-[10px] py-5 px-2 z-50 gap-2 bg-brand-200 border border-brand">
                         <img
                           src={IMAGES.at(next) as string}
                           style={{
