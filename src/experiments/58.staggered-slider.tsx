@@ -3,6 +3,7 @@ import Image from 'next/image'
 import * as React from 'react'
 
 import { HTMLLayout } from '~/components/layout/html-layout'
+import { Portal } from '~/components/primitives/portal'
 import { useMedia } from '~/hooks/use-media'
 import { gsap } from '~/lib/gsap'
 import bg from '~/public/images/underground.jpeg'
@@ -370,15 +371,47 @@ const StaggeredSlider = () => {
               const next = (nextImageIndex + idx) % maxIndex
 
               return (
-                <HorizontalSlide
-                  containerWidth={containerRef.current?.offsetWidth}
-                  key={idx}
-                  index={idx}
-                  currentImg={IMAGES.at(current)}
-                  nextImg={IMAGES.at(next)}
-                  animationCallback={() => setPointerEvents(true)}
-                  handleClick={() => handleSwap(idx || 1)}
-                />
+                <React.Fragment key={idx}>
+                  <HorizontalSlide
+                    containerWidth={containerRef.current?.offsetWidth}
+                    key={idx}
+                    index={idx}
+                    currentImg={IMAGES.at(current)}
+                    nextImg={IMAGES.at(next)}
+                    animationCallback={() => setPointerEvents(true)}
+                    handleClick={() => handleSwap(idx || 1)}
+                  />
+                  {idx === 0 && (
+                    <Portal id="next-image">
+                      <div
+                        style={{
+                          display: isMobile ? 'none' : 'grid',
+                          position: 'absolute',
+                          width: 120,
+                          padding: '20px 8px',
+                          gap: 8,
+                          zIndex: 80,
+                          backgroundColor: '#0f0f0f50',
+                          border: '1px solid #262626',
+                          bottom: 10,
+                          right: 10,
+                          borderRadius: 10,
+                          backdropFilter: 'blur(10px)'
+                        }}
+                      >
+                        <img
+                          src={IMAGES.at(next) as string}
+                          style={{
+                            width: '100%',
+                            maxHeight: 64,
+                            objectFit: 'cover'
+                          }}
+                        />
+                        <span style={{ lineHeight: 1 }}>Next image</span>
+                      </div>
+                    </Portal>
+                  )}
+                </React.Fragment>
               )
             })
         )}
