@@ -12,9 +12,9 @@ const IMAGES = [
   '/images/slider-placeholders/two.png',
   '/images/slider-placeholders/three.png',
   '/images/slider-placeholders/four.png',
-  '/images/slider-placeholders/five.png',
-  '/images/slider-placeholders/six.png',
-  '/images/slider-placeholders/seven.png'
+  '/images/slider-placeholders/five.jpg',
+  '/images/slider-placeholders/six.jpg',
+  '/images/slider-placeholders/seven.jpg'
 ]
 
 const [BIGGEST_SIZE, SMALLEST_SIZE, MAX_OPACITY, MIN_OPACITY, TOTAL] = [
@@ -159,6 +159,9 @@ const HorizontalSlide = ({
     const hiddenSlide = containerRef.current.querySelector(
       selectors.at(currentPosition - 1) as string
     )
+    const incomingSlide = containerRef.current.querySelector(
+      selectors.at(currentPosition + 1) ?? selectors[0]
+    )
     if (hiddenSlide && 'src' in hiddenSlide) {
       hiddenSlide.src = nextImg
     }
@@ -179,20 +182,8 @@ const HorizontalSlide = ({
         x: '-100% '
       }
     )
-      .to(
-        containerRef.current.querySelector(
-          selectors.at(currentPosition + 1) ?? selectors[0]
-        ),
-        { x: 0 },
-        '<'
-      )
-      .to(
-        containerRef.current.querySelector(
-          selectors.at(currentPosition + 1) ?? selectors[0]
-        ),
-        { scaleX: 1 },
-        '<0.2'
-      )
+      .to(incomingSlide, { x: 0 }, '<')
+      .to(incomingSlide, { scaleX: 1 }, '<0.2')
       .set(hiddenSlide, { x: '100%', scaleX: 2 })
 
     return () => {
@@ -386,7 +377,7 @@ const StaggeredSlider = () => {
                   currentImg={IMAGES.at(current)}
                   nextImg={IMAGES.at(next)}
                   animationCallback={() => setPointerEvents(true)}
-                  handleClick={() => handleSwap()}
+                  handleClick={() => handleSwap(idx || 1)}
                 />
               )
             })
@@ -411,4 +402,5 @@ StaggeredSlider.Description = (
 )
 StaggeredSlider.Tags = 'animation, public'
 StaggeredSlider.Layout = HTMLLayout
+
 export default StaggeredSlider
