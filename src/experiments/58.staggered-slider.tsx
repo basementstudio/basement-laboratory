@@ -23,7 +23,7 @@ const [BIGGEST_SIZE, SMALLEST_SIZE, MAX_OPACITY, MIN_OPACITY, TOTAL] = [
 ]
 const MAX_PX_SIZES = [730, 300]
 
-type SliderProps = {
+type MobileSliderProps = {
   images: string[]
 }
 
@@ -41,7 +41,7 @@ const getTweenTimes = (
   return { start, end }
 }
 
-const MobileSlider = ({ images }: SliderProps) => {
+const MobileSlider = ({ images }: MobileSliderProps) => {
   return (
     <Scrollytelling.Root scrub={0.2}>
       <div style={{ height: 500 * images.length, width: '100%' }}>
@@ -105,7 +105,7 @@ const MobileSlider = ({ images }: SliderProps) => {
   )
 }
 
-type AnimatedFigureProps = {
+type HorizontalSlideProps = {
   index: number
   nextImg?: string
   currentImg?: string
@@ -121,17 +121,21 @@ const HorizontalSlide = ({
   animationCallback,
   handleClick,
   containerWidth
-}: AnimatedFigureProps) => {
-  const maxSizes =
-    MAX_PX_SIZES[0] -
-    ((MAX_PX_SIZES[0] - MAX_PX_SIZES[1]) * index) / (TOTAL - 1)
+}: HorizontalSlideProps) => {
+  // Figure height & width calculation (if not specified, sizes are in pixels)
   const sizes =
     BIGGEST_SIZE - ((BIGGEST_SIZE - SMALLEST_SIZE) * index) / (TOTAL - 1)
   const vwSizes = (sizes / 1920) * 100 + 'vw'
+  const maxSizes =
+    MAX_PX_SIZES[0] -
+    ((MAX_PX_SIZES[0] - MAX_PX_SIZES[1]) * index) / (TOTAL - 1)
+
+  // Image opacity calculation (when more transparent the img, darker the figure)
   const opacity =
     MAX_OPACITY - ((MAX_OPACITY - MIN_OPACITY) * index) / (TOTAL - 1)
+
   const [hasRendered, setHasRendered] = React.useState(false)
-  const containerRef = React.useRef<HTMLElement>(null)
+  const figureRef = React.useRef<HTMLElement>(null)
   const [currentPosition, setCurrentPos] = React.useState(1)
 
   const positions: React.CSSProperties = React.useMemo(() => {
@@ -156,13 +160,13 @@ const HorizontalSlide = ({
   }, [containerWidth, index, vwSizes])
 
   React.useEffect(() => {
-    if (!containerRef.current || !hasRendered) return
+    if (!figureRef.current || !hasRendered) return
 
     const selectors = ['img.prev-slide', 'img.current-slide', 'img.next-slide']
-    const hiddenSlide = containerRef.current.querySelector(
+    const hiddenSlide = figureRef.current.querySelector(
       selectors.at(currentPosition - 1) as string
     )
-    const incomingSlide = containerRef.current.querySelector(
+    const incomingSlide = figureRef.current.querySelector(
       selectors.at(currentPosition + 1) ?? selectors[0]
     )
     if (hiddenSlide && 'src' in hiddenSlide) {
@@ -178,9 +182,7 @@ const HorizontalSlide = ({
       }
     })
     tl.to(
-      containerRef.current.querySelector(
-        selectors.at(currentPosition) as string
-      ),
+      figureRef.current.querySelector(selectors.at(currentPosition) as string),
       {
         x: '-100% '
       }
@@ -196,20 +198,20 @@ const HorizontalSlide = ({
   }, [nextImg, currentImg, setCurrentPos])
 
   React.useEffect(() => {
-    if (!containerRef.current) return
+    if (!figureRef.current) return
     const tl = gsap.timeline()
 
-    const currentElem = containerRef.current.querySelector('img.current-slide')
+    const currentElem = figureRef.current.querySelector('img.current-slide')
     if (currentElem && 'src' in currentElem) {
       currentElem.src = currentImg
     }
-    const nextElem = containerRef.current.querySelector('img.next-slide')
+    const nextElem = figureRef.current.querySelector('img.next-slide')
     if (nextElem && 'src' in nextElem) {
       nextElem.src = nextImg
     }
 
     tl.set(currentElem, { x: 0 })
-      .set(containerRef.current.querySelector('img.prev-slide'), { x: '-100%' })
+      .set(figureRef.current.querySelector('img.prev-slide'), { x: '-100%' })
       .set(nextElem, { x: '100%', scaleX: 2 })
 
     setHasRendered(true)
@@ -222,7 +224,7 @@ const HorizontalSlide = ({
 
   return (
     <figure
-      ref={containerRef}
+      ref={figureRef}
       style={{
         ...positions,
         width: vwSizes,
@@ -294,21 +296,21 @@ const HorizontalSlide = ({
 
 const StaggeredSlider = () => {
   const [nextImageIndex, setNextImgIndex] = React.useState(1)
-  const [pointerEvents, setPointerEvents] = React.useState(true)
+  const [animationInProgress, setAnimationInProgress] = React.useState(true)
   const maxIndex = React.useMemo(() => IMAGES.length, [])
-  const containerRef = React.useRef<HTMLElement>(null)
-  const [containerWidth, setContainerWidth] = React.useState<number>()
-
   const isMobile = useMedia('(max-width: 1023px)')
+
+  const sectionRef = React.useRef<HTMLElement>(null)
+  const [sectionWidth, setSectionWidth] = React.useState<number>()
 
   const handleSwap = React.useCallback(
     (offset = 1) => {
-      if (!pointerEvents) return
+      if (!animationInProgress) return
 
       setNextImgIndex((counter) => (counter + offset) % maxIndex)
-      setPointerEvents(false)
+      setAnimationInProgress(false)
     },
-    [maxIndex, setNextImgIndex, setPointerEvents, pointerEvents]
+    [maxIndex, setNextImgIndex, setAnimationInProgress, animationInProgress]
   )
 
   React.useEffect(() => {
@@ -316,7 +318,7 @@ const StaggeredSlider = () => {
 
     const interval = setInterval(handleSwap, 5000)
     const handleResize = () => {
-      setContainerWidth(containerRef.current?.offsetWidth)
+      setSectionWidth(sectionRef.current?.offsetWidth)
     }
 
     window.addEventListener('resize', handleResize)
@@ -329,9 +331,9 @@ const StaggeredSlider = () => {
   }, [nextImageIndex, handleSwap, isMobile])
 
   React.useEffect(() => {
-    if (!containerRef.current || isMobile) return
+    if (!sectionRef.current || isMobile) return
 
-    gsap.to(containerRef.current, {
+    gsap.to(sectionRef.current, {
       autoAlpha: 1,
       delay: 0.4
     })
@@ -363,7 +365,7 @@ const StaggeredSlider = () => {
         }}
       />
       <section
-        ref={containerRef}
+        ref={sectionRef}
         style={{
           position: 'relative',
           width: '100%',
@@ -385,12 +387,12 @@ const StaggeredSlider = () => {
               return (
                 <React.Fragment key={idx}>
                   <HorizontalSlide
-                    containerWidth={containerWidth}
+                    containerWidth={sectionWidth}
                     key={idx}
                     index={idx}
                     currentImg={IMAGES.at(current)}
                     nextImg={IMAGES.at(next)}
-                    animationCallback={() => setPointerEvents(true)}
+                    animationCallback={() => setAnimationInProgress(true)}
                     handleClick={() => handleSwap(idx || 1)}
                   />
                   {idx === 0 && (
