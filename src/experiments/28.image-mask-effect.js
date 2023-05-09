@@ -293,7 +293,7 @@ const ImageEffect = ({ src, imageRef, onLoad, ...rest }) => {
 
   return (
     <mesh {...rest} ref={ref}>
-      <planeBufferGeometry args={[1, 1]} />
+      <planeGeometry args={[1, 1]} />
       <shaderMaterial
         uniforms={uniforms.current}
         defines={{

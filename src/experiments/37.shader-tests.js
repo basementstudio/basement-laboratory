@@ -70,7 +70,7 @@ const fragmentShader = `
 `
 
 const ShaderTests = () => {
-  const { /* screen,  */viewport } = useThree((s) => ({
+  const { /* screen,  */ viewport } = useThree((s) => ({
     viewport: s.viewport,
     screen: s.size
   }))
@@ -111,7 +111,7 @@ const ShaderTests = () => {
     <>
       <OrbitControls />
       <mesh scale={[viewport.width, viewport.height, 0]} ref={planeRef}>
-        <planeBufferGeometry args={[1, 1]} />
+        <planeGeometry args={[1, 1]} />
         <shaderMaterial
           uniforms={uniforms.current}
           vertexShader={vertexShader}

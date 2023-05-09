@@ -90,7 +90,7 @@ const LayeredVideo = () => {
             key={i}
             position={[0, 0, (planeCount / 2) * distance - i * distance]}
           >
-            <planeBufferGeometry args={[1 * aspect, 1, 1, 1]} />
+            <planeGeometry args={[1 * aspect, 1, 1, 1]} />
             <meshBasicMaterial
               onBeforeCompile={patch(i)}
               side={THREE.DoubleSide}

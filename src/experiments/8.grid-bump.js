@@ -6,7 +6,7 @@ import { Script } from '../components/common/script'
 import { PlainCanvasLayout } from '../components/layout/plain-canvas-layout.tsx'
 import { createWorld, getViewport, trackCursor } from '../lib/three'
 
-Object.assign(THREE.PlaneBufferGeometry.prototype, {
+Object.assign(THREE.PlaneGeometry.prototype, {
   toGrid: function () {
     let segmentsX = this.parameters.widthSegments || 1
     let segmentsY = this.parameters.heightSegments || 1
@@ -61,7 +61,7 @@ const GridBump = (CONFIG) => {
   const raycaster = new THREE.Raycaster()
 
   /* Create plane */
-  const geometry = new THREE.PlaneBufferGeometry(
+  const geometry = new THREE.PlaneGeometry(
     viewportInThree.width,
     viewportInThree.height,
     Math.round(viewportInThree.width) * CONFIG.divisions,
