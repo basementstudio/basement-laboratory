@@ -134,19 +134,26 @@ const HorizontalSlide = ({
   const containerRef = React.useRef<HTMLElement>(null)
   const [currentPosition, setCurrentPos] = React.useState(1)
 
-  const positions: React.CSSProperties = {}
-  if (index === 0) {
-    positions.left = 0
-  } else if (index === TOTAL - 1) {
-    positions.right = 0
-  } else {
-    const largest = ((BIGGEST_SIZE / 1920) * 100) / 2
-    const smallest = ((SMALLEST_SIZE / 1920) * 100) / 2
-    const limits = `calc(${containerWidth}px - ${largest + smallest + 'vw'})`
-    positions.left = `calc(${index} * (${limits} / ${
-      TOTAL - 1
-    }) - ${vwSizes} / 2 + ${largest}vw)`
-  }
+  const positions: React.CSSProperties = React.useMemo(() => {
+    if (index === 0) {
+      return {
+        left: 0
+      }
+    } else if (index === TOTAL - 1) {
+      return {
+        right: 0
+      }
+    } else {
+      const largest = ((BIGGEST_SIZE / 1920) * 100) / 2
+      const smallest = ((SMALLEST_SIZE / 1920) * 100) / 2
+      const limits = `calc(${containerWidth}px - ${largest + smallest + 'vw'})`
+      return {
+        left: `calc(${index} * (${limits} / ${
+          TOTAL - 1
+        }) - ${vwSizes} / 2 + ${largest}vw)`
+      }
+    }
+  }, [containerWidth, index, vwSizes])
 
   React.useEffect(() => {
     if (!containerRef.current || !hasRendered) return
@@ -289,7 +296,8 @@ const StaggeredSlider = () => {
   const [nextImageIndex, setNextImgIndex] = React.useState(1)
   const [pointerEvents, setPointerEvents] = React.useState(true)
   const maxIndex = React.useMemo(() => IMAGES.length, [])
-  const containerRef = React.useRef<HTMLDivElement>(null)
+  const containerRef = React.useRef<HTMLElement>(null)
+  const [containerWidth, setContainerWidth] = React.useState<number>()
 
   const isMobile = useMedia('(max-width: 1023px)')
 
@@ -304,19 +312,28 @@ const StaggeredSlider = () => {
   )
 
   React.useEffect(() => {
+    if (isMobile) return
+
     const interval = setInterval(handleSwap, 5000)
+    const handleResize = () => {
+      setContainerWidth(containerRef.current?.offsetWidth)
+    }
+
+    window.addEventListener('resize', handleResize)
+    handleResize()
 
     return () => {
+      window.removeEventListener('resize', handleResize)
       clearInterval(interval)
     }
-  }, [nextImageIndex, handleSwap])
+  }, [nextImageIndex, handleSwap, isMobile])
 
   React.useEffect(() => {
     if (!containerRef.current || isMobile) return
 
     gsap.to(containerRef.current, {
       autoAlpha: 1,
-      delay: 1
+      delay: 0.4
     })
   }, [isMobile])
 
@@ -368,7 +385,7 @@ const StaggeredSlider = () => {
               return (
                 <React.Fragment key={idx}>
                   <HorizontalSlide
-                    containerWidth={containerRef.current?.offsetWidth}
+                    containerWidth={containerWidth}
                     key={idx}
                     index={idx}
                     currentImg={IMAGES.at(current)}
