@@ -144,7 +144,7 @@ const PlainThreejs = (CONFIG) => {
   controls.update()
 
   /* Object */
-  const geometry = new THREE.PlaneBufferGeometry(1, 1, 50, 50)
+  const geometry = new THREE.PlaneGeometry(1, 1, 50, 50)
 
   const count = geometry.attributes.position.count
 
