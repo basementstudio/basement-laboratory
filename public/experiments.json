@@ -138,7 +138,7 @@
     "title": "8.grid-bump.js",
     "href": "/experiments/8.grid-bump.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/8.grid-bump.jpg",
+    "og": "https://lab.basement.studio/ogs/8.grid-bump.jpg",
     "number": 8,
     "contributors": [
       {
@@ -244,7 +244,7 @@
     "title": "13.sculpture-gallery.js",
     "href": "/experiments/13.sculpture-gallery.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/13.sculpture-gallery.jpg",
+    "og": "https://lab.basement.studio/ogs/13.sculpture-gallery.jpg",
     "number": 13,
     "contributors": [
       {
@@ -358,7 +358,7 @@
     "title": "18.CD.js",
     "href": "/experiments/18.CD.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/18.CD.jpg",
+    "og": "https://lab.basement.studio/ogs/18.CD.jpg",
     "number": 18,
     "contributors": [
       {
@@ -392,7 +392,7 @@
     "title": "19.Box.js",
     "href": "/experiments/19.Box.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/19.Box.jpg",
+    "og": "https://lab.basement.studio/ogs/19.Box.jpg",
     "number": 19,
     "contributors": [
       {
@@ -472,7 +472,7 @@
     "title": "23.cupcake.js",
     "href": "/experiments/23.cupcake.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/23.cupcake.jpg",
+    "og": "https://lab.basement.studio/ogs/23.cupcake.jpg",
     "number": 23,
     "contributors": [
       {
@@ -604,7 +604,7 @@
     "title": "29.circular-fog.js",
     "href": "/experiments/29.circular-fog.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/29.circular-fog.jpg",
+    "og": "https://lab.basement.studio/ogs/29.circular-fog.jpg",
     "number": 29,
     "contributors": [
       {
@@ -712,7 +712,7 @@
     "title": "35.gradient-svg.js",
     "href": "/experiments/35.gradient-svg.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/35.gradient-svg.jpg",
+    "og": "https://lab.basement.studio/ogs/35.gradient-svg.jpg",
     "number": 35,
     "contributors": [
       {
@@ -892,7 +892,7 @@
     "title": "47.refraction.js",
     "href": "/experiments/47.refraction.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/47.refraction.jpg",
+    "og": "https://lab.basement.studio/ogs/47.refraction.jpg",
     "number": 45,
     "contributors": [
       {
@@ -1100,6 +1100,24 @@
     "tags": [],
     "og": null,
     "number": 56,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "58.staggered-slider.tsx",
+    "title": "58.staggered-slider.tsx",
+    "href": "/experiments/58.staggered-slider.tsx",
+    "tags": [],
+    "og": null,
+    "number": 57,
     "contributors": []
   }
 ]
