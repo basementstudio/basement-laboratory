@@ -54,6 +54,6 @@ GreenNumbers.getLayout = ({ Component, title, description, slug }) => {
 export const title = 'Green numbers'
 GreenNumbers.Description =
   'Green numbers shader from shadertoy. Made with OGL & React-OGL.'
-GreenNumbers.Tags = 'ogl,shaders'
+export const tags = ['ogl', 'shaders']
 
 export default GreenNumbers

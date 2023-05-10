@@ -175,6 +175,6 @@ export const description = (
     texture uv mapping implementation, to use a custom transformed uv set.
   </p>
 )
-MoveMapTexture.Tags = 'shaders'
+export const tags = ['shaders']
 
 export default MoveMapTexture

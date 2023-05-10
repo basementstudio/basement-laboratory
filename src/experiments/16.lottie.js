@@ -15,6 +15,6 @@ Lottie.getLayout = ({ Component, title, description, slug }) => {
 }
 
 export const title = 'Lottie Hoverboard'
-Lottie.Tags = 'lottie,animation'
+export const tags = ['lottie', 'animation']
 
 export default Lottie

@@ -187,7 +187,7 @@ const DepthShader = () => {
 }
 
 export const title = 'Depth Shader'
-DepthShader.Tags = 'shaders'
+export const tags = ['shaders']
 export const description = (
   <>
     <p>

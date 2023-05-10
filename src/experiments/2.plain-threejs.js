@@ -49,6 +49,6 @@ PlainThreejs.getLayout = ({ Component: fn, ...rest }) => (
 
 export const title = 'Plain ThreeJS (example)'
 export const description = 'An example of how to do a plain ThreeJS experiment.'
-PlainThreejs.Tags = 'example'
+export const tags = ['example']
 
 export default PlainThreejs

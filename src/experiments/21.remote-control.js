@@ -402,7 +402,7 @@ const RemoteControl = ({ layoutProps }) => {
 }
 
 export const title = 'Remote Control (in progress)'
-RemoteControl.Tags = 'webrtc'
+export const tags = ['webrtc']
 RemoteControl.getLayout = ({ Component, title, description, slug }) => {
   return (
     <>

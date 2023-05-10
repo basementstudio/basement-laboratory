@@ -1286,7 +1286,7 @@ const CarpenterScene = () => {
 }
 
 export const title = 'Carpenter'
-CarpenterScene.Tags = 'private'
+export const tags = ['private']
 CarpenterScene.Layout = ({ children, ...props }) => {
   // const pointer = useCursor((s) => s.pointer)
 

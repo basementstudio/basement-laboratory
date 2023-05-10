@@ -534,7 +534,7 @@ const FakeWindow = () => {
 }
 
 export const title = 'FakeWindow'
-FakeWindow.Tags = 'private'
+export const tags = ['private']
 export const description = (
   <>
     <p>

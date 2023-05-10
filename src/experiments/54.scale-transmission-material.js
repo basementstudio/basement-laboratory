@@ -118,6 +118,6 @@ const ScaleTransmissionMaterial = () => {
 }
 
 export const title = 'Scale Transmision Material Hero'
-ScaleTransmissionMaterial.Tags = 'Transmision'
+export const tags = ['Transmision']
 
 export default ScaleTransmissionMaterial

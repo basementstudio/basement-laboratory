@@ -182,6 +182,6 @@ GridBump.getLayout = ({ Component: fn, ...rest }) => (
 )
 
 export const title = 'Grid Bump'
-GridBump.Tags = '3d'
+export const tags = ['3d']
 
 export default GridBump

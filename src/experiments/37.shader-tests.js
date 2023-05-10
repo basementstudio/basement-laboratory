@@ -123,7 +123,7 @@ const ShaderTests = () => {
 }
 
 export const title = 'Shader Tests'
-ShaderTests.Tags = 'shader,three'
+export const tags = ['shader', 'three']
 export const description = `I made this experiment to test some interesting shader functions. I'm not sure what I'm going to do with it yet, but I'm sure I'll find a use for it eventually.`
 
 export default ShaderTests

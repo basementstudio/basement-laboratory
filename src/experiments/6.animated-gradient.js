@@ -67,6 +67,6 @@ Gradient.getLayout = ({ Component, title, description, slug }) => {
 export const title = 'Animated gradient'
 export const description =
   'This is an animated gradient. Made with OGL & React-OGL'
-Gradient.Tags = 'ogl,shaders'
+export const tags = ['ogl', 'shaders']
 
 export default Gradient

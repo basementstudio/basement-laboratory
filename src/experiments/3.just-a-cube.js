@@ -23,6 +23,6 @@ JustACube.Layout = R3FCanvasLayout
 export const title = 'This is just a cube (example)'
 JustACube.Description =
   'This is the simplest possible example of a React Three Fiber experiment.'
-JustACube.Tags = 'example'
+export const tags = ['example']
 
 export default JustACube

@@ -249,6 +249,6 @@ RotatingTwisted3DText.Layout = (props) => (
   </>
 )
 export const title = 'Rotating Twisted 3D Text'
-RotatingTwisted3DText.Tags = 'three, typography'
+export const tags = ['three', ' typography']
 
 export default RotatingTwisted3DText

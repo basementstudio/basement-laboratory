@@ -52,6 +52,6 @@ export const description = (
     .
   </p>
 )
-RGBShiftedModel.Tags = '3d,postprocessing'
+export const tags = ['3d', 'postprocessing']
 
 export default RGBShiftedModel

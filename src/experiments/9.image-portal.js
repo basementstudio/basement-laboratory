@@ -142,6 +142,6 @@ export const description = (
     .
   </p>
 )
-ImagePortal.Tags = 'html,animation'
+export const tags = ['html', 'animation']
 
 export default ImagePortal

@@ -8,6 +8,6 @@ const dagger = model('dagger.glb', {
 })
 
 export const title = 'Dagger'
-dagger.Tags = '3d, private'
+export const tags = ['3d', ' private']
 
 export default dagger

@@ -173,7 +173,7 @@ const SVGGradient = () => {
 }
 
 export const title = 'SVG Gradient'
-SVGGradient.Tags = 'animation, public'
+export const tags = ['animation', ' public']
 SVGGradient.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>{children}</HTMLLayout>
 )

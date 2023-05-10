@@ -303,7 +303,7 @@ KarlBg.Layout = (props) => (
 )
 
 export const title = 'Circular Fog Shader'
-KarlBg.Tags = 'shaders'
+export const tags = ['shaders']
 export const description = (
   <>
     <p>

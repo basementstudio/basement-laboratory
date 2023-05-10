@@ -267,6 +267,6 @@ PlainThreejs.getLayout = ({ Component: fn, ...rest }) => (
 )
 
 export const title = 'Shader Butterfly (in progress)'
-PlainThreejs.Tags = 'shader,threejs,private'
+export const tags = ['shader', 'threejs', 'private']
 
 export default PlainThreejs

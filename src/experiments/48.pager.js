@@ -363,6 +363,6 @@ const Pager = () => {
 
 export const title = 'Pager'
 export const description = <></>
-Pager.Tags = 'private'
+export const tags = ['private']
 
 export default Pager

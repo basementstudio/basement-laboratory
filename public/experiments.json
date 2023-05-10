@@ -3,7 +3,9 @@
     "filename": "1.just-html.js",
     "title": "Just an HTML (example)",
     "href": "/experiments/1.just-html.js",
-    "tags": [],
+    "tags": [
+      "example"
+    ],
     "og": null,
     "number": 1,
     "contributors": [
@@ -21,7 +23,9 @@
     "filename": "2.plain-threejs.js",
     "title": "Plain ThreeJS (example)",
     "href": "/experiments/2.plain-threejs.js",
-    "tags": [],
+    "tags": [
+      "example"
+    ],
     "og": null,
     "number": 2,
     "contributors": [
@@ -39,7 +43,9 @@
     "filename": "3.just-a-cube.js",
     "title": "This is just a cube (example)",
     "href": "/experiments/3.just-a-cube.js",
-    "tags": [],
+    "tags": [
+      "example"
+    ],
     "og": null,
     "number": 3,
     "contributors": [
@@ -57,7 +63,9 @@
     "filename": "4.just-a-model.js",
     "title": "This is just a model (example)",
     "href": "/experiments/4.just-a-model.js",
-    "tags": [],
+    "tags": [
+      "example"
+    ],
     "og": null,
     "number": 4,
     "contributors": [
@@ -93,7 +101,10 @@
     "filename": "6.animated-gradient.js",
     "title": "Animated gradient",
     "href": "/experiments/6.animated-gradient.js",
-    "tags": [],
+    "tags": [
+      "ogl",
+      "shaders"
+    ],
     "og": null,
     "number": 6,
     "contributors": [
@@ -119,7 +130,10 @@
     "filename": "7.model-box.js",
     "title": "Particled Model (in progress)",
     "href": "/experiments/7.model-box.js",
-    "tags": [],
+    "tags": [
+      "3d",
+      "particles"
+    ],
     "og": null,
     "number": 7,
     "contributors": [
@@ -137,7 +151,9 @@
     "filename": "8.grid-bump.js",
     "title": "Grid Bump",
     "href": "/experiments/8.grid-bump.js",
-    "tags": [],
+    "tags": [
+      "3d"
+    ],
     "og": "https://lab.basement.studio/ogs/8.grid-bump.jpg",
     "number": 8,
     "contributors": [
@@ -163,7 +179,10 @@
     "filename": "9.image-portal.js",
     "title": "Image Portal",
     "href": "/experiments/9.image-portal.js",
-    "tags": [],
+    "tags": [
+      "html",
+      "animation"
+    ],
     "og": null,
     "number": 9,
     "contributors": [
@@ -181,7 +200,10 @@
     "filename": "10.hover-flowmap.js",
     "title": "Hover flowmap",
     "href": "/experiments/10.hover-flowmap.js",
-    "tags": [],
+    "tags": [
+      "ogl",
+      "shaders"
+    ],
     "og": null,
     "number": 10,
     "contributors": [
@@ -207,7 +229,9 @@
     "filename": "11.move-map-texture.js",
     "title": "Move map texture",
     "href": "/experiments/11.move-map-texture.js",
-    "tags": [],
+    "tags": [
+      "shaders"
+    ],
     "og": null,
     "number": 11,
     "contributors": [
@@ -225,7 +249,10 @@
     "filename": "12.green-numbers.js",
     "title": "Green numbers",
     "href": "/experiments/12.green-numbers.js",
-    "tags": [],
+    "tags": [
+      "ogl",
+      "shaders"
+    ],
     "og": null,
     "number": 12,
     "contributors": [
@@ -251,7 +278,10 @@
     "filename": "13.sculpture-gallery.js",
     "title": "Sculpture Gallery",
     "href": "/experiments/13.sculpture-gallery.js",
-    "tags": [],
+    "tags": [
+      "3d",
+      "experience"
+    ],
     "og": "https://lab.basement.studio/ogs/13.sculpture-gallery.jpg",
     "number": 13,
     "contributors": [
@@ -277,7 +307,11 @@
     "filename": "14.shader-butterfly.js",
     "title": "Shader Butterfly (in progress)",
     "href": "/experiments/14.shader-butterfly.js",
-    "tags": [],
+    "tags": [
+      "shader",
+      "threejs",
+      "private"
+    ],
     "og": null,
     "number": 14,
     "contributors": [
@@ -303,7 +337,9 @@
     "filename": "15.unicorn-model.js",
     "title": "This is a Unicorn",
     "href": "/experiments/15.unicorn-model.js",
-    "tags": [],
+    "tags": [
+      "3d"
+    ],
     "og": null,
     "number": 15,
     "contributors": [
@@ -329,7 +365,10 @@
     "filename": "16.lottie.js",
     "title": "Lottie Hoverboard",
     "href": "/experiments/16.lottie.js",
-    "tags": [],
+    "tags": [
+      "lottie",
+      "animation"
+    ],
     "og": null,
     "number": 16,
     "contributors": [
@@ -347,7 +386,10 @@
     "filename": "17.next.js",
     "title": "Next.js 3d model",
     "href": "/experiments/17.next.js",
-    "tags": [],
+    "tags": [
+      "3d",
+      "private"
+    ],
     "og": null,
     "number": 17,
     "contributors": [
@@ -373,7 +415,9 @@
     "filename": "18.CD.js",
     "title": "CD found under the desk",
     "href": "/experiments/18.CD.js",
-    "tags": [],
+    "tags": [
+      "3d"
+    ],
     "og": "https://lab.basement.studio/ogs/18.CD.jpg",
     "number": 18,
     "contributors": [
@@ -407,7 +451,9 @@
     "filename": "19.Box.js",
     "title": "Normals & HDRI Hologram",
     "href": "/experiments/19.Box.js",
-    "tags": [],
+    "tags": [
+      "3d"
+    ],
     "og": "https://lab.basement.studio/ogs/19.Box.jpg",
     "number": 19,
     "contributors": [
@@ -433,7 +479,9 @@
     "filename": "20.svg-filter.js",
     "title": "SVG Filters",
     "href": "/experiments/20.svg-filter.js",
-    "tags": [],
+    "tags": [
+      "example"
+    ],
     "og": null,
     "number": 20,
     "contributors": [
@@ -451,7 +499,9 @@
     "filename": "21.remote-control.js",
     "title": "Remote Control (in progress)",
     "href": "/experiments/21.remote-control.js",
-    "tags": [],
+    "tags": [
+      "webrtc"
+    ],
     "og": null,
     "number": 21,
     "contributors": [
@@ -469,7 +519,9 @@
     "filename": "22.linear-lantern.js",
     "title": "Linear Lantern",
     "href": "/experiments/22.linear-lantern.js",
-    "tags": [],
+    "tags": [
+      "example"
+    ],
     "og": null,
     "number": 22,
     "contributors": [
@@ -487,7 +539,9 @@
     "filename": "23.cupcake.js",
     "title": "3D Cupcake",
     "href": "/experiments/23.cupcake.js",
-    "tags": [],
+    "tags": [
+      "3d"
+    ],
     "og": "https://lab.basement.studio/ogs/23.cupcake.jpg",
     "number": 23,
     "contributors": [
@@ -513,7 +567,10 @@
     "filename": "24.dagger.js",
     "title": "Dagger",
     "href": "/experiments/24.dagger.js",
-    "tags": [],
+    "tags": [
+      "3d",
+      "private"
+    ],
     "og": null,
     "number": 24,
     "contributors": [
@@ -539,7 +596,10 @@
     "filename": "25.ring.js",
     "title": "The Ring",
     "href": "/experiments/25.ring.js",
-    "tags": [],
+    "tags": [
+      "3d",
+      "private"
+    ],
     "og": null,
     "number": 25,
     "contributors": [
@@ -601,7 +661,9 @@
     "filename": "28.image-mask-effect.js",
     "title": "Image Mask Effect",
     "href": "/experiments/28.image-mask-effect.js",
-    "tags": [],
+    "tags": [
+      "private"
+    ],
     "og": null,
     "number": 28,
     "contributors": [
@@ -627,7 +689,9 @@
     "filename": "29.circular-fog.js",
     "title": "Circular Fog Shader",
     "href": "/experiments/29.circular-fog.js",
-    "tags": [],
+    "tags": [
+      "shaders"
+    ],
     "og": "https://lab.basement.studio/ogs/29.circular-fog.jpg",
     "number": 29,
     "contributors": [
@@ -645,7 +709,10 @@
     "filename": "30.wireframe-reveal.js",
     "title": "Wireframe model reveal",
     "href": "/experiments/30.wireframe-reveal.js",
-    "tags": [],
+    "tags": [
+      "shaders",
+      "private"
+    ],
     "og": null,
     "number": 30,
     "contributors": [
@@ -744,7 +811,10 @@
     "filename": "35.gradient-svg.js",
     "title": "SVG Gradient",
     "href": "/experiments/35.gradient-svg.js",
-    "tags": [],
+    "tags": [
+      "animation",
+      "public"
+    ],
     "og": "https://lab.basement.studio/ogs/35.gradient-svg.jpg",
     "number": 36,
     "contributors": [
@@ -780,7 +850,10 @@
     "filename": "37.shader-tests.js",
     "title": "Shader Tests",
     "href": "/experiments/37.shader-tests.js",
-    "tags": [],
+    "tags": [
+      "shader",
+      "three"
+    ],
     "og": null,
     "number": 38,
     "contributors": [
@@ -824,7 +897,9 @@
     "filename": "39.ffflauta-scene.js",
     "title": "FFFlauta Scene",
     "href": "/experiments/39.ffflauta-scene.js",
-    "tags": [],
+    "tags": [
+      "private"
+    ],
     "og": null,
     "number": 40,
     "contributors": [
@@ -878,7 +953,9 @@
     "filename": "43.depth-shader.js",
     "title": "Depth Shader",
     "href": "/experiments/43.depth-shader.js",
-    "tags": [],
+    "tags": [
+      "shaders"
+    ],
     "og": null,
     "number": 43,
     "contributors": [
@@ -896,7 +973,9 @@
     "filename": "45.fake-window.js",
     "title": "FakeWindow",
     "href": "/experiments/45.fake-window.js",
-    "tags": [],
+    "tags": [
+      "private"
+    ],
     "og": null,
     "number": 44,
     "contributors": [
@@ -958,7 +1037,9 @@
     "filename": "48.pager.js",
     "title": "Pager",
     "href": "/experiments/48.pager.js",
-    "tags": [],
+    "tags": [
+      "private"
+    ],
     "og": null,
     "number": 47,
     "contributors": [
@@ -976,7 +1057,9 @@
     "filename": "49.bezier-import.js",
     "title": "Imported Bezier Curves",
     "href": "/experiments/49.bezier-import.js",
-    "tags": [],
+    "tags": [
+      "private"
+    ],
     "og": null,
     "number": 48,
     "contributors": [
@@ -1002,7 +1085,9 @@
     "filename": "50.camera-rail.js",
     "title": "Camera Rail",
     "href": "/experiments/50.camera-rail.js",
-    "tags": [],
+    "tags": [
+      "private"
+    ],
     "og": null,
     "number": 49,
     "contributors": [
@@ -1038,7 +1123,10 @@
     "filename": "52.rotating-twisted-3d-typography.js",
     "title": "Rotating Twisted 3D Text",
     "href": "/experiments/52.rotating-twisted-3d-typography.js",
-    "tags": [],
+    "tags": [
+      "three",
+      "typography"
+    ],
     "og": null,
     "number": 51,
     "contributors": [
@@ -1092,7 +1180,9 @@
     "filename": "54.scale-transmission-material.js",
     "title": "Scale Transmision Material Hero",
     "href": "/experiments/54.scale-transmission-material.js",
-    "tags": [],
+    "tags": [
+      "transmision"
+    ],
     "og": null,
     "number": 54,
     "contributors": [
@@ -1110,7 +1200,10 @@
     "filename": "55.twitch-demo-1.tsx",
     "title": "Twitch Demo No. 1",
     "href": "/experiments/55.twitch-demo-1.tsx",
-    "tags": [],
+    "tags": [
+      "threejs",
+      "twitch"
+    ],
     "og": null,
     "number": 55,
     "contributors": [
@@ -1164,7 +1257,10 @@
     "filename": "58.staggered-slider.tsx",
     "title": "Staggered Slider",
     "href": "/experiments/58.staggered-slider.tsx",
-    "tags": [],
+    "tags": [
+      "animation",
+      "public"
+    ],
     "og": null,
     "number": 58,
     "contributors": [

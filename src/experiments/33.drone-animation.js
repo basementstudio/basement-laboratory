@@ -225,6 +225,6 @@ const DroneAnimation = () => {
 }
 
 export const title = 'Drone Animation'
-DroneAnimation.Tags = 'animation,private'
+export const tags = ['animation', 'private']
 
 export default DroneAnimation

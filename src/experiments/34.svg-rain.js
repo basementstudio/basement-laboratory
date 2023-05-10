@@ -415,7 +415,7 @@ const SVGRain = () => {
 }
 
 export const title = 'Glyph Rain'
-SVGRain.Tags = 'animation, private'
+export const tags = ['animation', ' private']
 SVGRain.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
     <AspectCanvas

@@ -79,13 +79,13 @@ export const getAllExperimentConfigs: GetAllExperimentConfigs = async () => {
 
   const modules = await Promise.all(
     files.map(async (file) => {
-      let title: string | undefined
       try {
-        title = (await import('/src/experiments/' + file)).title
+        const module = await import('/src/experiments/' + file)
+        return { path: file, title: module.title, tags: module.tags }
       } catch (_err) {
         console.warn(`WARNING: Metadata from ${file} module couldn't be read`)
+        return { path: file }
       }
-      return { path: file, title }
     })
   )
 

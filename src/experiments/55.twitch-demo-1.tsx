@@ -181,7 +181,7 @@ export const description = (
   </>
 )
 
-Twitch1Demo.Tags = 'threejs,twitch'
+export const tags = ['threejs', 'twitch']
 Twitch1Demo.Layout = HTMLLayout
 
 export default Twitch1Demo

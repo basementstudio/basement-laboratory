@@ -8,6 +8,6 @@ const ring = model('ring.glb', {
 })
 
 export const title = 'The Ring'
-ring.Tags = '3d, private'
+export const tags = ['3d', ' private']
 
 export default ring

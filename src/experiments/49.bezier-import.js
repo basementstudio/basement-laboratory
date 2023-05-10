@@ -168,6 +168,6 @@ export const description = (
     <navUITunnel.Out />
   </Formated>
 )
-BezierTests.Tags = 'private'
+export const tags = ['private']
 
 export default BezierTests

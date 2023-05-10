@@ -8,6 +8,6 @@ const CD = model('cd.glb', {
 })
 
 export const title = 'CD found under the desk'
-CD.Tags = '3d'
+export const tags = ['3d']
 
 export default CD
