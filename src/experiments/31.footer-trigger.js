@@ -161,7 +161,7 @@ const FooterTrigger = () => {
   )
 }
 
-FooterTrigger.Title = 'Footer trigger'
+export const title = 'Footer trigger'
 FooterTrigger.Layout = SmoothScrollLayout
 
 export default FooterTrigger

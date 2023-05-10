@@ -1107,7 +1107,8 @@ const VolumetricSpotLight = ({ position, rotation }) => {
         toneMapped={true}
         uniforms={uniforms.current}
         // eslint-disable-next-line prettier/prettier
-        vertexShader={/* glsl */ `
+        vertexShader={
+          /* glsl */ `
           varying vec3 vNormal;
           varying vec3 vWorldPosition;
 
@@ -1124,7 +1125,8 @@ const VolumetricSpotLight = ({ position, rotation }) => {
         `
         }
         // eslint-disable-next-line prettier/prettier
-        fragmentShader={/* glsl */ `
+        fragmentShader={
+          /* glsl */ `
           varying vec3		vNormal;
           varying vec3		vWorldPosition;
 
@@ -1283,7 +1285,7 @@ const CarpenterScene = () => {
   )
 }
 
-CarpenterScene.Title = 'Carpenter'
+export const title = 'Carpenter'
 CarpenterScene.Tags = 'private'
 CarpenterScene.Layout = ({ children, ...props }) => {
   // const pointer = useCursor((s) => s.pointer)

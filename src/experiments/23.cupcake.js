@@ -7,7 +7,7 @@ const cupcake = model('cupcake.glb', {
   environment: 'dawn'
 })
 
-cupcake.Title = '3D Cupcake'
+export const title = '3D Cupcake'
 cupcake.Tags = '3d'
 
 export default cupcake

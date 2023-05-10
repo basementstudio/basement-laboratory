@@ -302,9 +302,9 @@ KarlBg.Layout = (props) => (
   </>
 )
 
-KarlBg.Title = 'Circular Fog Shader'
+export const title = 'Circular Fog Shader'
 KarlBg.Tags = 'shaders'
-KarlBg.Description = (
+export const description = (
   <>
     <p>
       <strong>Motivation:</strong> We were looking for a spotlight effect that

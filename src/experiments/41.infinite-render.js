@@ -11,7 +11,7 @@ import { useUniforms } from '~/hooks/use-uniforms'
 
 /* Vertex and fragment shader strings for a radial gradient */
 // eslint-disable-next-line prettier/prettier
-const brushVertexShader =/* glsl */ `
+const brushVertexShader = /* glsl */ `
   varying vec2 vUv;
   void main() {
     vUv = uv;
@@ -20,7 +20,7 @@ const brushVertexShader =/* glsl */ `
 `
 /* Fragment shader strings for a rgb rainbow gradient */
 // eslint-disable-next-line prettier/prettier
-const brushFragmentShader =/* glsl */  `
+const brushFragmentShader = /* glsl */ `
   varying vec2 vUv; 
   uniform float uTime;
   void main() {
@@ -34,7 +34,7 @@ const brushFragmentShader =/* glsl */  `
   }
 `
 // eslint-disable-next-line prettier/prettier
-const bgVertexShader =/* glsl */  `
+const bgVertexShader = /* glsl */ `
   varying vec2 vUv;
   void main() {
     vUv = uv;
@@ -42,7 +42,7 @@ const bgVertexShader =/* glsl */  `
   }
 `
 // eslint-disable-next-line prettier/prettier
-const bgFragmentShader =/* glsl */ `
+const bgFragmentShader = /* glsl */ `
   varying vec2 vUv;
   uniform sampler2D uTexture;
   uniform sampler2D uDisp;
@@ -219,8 +219,8 @@ const InfiniteRender = () => {
   )
 }
 
-InfiniteRender.Title = 'InfiniteRender Technique'
-InfiniteRender.Description = (
+export const title = 'InfiniteRender Technique'
+export const description = (
   <>
     Recursive rendering technique using multiple render targets based on{' '}
     <a target="_blank" href="https://youtu.be/nf6e13wSMug" rel="noopener">

@@ -1,15 +1,16 @@
 import { Stats } from '@react-three/drei'
 import { Canvas, Props } from '@react-three/fiber'
-import { FC, ReactNode } from 'react'
+import { FunctionComponent, ReactNode } from 'react'
 
 import { NavigationLayout, NavigationLayoutProps } from '../navigation-layout'
 import s from './r3f-canvas-layout.module.scss'
 
-type R3FCanvasLayoutProps = NavigationLayoutProps & {
+type R3FCanvasLayoutProps = {
   htmlChildren?: ReactNode
-} & Props
+} & Props &
+  NavigationLayoutProps
 
-export const R3FCanvasLayout: FC<R3FCanvasLayoutProps> = ({
+export const R3FCanvasLayout: FunctionComponent<R3FCanvasLayoutProps> = ({
   children,
   title,
   description,

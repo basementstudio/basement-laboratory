@@ -414,7 +414,7 @@ const SVGRain = () => {
   )
 }
 
-SVGRain.Title = 'Glyph Rain'
+export const title = 'Glyph Rain'
 SVGRain.Tags = 'animation, private'
 SVGRain.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>

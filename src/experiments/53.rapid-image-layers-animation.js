@@ -223,7 +223,7 @@ const RapidImageLayersAnimation = () => {
   )
 }
 
-RapidImageLayersAnimation.Title = 'Rapid Image Layers Animation'
+export const title = 'Rapid Image Layers Animation'
 RapidImageLayersAnimation.Layout = SmoothScrollLayout
 
 export default RapidImageLayersAnimation

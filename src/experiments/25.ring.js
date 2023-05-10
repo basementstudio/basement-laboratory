@@ -7,7 +7,7 @@ const ring = model('ring.glb', {
   environment: 'dawn'
 })
 
-ring.Title = 'The Ring'
+export const title = 'The Ring'
 ring.Tags = '3d, private'
 
 export default ring

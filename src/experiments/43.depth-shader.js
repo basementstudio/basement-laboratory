@@ -4,7 +4,7 @@ import React from 'react'
 import * as THREE from 'three'
 
 // eslint-disable-next-line prettier/prettier
-const helpers =/* glsl */ `
+const helpers = /* glsl */ `
   /* SDF stands for Signed Distance Fields */
   float sdfCircle(vec2 uv, float r, vec2 offset) {
     float x = uv.x - offset.x;
@@ -28,7 +28,7 @@ const helpers =/* glsl */ `
 
 const improvedMethod = {
   // eslint-disable-next-line prettier/prettier
-  vertexShader:/* glsl */ `
+  vertexShader: /* glsl */ `
     varying vec2 vUv;
 
     void main() {
@@ -37,7 +37,7 @@ const improvedMethod = {
     }
   `,
   // eslint-disable-next-line prettier/prettier
-  fragmentShader:/* glsl */ `
+  fragmentShader: /* glsl */ `
     varying vec2 vUv;
 
     uniform vec3 uPlanePosition;
@@ -84,7 +84,7 @@ const improvedMethod = {
 
 const classicMethod = {
   // eslint-disable-next-line prettier/prettier
-  vertexShader:/* glsl */ `
+  vertexShader: /* glsl */ `
     varying vec2 vUv;
 
     void main() {
@@ -93,7 +93,7 @@ const classicMethod = {
     }
   `,
   // eslint-disable-next-line prettier/prettier
-  fragmentShader:/* glsl */ `
+  fragmentShader: /* glsl */ `
     varying vec2 vUv;
 
     uniform vec3 uPlanePosition;
@@ -186,9 +186,9 @@ const DepthShader = () => {
   )
 }
 
-DepthShader.Title = 'Depth Shader'
+export const title = 'Depth Shader'
 DepthShader.Tags = 'shaders'
-DepthShader.Description = (
+export const description = (
   <>
     <p>
       An implementation of a parallax mapping shader. Inspired on{' '}

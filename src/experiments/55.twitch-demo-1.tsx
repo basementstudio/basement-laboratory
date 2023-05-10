@@ -159,8 +159,8 @@ const Twitch1Demo = () => {
   return <canvas style={{ width: '100%', height: '100vh' }} ref={canvasRef} />
 }
 
-Twitch1Demo.Title = 'Twitch Demo No. 1'
-Twitch1Demo.Description = (
+export const title = 'Twitch Demo No. 1'
+export const description = (
   <>
     <p>Key points to learn with this demo:</p>
     <ul>

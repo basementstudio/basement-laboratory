@@ -187,7 +187,7 @@ const OffscreenCanvas = () => {
   )
 }
 
-OffscreenCanvas.Title = 'Offscreen Canvas'
+export const title = 'Offscreen Canvas'
 OffscreenCanvas.Layout = HTMLLayout
 
 export default OffscreenCanvas

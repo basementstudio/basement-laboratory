@@ -7,7 +7,7 @@ import * as THREE from 'three'
 import { CoolGrid } from '~/components/common/cool-grid'
 
 // eslint-disable-next-line prettier/prettier
-const helpers =/* glsl */ `
+const helpers = /* glsl */ `
   /* SDF stands for Signed Distance Fields */
   float sdfCircle(vec2 uv, float r, vec2 offset) {
     float x = uv.x - offset.x;
@@ -32,7 +32,7 @@ const helpers =/* glsl */ `
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const depth = {
   // eslint-disable-next-line prettier/prettier
-  vertexShader:/* glsl */ `
+  vertexShader: /* glsl */ `
     varying vec2 vUv;
 
     void main() {
@@ -41,7 +41,7 @@ const depth = {
     }
   `,
   // eslint-disable-next-line prettier/prettier
-  fragmentShader:/* glsl */ `
+  fragmentShader: /* glsl */ `
     varying vec2 vUv;
 
     uniform vec3 uPlanePosition;
@@ -81,7 +81,7 @@ const depth = {
 }
 
 // eslint-disable-next-line prettier/prettier
-const params =/* glsl */ `
+const params = /* glsl */ `
   uniform vec3 uPlanePosition;
   uniform float room_size;
   uniform float room_depth;
@@ -95,7 +95,7 @@ const params =/* glsl */ `
 
 const interiorCubeMap = {
   // eslint-disable-next-line prettier/prettier
-  vertexShader:/* glsl */ `
+  vertexShader: /* glsl */ `
     ${params}
 
     void main() {
@@ -115,7 +115,7 @@ const interiorCubeMap = {
   `,
 
   // eslint-disable-next-line prettier/prettier
-  fragmentShader:/* glsl */ `
+  fragmentShader: /* glsl */ `
     ${params}
 
     float remap_range(float value, float min_in, float max_in, float min_out, float max_out) {
@@ -533,9 +533,9 @@ const FakeWindow = () => {
   )
 }
 
-FakeWindow.Title = 'FakeWindow'
+export const title = 'FakeWindow'
 FakeWindow.Tags = 'private'
-FakeWindow.Description = (
+export const description = (
   <>
     <p>
       An implementation of a parallax mapping shader. Inspired on{' '}

@@ -291,7 +291,7 @@ const XeroScene = () => {
   )
 }
 
-XeroScene.Title = 'Xero Scene'
+export const title = 'Xero Scene'
 XeroScene.Tags = 'three,private'
 XeroScene.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>

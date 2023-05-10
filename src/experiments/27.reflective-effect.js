@@ -161,6 +161,6 @@ const ReflectiveEffect = () => {
 }
 
 ReflectiveEffect.Layout = SmoothScrollLayout
-ReflectiveEffect.Title = 'Reflective Effect'
+export const title = 'Reflective Effect'
 
 export default ReflectiveEffect

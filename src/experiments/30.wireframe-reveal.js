@@ -306,8 +306,8 @@ WireframeRevealMain.Layout = (props) => (
   </>
 )
 
-WireframeRevealMain.Title = 'Wireframe model reveal'
-WireframeRevealMain.Description = ''
+export const title = 'Wireframe model reveal'
+export const description = ''
 WireframeRevealMain.Tags = 'shaders,private'
 
 export default WireframeRevealMain

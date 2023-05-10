@@ -18,9 +18,7 @@ const JustATest = () => {
 
 JustATest.Layout = HTMLLayout
 
-JustATest.Title = 'Just an HTML (example)'
+export const title = 'Just an HTML (example)'
 JustATest.Tags = 'example'
 
 export default JustATest
-
-export const title = 'Just an HTML (example)'

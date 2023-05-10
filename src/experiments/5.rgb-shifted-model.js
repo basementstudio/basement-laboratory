@@ -41,8 +41,8 @@ const RGBShiftedModel = () => {
   )
 }
 
-RGBShiftedModel.Title = 'RGB shifted smiley face'
-RGBShiftedModel.Description = (
+export const title = 'RGB shifted smiley face'
+export const description = (
   <p>
     This is a <code>glb</code> + <code>postprocessing</code> example. Made with{' '}
     <a href="https://github.com/pmndrs/drei">react-three-drei</a> &{' '}

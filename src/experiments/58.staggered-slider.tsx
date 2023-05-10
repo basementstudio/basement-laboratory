@@ -419,23 +419,7 @@ const StaggeredSlider = () => {
   )
 }
 
-StaggeredSlider.Title = 'Staggered Slider'
-StaggeredSlider.Description = (
-  <p>
-    Carousel inspired by{' '}
-    <a
-      target="_blank"
-      rel="noopener"
-      href="https://dribbble.com/shots/14708656-Instagram-Social-Widget"
-    >
-      Francesco Zagami's Widget
-    </a>
-  </p>
-)
-StaggeredSlider.Tags = 'animation, public'
 StaggeredSlider.Layout = HTMLLayout
-
-export default StaggeredSlider
 
 export const title = 'Staggered Slider'
 export const description = (
@@ -451,3 +435,5 @@ export const description = (
   </p>
 )
 export const tags = ['animation', 'public']
+
+export default StaggeredSlider

@@ -163,7 +163,7 @@ const ComputerVision = () => {
   )
 }
 
-ComputerVision.Title = 'Computer Vision'
+export const title = 'Computer Vision'
 ComputerVision.Layout = HTMLLayout
 
 export default ComputerVision

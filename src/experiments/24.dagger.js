@@ -7,7 +7,7 @@ const dagger = model('dagger.glb', {
   environment: 'dawn'
 })
 
-dagger.Title = 'Dagger'
+export const title = 'Dagger'
 dagger.Tags = '3d, private'
 
 export default dagger

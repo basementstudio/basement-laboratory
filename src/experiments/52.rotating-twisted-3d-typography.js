@@ -248,7 +248,7 @@ RotatingTwisted3DText.Layout = (props) => (
     <R3FCanvasLayout {...props} />
   </>
 )
-RotatingTwisted3DText.Title = 'Rotating Twisted 3D Text'
+export const title = 'Rotating Twisted 3D Text'
 RotatingTwisted3DText.Tags = 'three, typography'
 
 export default RotatingTwisted3DText

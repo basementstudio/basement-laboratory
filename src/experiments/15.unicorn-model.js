@@ -7,7 +7,7 @@ const Unicorn = model('Unicorn_v3.gltf', {
   environment: 'sunset'
 })
 
-Unicorn.Title = 'This is a Unicorn'
+export const title = 'This is a Unicorn'
 Unicorn.Tags = '3d'
 
 export default Unicorn

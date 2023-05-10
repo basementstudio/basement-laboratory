@@ -440,7 +440,7 @@ SculptureGallery.getLayout = ({ Component: fn, ...rest }) => (
   </PlainCanvasLayout>
 )
 
-SculptureGallery.Title = 'Sculpture Gallery'
+export const title = 'Sculpture Gallery'
 SculptureGallery.Tags = '3d,experience'
 
 export default SculptureGallery

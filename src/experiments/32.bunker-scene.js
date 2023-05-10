@@ -534,7 +534,7 @@ const BunkerScene = () => {
   )
 }
 
-BunkerScene.Title = 'Bunker Scene'
+export const title = 'Bunker Scene'
 BunkerScene.Tags = 'three,private'
 BunkerScene.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>

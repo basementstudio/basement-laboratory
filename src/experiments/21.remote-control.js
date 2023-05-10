@@ -401,7 +401,7 @@ const RemoteControl = ({ layoutProps }) => {
   )
 }
 
-RemoteControl.Title = 'Remote Control (in progress)'
+export const title = 'Remote Control (in progress)'
 RemoteControl.Tags = 'webrtc'
 RemoteControl.getLayout = ({ Component, title, description, slug }) => {
   return (

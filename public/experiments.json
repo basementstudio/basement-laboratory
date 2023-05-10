@@ -19,7 +19,7 @@
   },
   {
     "filename": "2.plain-threejs.js",
-    "title": "2.plain-threejs.js",
+    "title": "Plain ThreeJS (example)",
     "href": "/experiments/2.plain-threejs.js",
     "tags": [],
     "og": null,
@@ -37,7 +37,7 @@
   },
   {
     "filename": "3.just-a-cube.js",
-    "title": "3.just-a-cube.js",
+    "title": "This is just a cube (example)",
     "href": "/experiments/3.just-a-cube.js",
     "tags": [],
     "og": null,
@@ -55,7 +55,7 @@
   },
   {
     "filename": "4.just-a-model.js",
-    "title": "4.just-a-model.js",
+    "title": "This is just a model (example)",
     "href": "/experiments/4.just-a-model.js",
     "tags": [],
     "og": null,
@@ -91,7 +91,7 @@
   },
   {
     "filename": "6.animated-gradient.js",
-    "title": "6.animated-gradient.js",
+    "title": "Animated gradient",
     "href": "/experiments/6.animated-gradient.js",
     "tags": [],
     "og": null,
@@ -117,7 +117,7 @@
   },
   {
     "filename": "7.model-box.js",
-    "title": "7.model-box.js",
+    "title": "Particled Model (in progress)",
     "href": "/experiments/7.model-box.js",
     "tags": [],
     "og": null,
@@ -135,7 +135,7 @@
   },
   {
     "filename": "8.grid-bump.js",
-    "title": "8.grid-bump.js",
+    "title": "Grid Bump",
     "href": "/experiments/8.grid-bump.js",
     "tags": [],
     "og": "https://lab.basement.studio/ogs/8.grid-bump.jpg",
@@ -161,7 +161,7 @@
   },
   {
     "filename": "9.image-portal.js",
-    "title": "9.image-portal.js",
+    "title": "Image Portal",
     "href": "/experiments/9.image-portal.js",
     "tags": [],
     "og": null,
@@ -179,7 +179,7 @@
   },
   {
     "filename": "10.hover-flowmap.js",
-    "title": "10.hover-flowmap.js",
+    "title": "Hover flowmap",
     "href": "/experiments/10.hover-flowmap.js",
     "tags": [],
     "og": null,
@@ -205,7 +205,7 @@
   },
   {
     "filename": "11.move-map-texture.js",
-    "title": "11.move-map-texture.js",
+    "title": "Move map texture",
     "href": "/experiments/11.move-map-texture.js",
     "tags": [],
     "og": null,
@@ -223,7 +223,7 @@
   },
   {
     "filename": "12.green-numbers.js",
-    "title": "12.green-numbers.js",
+    "title": "Green numbers",
     "href": "/experiments/12.green-numbers.js",
     "tags": [],
     "og": null,
@@ -249,7 +249,7 @@
   },
   {
     "filename": "13.sculpture-gallery.js",
-    "title": "13.sculpture-gallery.js",
+    "title": "Sculpture Gallery",
     "href": "/experiments/13.sculpture-gallery.js",
     "tags": [],
     "og": "https://lab.basement.studio/ogs/13.sculpture-gallery.jpg",
@@ -275,7 +275,7 @@
   },
   {
     "filename": "14.shader-butterfly.js",
-    "title": "14.shader-butterfly.js",
+    "title": "Shader Butterfly (in progress)",
     "href": "/experiments/14.shader-butterfly.js",
     "tags": [],
     "og": null,
@@ -301,7 +301,7 @@
   },
   {
     "filename": "15.unicorn-model.js",
-    "title": "15.unicorn-model.js",
+    "title": "This is a Unicorn",
     "href": "/experiments/15.unicorn-model.js",
     "tags": [],
     "og": null,
@@ -327,7 +327,7 @@
   },
   {
     "filename": "16.lottie.js",
-    "title": "16.lottie.js",
+    "title": "Lottie Hoverboard",
     "href": "/experiments/16.lottie.js",
     "tags": [],
     "og": null,
@@ -345,7 +345,7 @@
   },
   {
     "filename": "17.next.js",
-    "title": "17.next.js",
+    "title": "Next.js 3d model",
     "href": "/experiments/17.next.js",
     "tags": [],
     "og": null,
@@ -371,7 +371,7 @@
   },
   {
     "filename": "18.CD.js",
-    "title": "18.CD.js",
+    "title": "CD found under the desk",
     "href": "/experiments/18.CD.js",
     "tags": [],
     "og": "https://lab.basement.studio/ogs/18.CD.jpg",
@@ -405,7 +405,7 @@
   },
   {
     "filename": "19.Box.js",
-    "title": "19.Box.js",
+    "title": "Normals & HDRI Hologram",
     "href": "/experiments/19.Box.js",
     "tags": [],
     "og": "https://lab.basement.studio/ogs/19.Box.jpg",
@@ -431,7 +431,7 @@
   },
   {
     "filename": "20.svg-filter.js",
-    "title": "20.svg-filter.js",
+    "title": "SVG Filters",
     "href": "/experiments/20.svg-filter.js",
     "tags": [],
     "og": null,
@@ -449,7 +449,7 @@
   },
   {
     "filename": "21.remote-control.js",
-    "title": "21.remote-control.js",
+    "title": "Remote Control (in progress)",
     "href": "/experiments/21.remote-control.js",
     "tags": [],
     "og": null,
@@ -467,7 +467,7 @@
   },
   {
     "filename": "22.linear-lantern.js",
-    "title": "22.linear-lantern.js",
+    "title": "Linear Lantern",
     "href": "/experiments/22.linear-lantern.js",
     "tags": [],
     "og": null,
@@ -485,7 +485,7 @@
   },
   {
     "filename": "23.cupcake.js",
-    "title": "23.cupcake.js",
+    "title": "3D Cupcake",
     "href": "/experiments/23.cupcake.js",
     "tags": [],
     "og": "https://lab.basement.studio/ogs/23.cupcake.jpg",
@@ -511,7 +511,7 @@
   },
   {
     "filename": "24.dagger.js",
-    "title": "24.dagger.js",
+    "title": "Dagger",
     "href": "/experiments/24.dagger.js",
     "tags": [],
     "og": null,
@@ -537,7 +537,7 @@
   },
   {
     "filename": "25.ring.js",
-    "title": "25.ring.js",
+    "title": "The Ring",
     "href": "/experiments/25.ring.js",
     "tags": [],
     "og": null,
@@ -563,7 +563,7 @@
   },
   {
     "filename": "26.sticky-scroll-trigger.js",
-    "title": "26.sticky-scroll-trigger.js",
+    "title": "Sticky ScrollTrigger",
     "href": "/experiments/26.sticky-scroll-trigger.js",
     "tags": [],
     "og": null,
@@ -581,7 +581,7 @@
   },
   {
     "filename": "27.reflective-effect.js",
-    "title": "27.reflective-effect.js",
+    "title": "Reflective Effect",
     "href": "/experiments/27.reflective-effect.js",
     "tags": [],
     "og": null,
@@ -599,7 +599,7 @@
   },
   {
     "filename": "28.image-mask-effect.js",
-    "title": "28.image-mask-effect.js",
+    "title": "Image Mask Effect",
     "href": "/experiments/28.image-mask-effect.js",
     "tags": [],
     "og": null,
@@ -625,7 +625,7 @@
   },
   {
     "filename": "29.circular-fog.js",
-    "title": "29.circular-fog.js",
+    "title": "Circular Fog Shader",
     "href": "/experiments/29.circular-fog.js",
     "tags": [],
     "og": "https://lab.basement.studio/ogs/29.circular-fog.jpg",
@@ -643,7 +643,7 @@
   },
   {
     "filename": "30.wireframe-reveal.js",
-    "title": "30.wireframe-reveal.js",
+    "title": "Wireframe model reveal",
     "href": "/experiments/30.wireframe-reveal.js",
     "tags": [],
     "og": null,
@@ -661,7 +661,7 @@
   },
   {
     "filename": "31.footer-trigger.js",
-    "title": "31.footer-trigger.js",
+    "title": "Footer trigger",
     "href": "/experiments/31.footer-trigger.js",
     "tags": [],
     "og": null,
@@ -742,7 +742,7 @@
   },
   {
     "filename": "35.gradient-svg.js",
-    "title": "35.gradient-svg.js",
+    "title": "SVG Gradient",
     "href": "/experiments/35.gradient-svg.js",
     "tags": [],
     "og": "https://lab.basement.studio/ogs/35.gradient-svg.jpg",
@@ -778,7 +778,7 @@
   },
   {
     "filename": "37.shader-tests.js",
-    "title": "37.shader-tests.js",
+    "title": "Shader Tests",
     "href": "/experiments/37.shader-tests.js",
     "tags": [],
     "og": null,
@@ -822,7 +822,7 @@
   },
   {
     "filename": "39.ffflauta-scene.js",
-    "title": "39.ffflauta-scene.js",
+    "title": "FFFlauta Scene",
     "href": "/experiments/39.ffflauta-scene.js",
     "tags": [],
     "og": null,
@@ -858,7 +858,7 @@
   },
   {
     "filename": "41.infinite-render.js",
-    "title": "41.infinite-render.js",
+    "title": "InfiniteRender Technique",
     "href": "/experiments/41.infinite-render.js",
     "tags": [],
     "og": null,
@@ -876,7 +876,7 @@
   },
   {
     "filename": "43.depth-shader.js",
-    "title": "43.depth-shader.js",
+    "title": "Depth Shader",
     "href": "/experiments/43.depth-shader.js",
     "tags": [],
     "og": null,
@@ -894,7 +894,7 @@
   },
   {
     "filename": "45.fake-window.js",
-    "title": "45.fake-window.js",
+    "title": "FakeWindow",
     "href": "/experiments/45.fake-window.js",
     "tags": [],
     "og": null,
@@ -912,7 +912,7 @@
   },
   {
     "filename": "46.layered-video.js",
-    "title": "46.layered-video.js",
+    "title": "Layered Video",
     "href": "/experiments/46.layered-video.js",
     "tags": [],
     "og": null,
@@ -938,7 +938,7 @@
   },
   {
     "filename": "47.refraction.js",
-    "title": "47.refraction.js",
+    "title": "Refraction",
     "href": "/experiments/47.refraction.js",
     "tags": [],
     "og": "https://lab.basement.studio/ogs/47.refraction.jpg",
@@ -956,7 +956,7 @@
   },
   {
     "filename": "48.pager.js",
-    "title": "48.pager.js",
+    "title": "Pager",
     "href": "/experiments/48.pager.js",
     "tags": [],
     "og": null,
@@ -974,7 +974,7 @@
   },
   {
     "filename": "49.bezier-import.js",
-    "title": "49.bezier-import.js",
+    "title": "Imported Bezier Curves",
     "href": "/experiments/49.bezier-import.js",
     "tags": [],
     "og": null,
@@ -1000,7 +1000,7 @@
   },
   {
     "filename": "50.camera-rail.js",
-    "title": "50.camera-rail.js",
+    "title": "Camera Rail",
     "href": "/experiments/50.camera-rail.js",
     "tags": [],
     "og": null,
@@ -1018,7 +1018,7 @@
   },
   {
     "filename": "51.transmission-material.js",
-    "title": "51.transmission-material.js",
+    "title": "Drei's Transmision Material Tests",
     "href": "/experiments/51.transmission-material.js",
     "tags": [],
     "og": null,
@@ -1036,7 +1036,7 @@
   },
   {
     "filename": "52.rotating-twisted-3d-typography.js",
-    "title": "52.rotating-twisted-3d-typography.js",
+    "title": "Rotating Twisted 3D Text",
     "href": "/experiments/52.rotating-twisted-3d-typography.js",
     "tags": [],
     "og": null,
@@ -1054,7 +1054,7 @@
   },
   {
     "filename": "53.rapid-image-layers-animation.js",
-    "title": "53.rapid-image-layers-animation.js",
+    "title": "Rapid Image Layers Animation",
     "href": "/experiments/53.rapid-image-layers-animation.js",
     "tags": [],
     "og": null,
@@ -1072,7 +1072,7 @@
   },
   {
     "filename": "54.computer-vision.js",
-    "title": "54.computer-vision.js",
+    "title": "Computer Vision",
     "href": "/experiments/54.computer-vision.js",
     "tags": [],
     "og": null,
@@ -1090,7 +1090,7 @@
   },
   {
     "filename": "54.scale-transmission-material.js",
-    "title": "54.scale-transmission-material.js",
+    "title": "Scale Transmision Material Hero",
     "href": "/experiments/54.scale-transmission-material.js",
     "tags": [],
     "og": null,
@@ -1108,7 +1108,7 @@
   },
   {
     "filename": "55.twitch-demo-1.tsx",
-    "title": "55.twitch-demo-1.tsx",
+    "title": "Twitch Demo No. 1",
     "href": "/experiments/55.twitch-demo-1.tsx",
     "tags": [],
     "og": null,
@@ -1126,7 +1126,7 @@
   },
   {
     "filename": "56.offscreen-canvas",
-    "title": "56.offscreen-canvas",
+    "title": "Offscreen Canvas",
     "href": "/experiments/56.offscreen-canvas",
     "tags": [],
     "og": null,
@@ -1144,7 +1144,7 @@
   },
   {
     "filename": "57.asset-progress.tsx",
-    "title": "57.asset-progress.tsx",
+    "title": "Asset Progress",
     "href": "/experiments/57.asset-progress.tsx",
     "tags": [],
     "og": null,

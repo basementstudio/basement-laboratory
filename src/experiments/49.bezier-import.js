@@ -141,8 +141,8 @@ const BezierTests = () => {
   )
 }
 
-BezierTests.Title = 'Imported Bezier Curves'
-BezierTests.Description = (
+export const title = 'Imported Bezier Curves'
+export const description = (
   <Formated>
     <p>
       This experiment aims to make bezier curves much easier to use, giving you

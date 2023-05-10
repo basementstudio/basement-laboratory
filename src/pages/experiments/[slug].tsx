@@ -7,19 +7,19 @@ import { getAllExperimentSlugs } from '~/lib/utils'
 
 type Module<P> = {
   default: P
+  title?: React.ReactNode
+  description?: React.ReactNode
 }
 
 type Component<P = Record<string, unknown>> = React.FC<P> & {
-  Layout?: React.Component<React.PropsWithChildren>
+  Layout?: React.FunctionComponent<React.PropsWithChildren>
   getLayout?: GetLayoutFn<P>
-  Title?: string
-  Description?: string
 }
 
 type GetLayoutFn<P = Record<string, unknown>> = React.FC<{
-  Component: Component<P>
-  title?: string
-  description?: string
+  Component: React.FunctionComponent<P>
+  title?: React.ReactNode
+  description?: React.ReactNode
   slug: string
 }>
 
@@ -76,8 +76,8 @@ const Experiment = ({
       <Meta />
       <Layout
         Component={Component.default}
-        title={Component.default.Title}
-        description={Component.default.Description}
+        title={Component.title}
+        description={Component.description}
         slug={slug}
       />
     </>

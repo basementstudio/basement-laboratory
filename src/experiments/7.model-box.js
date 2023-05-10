@@ -314,7 +314,7 @@ ModelBox.getLayout = ({ Component: fn, ...rest }) => (
   </PlainCanvasLayout>
 )
 
-ModelBox.Title = 'Particled Model (in progress)'
+export const title = 'Particled Model (in progress)'
 ModelBox.Tags = '3d,particles'
 
 export default ModelBox
