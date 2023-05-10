@@ -48,7 +48,9 @@ export const getExampleGithubUrl = (filename: string) =>
 export const getExamplePath = (filename: string) =>
   `src/experiments/${filename}`
 
-type GetAllExperimentSlugs = () => Promise<
+type GetAllExperimentSlugs = () => Promise<string[]>
+
+type GetAllExperimentConfigs = () => Promise<
   Array<{
     title?: string
     path: string
@@ -69,9 +71,20 @@ export const getAllExperimentSlugs: GetAllExperimentSlugs = async () => {
     )
   })
 
+  return files
+}
+
+export const getAllExperimentConfigs: GetAllExperimentConfigs = async () => {
+  const files = await getAllExperimentSlugs()
+
   const modules = await Promise.all(
     files.map(async (file) => {
-      const { title } = await require('/src/experiments/' + file)
+      let title: string | undefined
+      try {
+        title = (await import('/src/experiments/' + file)).title
+      } catch (_err) {
+        console.warn(`WARNING: Metadata from ${file} module couldn't be read`)
+      }
       return { path: file, title }
     })
   )

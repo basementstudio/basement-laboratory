@@ -5,7 +5,7 @@ import { Meta } from '~/components/common/meta'
 import Welcome from '~/components/common/welcome'
 import { PageLayout } from '~/components/layout/page'
 import { getFileContributors } from '~/lib/github'
-import { getAllExperimentSlugs, getExamplePath } from '~/lib/utils'
+import { getAllExperimentConfigs, getExamplePath } from '~/lib/utils'
 
 const HomePage = ({
   experiments
@@ -21,7 +21,7 @@ const HomePage = ({
 
 export const getStaticProps: GetStaticProps = async () => {
   const fs = await import('fs')
-  const allModules = await getAllExperimentSlugs()
+  const allModules = await getAllExperimentConfigs()
 
   let experiments = allModules
     .map((exp) => {

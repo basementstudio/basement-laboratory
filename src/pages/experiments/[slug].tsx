@@ -1,6 +1,5 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
-import { ParsedUrlQuery } from 'querystring'
-import { FC, useEffect, useState } from 'react'
+import * as React from 'react'
 
 import { Meta } from '~/components/common/meta'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
@@ -10,14 +9,14 @@ type Module<P> = {
   default: P
 }
 
-type Component<P = Record<string, unknown>> = FC<P> & {
-  Layout?: FC
+type Component<P = Record<string, unknown>> = React.FC<P> & {
+  Layout?: React.Component<React.PropsWithChildren>
   getLayout?: GetLayoutFn<P>
   Title?: string
   Description?: string
 }
 
-type GetLayoutFn<P = Record<string, unknown>> = FC<{
+type GetLayoutFn<P = Record<string, unknown>> = React.FC<{
   Component: Component<P>
   title?: string
   description?: string
@@ -53,9 +52,9 @@ const resolveLayout = (Comp: Module<Component>): GetLayoutFn => {
 const Experiment = ({
   slug
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const [Component, setComponent] = useState<Module<Component>>()
+  const [Component, setComponent] = React.useState<Module<Component>>()
 
-  useEffect(() => {
+  React.useEffect(() => {
     import(`~/experiments/${slug}`).then((Comp) => {
       setComponent(Comp)
     })
@@ -88,10 +87,10 @@ const Experiment = ({
 export const getStaticPaths: GetStaticPaths = async () => {
   const allSlugs = await getAllExperimentSlugs()
 
-  const paths = allSlugs.map((exp) => {
+  const paths = allSlugs.map((slug) => {
     return {
       params: {
-        slug: exp.path
+        slug
       }
     }
   })
@@ -103,9 +102,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = ({ params }) => {
+  if (!params?.slug) {
+    return { notFound: true }
+  }
+
   return {
     props: {
-      slug: (params as ParsedUrlQuery).slug
+      slug: params.slug
     }
   }
 }
