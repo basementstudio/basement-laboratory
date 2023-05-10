@@ -142,6 +142,14 @@
     "number": 8,
     "contributors": [
       {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "joaquin@basement.studio",
+        "company": "@basementstudio "
+      },
+      {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
         "name": "Matias Perez",
@@ -273,6 +281,14 @@
     "og": null,
     "number": 14,
     "contributors": [
+      {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "joaquin@basement.studio",
+        "company": "@basementstudio "
+      },
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
@@ -590,6 +606,14 @@
     "number": 28,
     "contributors": [
       {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "joaquin@basement.studio",
+        "company": "@basementstudio "
+      },
+      {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
         "name": "Matias Perez",
@@ -752,6 +776,14 @@
     "number": 37,
     "contributors": [
       {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "joaquin@basement.studio",
+        "company": "@basementstudio "
+      },
+      {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
         "name": "Matias Perez",
@@ -877,6 +909,14 @@
     "og": null,
     "number": 44,
     "contributors": [
+      {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "joaquin@basement.studio",
+        "company": "@basementstudio "
+      },
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
@@ -1118,6 +1158,15 @@
     "tags": [],
     "og": null,
     "number": 57,
-    "contributors": []
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "joaquin@basement.studio",
+        "company": "@basementstudio "
+      }
+    ]
   }
 ]
