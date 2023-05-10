@@ -436,3 +436,18 @@ StaggeredSlider.Tags = 'animation, public'
 StaggeredSlider.Layout = HTMLLayout
 
 export default StaggeredSlider
+
+export const title = 'Staggered Slider'
+export const description = (
+  <p>
+    Carousel inspired by{' '}
+    <a
+      target="_blank"
+      rel="noopener"
+      href="https://dribbble.com/shots/14708656-Instagram-Social-Widget"
+    >
+      Francesco Zagami's Widget
+    </a>
+  </p>
+)
+export const tags = ['animation', 'public']

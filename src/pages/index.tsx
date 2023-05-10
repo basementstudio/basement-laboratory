@@ -21,22 +21,17 @@ const HomePage = ({
 
 export const getStaticProps: GetStaticProps = async () => {
   const fs = await import('fs')
-  const allSlugs = await getAllExperimentSlugs()
+  const allModules = await getAllExperimentSlugs()
 
-  const modules = await Promise.all(allSlugs.map((slug) => [slug]))
-
-  let experiments = modules
+  let experiments = allModules
     .map((exp) => {
-      const title: string = exp?.[1]?.Title || exp[0]
+      const title: string = exp.title || exp.path
 
       return {
-        filename: exp[0],
+        filename: exp.path,
         title,
-        href: `/experiments/${exp[0]}`,
-        tags:
-          (exp?.[1]?.Tags as string)
-            ?.split(',')
-            ?.map((tag) => tag.toLowerCase().trim()) || []
+        href: `/experiments/${exp.path}`,
+        tags: exp.tags?.map((tag) => tag.toLowerCase().trim()) || []
       }
     })
     .sort((a, b) =>

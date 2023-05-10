@@ -48,7 +48,15 @@ export const getExampleGithubUrl = (filename: string) =>
 export const getExamplePath = (filename: string) =>
   `src/experiments/${filename}`
 
-export const getAllExperimentSlugs = async () => {
+type GetAllExperimentSlugs = () => Promise<
+  Array<{
+    title?: string
+    path: string
+    tags?: string[]
+  }>
+>
+
+export const getAllExperimentSlugs: GetAllExperimentSlugs = async () => {
   const fs = await import('fs')
   const path = await import('path')
   const experimentsDir = path.resolve(process.cwd(), 'src/experiments')
@@ -61,7 +69,14 @@ export const getAllExperimentSlugs = async () => {
     )
   })
 
-  return files
+  const modules = await Promise.all(
+    files.map(async (file) => {
+      const { title } = await require('/src/experiments/' + file)
+      return { path: file, title }
+    })
+  )
+
+  return modules
 }
 
 // Detects if the parameter is a react component and returns a boolean

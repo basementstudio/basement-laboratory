@@ -91,7 +91,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = allSlugs.map((exp) => {
     return {
       params: {
-        slug: exp
+        slug: exp.path
       }
     }
   })

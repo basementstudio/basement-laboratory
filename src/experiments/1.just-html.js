@@ -22,3 +22,5 @@ JustATest.Title = 'Just an HTML (example)'
 JustATest.Tags = 'example'
 
 export default JustATest
+
+export const title = 'Just an HTML (example)'
