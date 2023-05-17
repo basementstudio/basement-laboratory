@@ -366,7 +366,7 @@ const ImageMaskEffect = () => {
 }
 
 ImageMaskEffect.Layout = SmoothScrollLayout
-ImageMaskEffect.Title = 'Image Mask Effect'
-ImageMaskEffect.Tags = 'private'
+export const title = 'Image Mask Effect'
+export const tags = ['private']
 
 export default ImageMaskEffect

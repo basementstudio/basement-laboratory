@@ -136,7 +136,7 @@ LinearLantern.getLayout = ({ Component, title, description, slug }) => {
   )
 }
 
-LinearLantern.Title = 'Linear Lantern'
-LinearLantern.Tags = 'example'
+export const title = 'Linear Lantern'
+export const tags = ['example']
 
 export default LinearLantern

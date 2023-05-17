@@ -128,8 +128,8 @@ const ImagePortal = () => {
 }
 
 ImagePortal.Layout = SmoothScrollLayout
-ImagePortal.Title = 'Image Portal'
-ImagePortal.Description = (
+export const title = 'Image Portal'
+export const description = (
   <p>
     Image portal ilusion inspired in{' '}
     <a
@@ -142,6 +142,6 @@ ImagePortal.Description = (
     .
   </p>
 )
-ImagePortal.Tags = 'html,animation'
+export const tags = ['html', 'animation']
 
 export default ImagePortal

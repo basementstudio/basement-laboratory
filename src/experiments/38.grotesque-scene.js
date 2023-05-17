@@ -259,8 +259,8 @@ const GrotesqueScene = () => {
   )
 }
 
-GrotesqueScene.Title = 'Grotesque Scene'
-GrotesqueScene.Tags = 'three,private'
+export const title = 'Grotesque Scene'
+export const tags = ['three', 'private']
 GrotesqueScene.Layout = ({ children, ...props }) => {
   const pointer = useCursor((s) => s.pointer)
 

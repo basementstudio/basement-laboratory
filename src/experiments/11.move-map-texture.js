@@ -164,8 +164,8 @@ MoveMapTexture.getLayout = ({ Component, title, description, slug }) => (
   </NavigationLayout>
 )
 
-MoveMapTexture.Title = 'Move map texture'
-MoveMapTexture.Description = (
+export const title = 'Move map texture'
+export const description = (
   <p>
     Inspired in{' '}
     <a href="https://www.zikd.space/en/">https://www.zikd.space/en/</a>.
@@ -175,6 +175,6 @@ MoveMapTexture.Description = (
     texture uv mapping implementation, to use a custom transformed uv set.
   </p>
 )
-MoveMapTexture.Tags = 'shaders'
+export const tags = ['shaders']
 
 export default MoveMapTexture

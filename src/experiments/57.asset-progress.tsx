@@ -68,8 +68,8 @@ const AssetProgress = () => {
   )
 }
 
-AssetProgress.Title = 'Asset Progress'
-AssetProgress.Description = 'Loading progress of assets'
+export const title = 'Asset Progress'
+export const description = 'Loading progress of assets'
 AssetProgress.Layout = HTMLLayout
 
 export default AssetProgress

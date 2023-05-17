@@ -48,7 +48,17 @@ export const getExampleGithubUrl = (filename: string) =>
 export const getExamplePath = (filename: string) =>
   `src/experiments/${filename}`
 
-export const getAllExperimentSlugs = async () => {
+type GetAllExperimentSlugs = () => Promise<string[]>
+
+type GetAllExperimentConfigs = () => Promise<
+  Array<{
+    title?: string
+    path: string
+    tags?: string[]
+  }>
+>
+
+export const getAllExperimentSlugs: GetAllExperimentSlugs = async () => {
   const fs = await import('fs')
   const path = await import('path')
   const experimentsDir = path.resolve(process.cwd(), 'src/experiments')
@@ -62,6 +72,24 @@ export const getAllExperimentSlugs = async () => {
   })
 
   return files
+}
+
+export const getAllExperimentConfigs: GetAllExperimentConfigs = async () => {
+  const files = await getAllExperimentSlugs()
+
+  const modules = await Promise.all(
+    files.map(async (file) => {
+      try {
+        const module = await import('/src/experiments/' + file)
+        return { path: file, title: module.title, tags: module.tags }
+      } catch (_err) {
+        console.warn(`WARNING: Metadata from ${file} module couldn't be read`)
+        return { path: file }
+      }
+    })
+  )
+
+  return modules
 }
 
 // Detects if the parameter is a react component and returns a boolean

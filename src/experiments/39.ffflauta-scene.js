@@ -736,8 +736,8 @@ const FFFlautaScene = () => {
   )
 }
 
-FFFlautaScene.Title = 'FFFlauta Scene'
+export const title = 'FFFlauta Scene'
 FFFlautaScene.Layout = HTMLLayout
-FFFlautaScene.Tags = 'private'
+export const tags = ['private']
 
 export default FFFlautaScene

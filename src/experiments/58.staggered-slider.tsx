@@ -419,8 +419,10 @@ const StaggeredSlider = () => {
   )
 }
 
-StaggeredSlider.Title = 'Staggered Slider'
-StaggeredSlider.Description = (
+StaggeredSlider.Layout = HTMLLayout
+
+export const title = 'Staggered Slider'
+export const description = (
   <p>
     Carousel inspired by{' '}
     <a
@@ -432,7 +434,6 @@ StaggeredSlider.Description = (
     </a>
   </p>
 )
-StaggeredSlider.Tags = 'animation, public'
-StaggeredSlider.Layout = HTMLLayout
+export const tags = ['animation', 'public']
 
 export default StaggeredSlider

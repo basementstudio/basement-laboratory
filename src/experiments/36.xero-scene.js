@@ -291,8 +291,8 @@ const XeroScene = () => {
   )
 }
 
-XeroScene.Title = 'Xero Scene'
-XeroScene.Tags = 'three,private'
+export const title = 'Xero Scene'
+export const tags = ['three', 'private']
 XeroScene.Layout = ({ children, ...props }) => (
   <HTMLLayout {...props}>
     <AspectCanvas

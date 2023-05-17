@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React, { FC } from 'react'
+import * as React from 'react'
 
 import { Formated } from '~/components/common/formated'
 import { getExampleGithubUrl } from '~/lib/utils'
@@ -7,17 +7,14 @@ import { getExampleGithubUrl } from '~/lib/utils'
 import s from './navigation-layout.module.scss'
 
 export type NavigationLayoutProps = {
-  title?: string
-  description?: string
+  title?: React.ReactNode
+  description?: React.ReactNode
   slug: string
 }
 
-export const NavigationLayout: FC<NavigationLayoutProps> = ({
-  children,
-  title,
-  description,
-  slug
-}) => {
+export const NavigationLayout: React.FunctionComponent<
+  React.PropsWithChildren<NavigationLayoutProps>
+> = ({ children, title, description, slug }) => {
   return (
     <>
       <div className={s['layout']}>

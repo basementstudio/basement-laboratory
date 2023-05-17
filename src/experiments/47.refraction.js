@@ -1,7 +1,7 @@
 import {
   OrbitControls,
   useFBO,
-  useGLTF,
+  useGLTF
   // useHelper,
   // useTexture
 } from '@react-three/drei'
@@ -11,7 +11,7 @@ import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 
 // eslint-disable-next-line prettier/prettier
-const vertexShader =/* glsl */  `
+const vertexShader = /* glsl */ `
 varying vec3 worldNormal;
 varying vec3 eyeVector;
 varying vec3 vNormal;
@@ -33,7 +33,7 @@ void main() {
 `
 
 // eslint-disable-next-line prettier/prettier
-const fragmentShader =/* glsl */ `
+const fragmentShader = /* glsl */ `
 uniform float uIorR;
 uniform float uIorG;
 uniform float uIorB;
@@ -336,8 +336,8 @@ const Refraction = () => {
   )
 }
 
-Refraction.Title = 'Refraction'
-Refraction.Description = (
+export const title = 'Refraction'
+export const description = (
   <>
     Refraction shader inspired{' '}
     <a

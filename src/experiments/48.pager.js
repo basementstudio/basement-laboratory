@@ -361,8 +361,8 @@ const Pager = () => {
   )
 }
 
-Pager.Title = 'Pager'
-Pager.Description = <></>
-Pager.Tags = 'private'
+export const title = 'Pager'
+export const description = <></>
+export const tags = ['private']
 
 export default Pager

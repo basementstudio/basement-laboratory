@@ -161,9 +161,9 @@ HoverFlowmap.getLayout = ({ Component, title, description, slug }) => {
   )
 }
 
-HoverFlowmap.Title = 'Hover flowmap'
+export const title = 'Hover flowmap'
 HoverFlowmap.Description =
   'This is an example of a flowmap that can be used to create a hover effect. Made with OGL & React-OGL.'
-HoverFlowmap.Tags = 'ogl,shaders'
+export const tags = ['ogl', 'shaders']
 
 export default HoverFlowmap

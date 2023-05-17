@@ -135,8 +135,8 @@ const LayeredVideo = () => {
   )
 }
 
-LayeredVideo.Title = 'Layered Video'
-LayeredVideo.Description = (
+export const title = 'Layered Video'
+export const description = (
   <>
     Inspired in&nbsp;
     <a href="https://yuannstudio.com/" target="_blank" rel="noopener">

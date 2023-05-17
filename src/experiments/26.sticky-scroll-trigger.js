@@ -106,7 +106,7 @@ const StickyScrollTrigger = () => {
 }
 
 StickyScrollTrigger.Layout = SmoothScrollLayout
-StickyScrollTrigger.Title = 'Sticky ScrollTrigger'
-StickyScrollTrigger.Description = ''
+export const title = 'Sticky ScrollTrigger'
+export const description = ''
 
 export default StickyScrollTrigger

@@ -134,7 +134,7 @@ SVGFilters.getLayout = ({ Component, title, description, slug }) => {
   )
 }
 
-SVGFilters.Title = 'SVG Filters'
-SVGFilters.Tags = 'example'
+export const title = 'SVG Filters'
+export const tags = ['example']
 
 export default SVGFilters

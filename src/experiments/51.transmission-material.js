@@ -71,6 +71,6 @@ const TransmissionMaterial = () => {
   )
 }
 
-TransmissionMaterial.Title = "Drei's Transmision Material Tests"
+export const title = "Drei's Transmision Material Tests"
 
 export default TransmissionMaterial

@@ -307,8 +307,8 @@ const BezierTests = () => {
   )
 }
 
-BezierTests.Title = 'Camera Rail'
-BezierTests.Description = (
+export const title = 'Camera Rail'
+export const description = (
   <Formated>
     <p>
       This example is based on{' '}
@@ -334,6 +334,6 @@ BezierTests.Description = (
     <navUITunnel.Out />
   </Formated>
 )
-BezierTests.Tags = 'private'
+export const tags = ['private']
 
 export default BezierTests
