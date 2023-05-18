@@ -112,7 +112,7 @@ const Twitch2Demo = () => {
       controls.update()
 
       if (monitor && snapGroup) {
-        const lerpAmount = 0.075
+        const lerpAmount = 0.1
 
         wheelDelta = THREE.MathUtils.lerp(wheelDelta, 0, lerpAmount)
         lerpedWheelDelta = THREE.MathUtils.lerp(
