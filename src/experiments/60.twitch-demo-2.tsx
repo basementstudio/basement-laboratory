@@ -7,7 +7,8 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import Stats from 'three/examples/jsm/libs/stats.module'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
-import { EmptyLayout } from '~/components/layout/empty-layout'
+import { HTMLLayout } from '~/components/layout/html-layout'
+import { isDev } from '~/lib/constants'
 import { trackCursor } from '~/lib/three'
 
 const Twitch2Demo = () => {
@@ -46,8 +47,12 @@ const Twitch2Demo = () => {
     renderer.setPixelRatio(window.devicePixelRatio)
 
     /* STATS */
-    const stats = new Stats()
-    document.body.appendChild(stats.dom)
+    let stats: Stats
+
+    if (isDev) {
+      stats = new Stats()
+      document.body.appendChild(stats.dom)
+    }
 
     /* CAMERA SETUP */
     const fov = 20
@@ -60,6 +65,7 @@ const Twitch2Demo = () => {
     /* SCENE SETUP */
     const scene = new THREE.Scene()
 
+    // > Lights config
     const baseLightIntensity = 0.15
     const lightIntensityRange = 0.4
 
@@ -130,7 +136,7 @@ const Twitch2Demo = () => {
       if (monitor && snapGroup) {
         const lerpAmount = 0.1
 
-        // Animate the scroll
+        /* Animate the scroll */
         wheelScroll = THREE.MathUtils.lerp(
           wheelScroll,
           wheelScrollTarget,
@@ -144,7 +150,7 @@ const Twitch2Demo = () => {
           100
         ).toFixed(2)}%`
 
-        /* Animate monitor */
+        /* Animate monitor to follow cursor */
         const rangeOfMovementRad = Math.PI / 4
 
         monitor.rotation.x = THREE.MathUtils.lerp(
@@ -181,14 +187,14 @@ const Twitch2Demo = () => {
         const rounds = snapGroup.rotation.y / (Math.PI * 2)
         screenTexture.offset.y = rounds / 2 // Divided by two bc the txt is half angy half neutral
 
-        /* Lerp rotation to target */
+        /* Lerp snap rotation to target */
         snapGroup.rotation.y = THREE.MathUtils.lerp(
           snapGroup.rotation.y,
           snapGroupTargetRotation,
           lerpAmount
         )
 
-        /* Animate lights */
+        /* Animate lights (ignore...) */
         const whiteLightIntensity =
           baseLightIntensity +
           Math.max(cursorTracker.cursor.x, 0) * lightIntensityRange
@@ -210,7 +216,7 @@ const Twitch2Demo = () => {
 
       renderer.render(scene, camera)
 
-      stats.update()
+      stats?.update()
       frameId = requestAnimationFrame(render)
     }
 
@@ -256,7 +262,7 @@ const Twitch2Demo = () => {
     window.addEventListener('resize', resizeHandler, { passive: true })
 
     return () => {
-      stats.dom.remove()
+      stats?.dom?.remove()
       window.removeEventListener('wheel', onWheel)
       window.removeEventListener('resize', resizeHandler)
       cancelAnimationFrame(frameId)
@@ -318,8 +324,26 @@ const Twitch2Demo = () => {
 }
 
 Twitch2Demo.Title = 'Twitch Demo No. 2'
-Twitch2Demo.Description = <></>
+Twitch2Demo.Description = (
+  <>
+    <p>Key points to learn with this demo:</p>
+    <ul>
+      <li>
+        Structure and setup of a basic Three.js scene: <code>Renderer</code>{' '}
+        <code>Scene</code> <code>Camera</code> <code>Mesh (model)</code>{' '}
+        <code>Lights</code>
+      </li>
+      <li>
+        Basic setup for the animation <code>(RAF)</code>
+      </li>
+      <li>
+        Binding basic DOM events for simple interactions{' '}
+        <code>Mouse Movement</code> and <code>Scroll</code>
+      </li>
+    </ul>
+  </>
+)
 Twitch2Demo.Tags = 'threejs,twitch'
-Twitch2Demo.Layout = EmptyLayout
+Twitch2Demo.Layout = HTMLLayout
 
 export default Twitch2Demo
