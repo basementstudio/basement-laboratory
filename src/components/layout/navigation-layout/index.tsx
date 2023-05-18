@@ -10,6 +10,7 @@ export type NavigationLayoutProps = {
   title?: string
   description?: string
   slug: string
+  children: string
 }
 
 export const NavigationLayout: FC<NavigationLayoutProps> = ({
