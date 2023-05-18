@@ -12,11 +12,23 @@ import { trackCursor } from '~/lib/three'
 
 const Twitch2Demo = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const progressRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('overscroll-behavior', 'none')
+    document.documentElement.style.setProperty('overflow', 'hidden')
+
+    return () => {
+      document.documentElement.style.removeProperty('overscroll-behavior')
+      document.documentElement.style.removeProperty('overflow')
+    }
+  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
+    const progress = progressRef.current
 
-    if (!canvas) return
+    if (!canvas || !progress) return
 
     /* RENDERER SETUP */
     const renderer = new THREE.WebGLRenderer({
@@ -94,10 +106,13 @@ const Twitch2Demo = () => {
 
     /* TRACK WHEEL */
     let wheelDelta = 0
-    let lerpedWheelDelta = 0
+    let wheelScrollTarget = 0
+    let wheelScroll = 0
 
     const onWheel = (e: WheelEvent) => {
-      wheelDelta = e.deltaY * 0.001
+      wheelDelta = e.deltaY * 0.002
+      wheelScrollTarget += wheelDelta
+      snapGroupTargetRotation += wheelDelta
     }
 
     window.addEventListener('wheel', onWheel)
@@ -107,6 +122,7 @@ const Twitch2Demo = () => {
     let screenTexture: THREE.Texture
     let monitor: THREE.Object3D
     let snapGroup: THREE.Group
+    let snapGroupTargetRotation = 0
 
     const render = () => {
       controls.update()
@@ -114,12 +130,19 @@ const Twitch2Demo = () => {
       if (monitor && snapGroup) {
         const lerpAmount = 0.1
 
-        wheelDelta = THREE.MathUtils.lerp(wheelDelta, 0, lerpAmount)
-        lerpedWheelDelta = THREE.MathUtils.lerp(
-          lerpedWheelDelta,
-          wheelDelta,
+        // Animate the scroll
+        wheelScroll = THREE.MathUtils.lerp(
+          wheelScroll,
+          wheelScrollTarget,
           lerpAmount
         )
+        const deltaScroll = wheelScroll - wheelScrollTarget
+
+        progress.style.width = `${THREE.MathUtils.clamp(
+          Math.abs(deltaScroll * 0.1) * 100,
+          0,
+          100
+        ).toFixed(2)}%`
 
         /* Animate monitor */
         const rangeOfMovementRad = Math.PI / 4
@@ -138,31 +161,34 @@ const Twitch2Demo = () => {
 
         /* Rotation snap point */
         const snapPoint = 0
-        const snapPointAttractionForce = 0.1 // How much the snap point attracts the rotation
+        const snapPointAttractionForce = 0.2 // How much the snap point attracts the rotation
         const distanceToSnapPointShortestDelta =
           ((snapGroup.rotation.y - snapPoint + Math.PI) % (Math.PI * 2)) -
           Math.PI
 
-        // Normalized in terms of PI radians, -1 is -180 degrees away, 1 is 180 degrees away
+        // > Normalized in terms of PI radians, -1 is -180 degrees away, 1 is 180 degrees away
         const normalizedDistanceToSnapPoint =
           distanceToSnapPointShortestDelta / Math.PI
 
-        // How much the snap point attracts the monitor rotation with the current rotation value
+        // > How much the snap point attracts the monitor rotation with the current rotation value
         const resultantSnapForce =
           -normalizedDistanceToSnapPoint * snapPointAttractionForce
 
-        // Lerp to snap point
-        snapGroup.rotation.y =
-          snapGroup.rotation.y + resultantSnapForce + lerpedWheelDelta
+        // > Apply snap force to target rotation
+        snapGroupTargetRotation += resultantSnapForce
 
         /* Animate screen texture */
         const rounds = snapGroup.rotation.y / (Math.PI * 2)
+        screenTexture.offset.y = rounds / 2 // Divided by two bc the txt is half angy half neutral
 
-        screenTexture.offset.y =
-          rounds / 2 /* Divided by two bc the txt is half angy half neutral */
+        /* Lerp rotation to target */
+        snapGroup.rotation.y = THREE.MathUtils.lerp(
+          snapGroup.rotation.y,
+          snapGroupTargetRotation,
+          lerpAmount
+        )
 
         /* Animate lights */
-
         const whiteLightIntensity =
           baseLightIntensity +
           Math.max(cursorTracker.cursor.x, 0) * lightIntensityRange
@@ -226,10 +252,11 @@ const Twitch2Demo = () => {
       renderer.setSize(width, height, false)
       renderer.setPixelRatio(window.devicePixelRatio)
     }
-    //asdfasdf
+
     window.addEventListener('resize', resizeHandler, { passive: true })
 
     return () => {
+      stats.dom.remove()
       window.removeEventListener('wheel', onWheel)
       window.removeEventListener('resize', resizeHandler)
       cancelAnimationFrame(frameId)
@@ -238,7 +265,56 @@ const Twitch2Demo = () => {
     }
   }, [])
 
-  return <canvas style={{ width: '100%', height: '100vh' }} ref={canvasRef} />
+  return (
+    <>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '5vh',
+          background: 'black',
+          left: '50%',
+          transform: 'translateX(-50%)'
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            width: 400,
+            height: 48,
+            marginTop: 12,
+            borderRadius: '9999px',
+            overflow: 'hidden',
+            border: '1px solid #ec5a29'
+          }}
+        >
+          <div
+            style={{
+              background: 'white',
+              height: '100%',
+              width: 0,
+              borderRadius: '9999px'
+            }}
+            ref={progressRef}
+          />
+          <p
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: 'max-content',
+              transform: 'translate(-50%, -50%)',
+              fontFamily: 'Basement Grotesque Display',
+              mixBlendMode: 'difference'
+            }}
+          >
+            Wheel force
+          </p>
+        </div>
+      </div>
+
+      <canvas style={{ width: '100%', height: '100vh' }} ref={canvasRef} />
+    </>
+  )
 }
 
 Twitch2Demo.Title = 'Twitch Demo No. 2'

@@ -102,7 +102,7 @@ const BezierTests = () => {
       1
     )
 
-    /* Don't know what this does? https://www.desmos.com/calculator/h4rvidjjcx */
+    /* Don't know what this does? https://www.desmos.com/calculator/06yhznqi0m */
     const magnetDistCurve =
       Math.sin(nextTargetProgress.current * 2 * Math.PI - Math.PI / 2) * 0.5 +
       0.5
@@ -172,7 +172,7 @@ const BezierTests = () => {
 
       /* Apply magnet atraction */
       const atractionForce = 0.0005
-      /* Don't know what this does? https://www.desmos.com/calculator/h4rvidjjcx */
+      /* Don't know what this does? https://www.desmos.com/calculator/06yhznqi0m */
       const atractionResult =
         Math.sin(nextTargetProgress.current * Math.PI + Math.PI / 2) *
         atractionForce
