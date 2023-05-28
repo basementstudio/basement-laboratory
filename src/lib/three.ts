@@ -114,6 +114,16 @@ export const getViewport = () => {
   }
 }
 
+export const isOrthographicCamera = (
+  def: THREE.Camera
+): def is THREE.OrthographicCamera =>
+  def && (def as THREE.OrthographicCamera).isOrthographicCamera
+
+export const isPerspectiveCamera = (
+  def: THREE.Camera
+): def is THREE.PerspectiveCamera =>
+  def && (def as THREE.PerspectiveCamera).isPerspectiveCamera
+
 /* ----------------------------------------------- */
 
 type Rect = {
@@ -128,10 +138,7 @@ const position = new THREE.Vector3()
 const tempTarget = new THREE.Vector3()
 const canvasSize = new THREE.Vector2()
 
-export const getWorld = (
-  gl: THREE.WebGLRenderer,
-  camera: THREE.PerspectiveCamera
-) => {
+export const getWorld = (gl: THREE.WebGLRenderer, camera: THREE.Camera) => {
   const getCanvasSize = () => {
     gl.getSize(canvasSize)
 
@@ -143,7 +150,7 @@ export const getWorld = (
   }
 
   const getViewportSizeInWorldUnits = (
-    camera: THREE.PerspectiveCamera,
+    camera: THREE.Camera,
     target: THREE.Vector3 | Parameters<THREE.Vector3['set']> = defaultTarget
   ) => {
     if (target instanceof THREE.Vector3) {
@@ -155,11 +162,23 @@ export const getWorld = (
     const canvas = getCanvasSize()
     const distance = camera.getWorldPosition(position).distanceTo(tempTarget)
 
-    const vFov = (camera.fov * Math.PI) / 180
-    const height = 2 * Math.tan(vFov / 2) * distance
-    const width = height * canvas.ratio
+    if (isOrthographicCamera(camera)) {
+      camera
+      return {
+        width: canvas.width / camera.zoom,
+        height: canvas.height / camera.zoom,
+        distance,
+        ratio: canvas.ratio
+      }
+    } else if (isPerspectiveCamera(camera)) {
+      const vFov = (camera.fov * Math.PI) / 180
+      const height = 2 * Math.tan(vFov / 2) * distance
+      const width = height * canvas.ratio
 
-    return { width, height, ratio: canvas.ratio }
+      return { width, height, distance, ratio: canvas.ratio }
+    } else {
+      throw new Error('Unknown camera type')
+    }
   }
 
   const fromViewport = (rect: Pick<Rect, 'height' | 'width'>) => {
@@ -242,11 +261,7 @@ export const createWorld = ({
     raycaster.intersections = []
   }
 
-  let _getWorld: ReturnType<typeof getWorld> | undefined
-
-  if (camera instanceof PerspectiveCamera) {
-    _getWorld = getWorld(camera)
-  }
+  const _getWorld = getWorld(renderer, camera)
 
   scene.add(camera)
 
