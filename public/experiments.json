@@ -1212,6 +1212,15 @@
     "tags": [],
     "og": null,
     "number": 60,
-    "contributors": []
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
   }
 ]

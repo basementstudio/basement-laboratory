@@ -1,7 +1,8 @@
 import { Leva, useControls } from 'leva'
-import Image from 'next/image'
+import { default as NextImage } from 'next/image'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { Loader, useLoader } from '~/components/common/loader'
 import { AspectBox } from '~/components/layout/aspect-box'
 import { HTMLLayout } from '~/components/layout/html-layout'
 import s from '~/css/experiments/image-pixelation.module.scss'
@@ -23,6 +24,7 @@ const ImagePixelation = () => {
   const animatePixelsTm = useRef<NodeJS.Timeout | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
+  const { setLoaded, loading } = useLoader()
 
   const pixelationOptions = useControls({
     steps: {
@@ -86,8 +88,15 @@ const ImagePixelation = () => {
     [pxFactorValues]
   )
 
+  const handleAnimatePixelsTrigger = useCallback(() => {
+    if (!canvasRef.current) return
+
+    canvasRef.current?.style.setProperty('opacity', '1')
+    setStartPixelAnimation(true)
+  }, [])
+
   useEffect(() => {
-    if (!canvasRef.current || !imgRef.current) return
+    if (!canvasRef.current || !imgRef.current || loading) return
 
     render(pxFactorIndex)
 
@@ -115,6 +124,7 @@ const ImagePixelation = () => {
       }
     }
   }, [
+    loading,
     pixelationOptions.stepsDuration,
     pxFactorIndex,
     pxFactorValues.length,
@@ -122,16 +132,23 @@ const ImagePixelation = () => {
     startPixelAnimation
   ])
 
-  const handleAnimatePixelsTrigger = useCallback(() => {
-    if (!canvasRef.current) return
+  // Preload image
+  useEffect(() => {
+    const promise = new Promise((resolve) => {
+      const img = new Image()
+      img.onload = resolve
+      img.src = ImageExampleSrc.src
+    })
 
-    canvasRef.current?.style.setProperty('opacity', '1')
-    setStartPixelAnimation(true)
-  }, [])
+    Promise.resolve(promise).then(() => {
+      setLoaded()
+    })
+  }, [setLoaded])
 
   return (
     <section className={s.section}>
       <Leva />
+      <Loader />
       <button
         className={s.trigger}
         onClick={() => handleAnimatePixelsTrigger()}
@@ -141,7 +158,7 @@ const ImagePixelation = () => {
       <div className={s['canvas__wrapper']}>
         <AspectBox ratio={ImageExampleSrc.width / ImageExampleSrc.height}>
           <canvas className={s.canvas} ref={canvasRef} />
-          <Image
+          <NextImage
             style={{ opacity: 0 }}
             ref={imgRef}
             className={s.image}
