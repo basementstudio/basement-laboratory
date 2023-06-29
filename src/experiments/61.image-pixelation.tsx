@@ -160,7 +160,7 @@ ImagePixelation.Description = (
     <p>Pixelation image effect</p>
   </>
 )
-ImagePixelation.Tags = 'images,gsap'
+ImagePixelation.Tags = 'images'
 ImagePixelation.Layout = HTMLLayout
 
 export default ImagePixelation
