@@ -119,7 +119,7 @@ const SunRayCone = () => {
 
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 10, 20]} />
+      <PerspectiveCamera makeDefault position={[0, 5, 8]} />
       <gridHelper args={[20, 20]} />
       <axesHelper />
       <mesh position={position}>
@@ -198,14 +198,14 @@ const SunRayCone = () => {
         <cylinderGeometry args={cylinderArgs} />
         <meshBasicMaterial color="white" wireframe />
       </mesh>
-      <OrbitControls />
+      <OrbitControls target={[0, 3, 0]} />
     </>
   )
 }
 
 SunRayCone.Title = 'Sun Rays Cone'
 SunRayCone.Description =
-  'Fake sunrays proyected on a cone using a noise texture'
+  'Fake sunrays proyected on a cone using a noise texture.'
 SunRayCone.Tags = 'threejs'
 
 export default SunRayCone
