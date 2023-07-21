@@ -14,7 +14,7 @@ const SunRayCone = () => {
   const controls = useControls({
     debug: false,
     alpha: {
-      value: 0.25,
+      value: 1,
       min: 0,
       max: 1
     },
