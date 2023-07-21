@@ -176,7 +176,8 @@ const SunRayCone = () => {
 }
 
 SunRayCone.Title = 'Sun Rays Cone'
-SunRayCone.Description = <></>
+SunRayCone.Description =
+  "Fake sunrays proyected on a cone using a noise texture and it's alpha channel"
 SunRayCone.Tags = 'threejs'
 
 export default SunRayCone
