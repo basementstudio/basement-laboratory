@@ -138,7 +138,7 @@
     "title": "8.grid-bump.js",
     "href": "/experiments/8.grid-bump.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/8.grid-bump.jpg",
+    "og": "https://lab.basement.studio/ogs/8.grid-bump.jpg",
     "number": 8,
     "contributors": [
       {
@@ -146,7 +146,7 @@
         "url": "https://github.com/justkahdri",
         "name": "Joaquín R. Montes",
         "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "joaquin@basement.studio",
+        "email": "",
         "company": "@basementstudio "
       },
       {
@@ -252,7 +252,7 @@
     "title": "13.sculpture-gallery.js",
     "href": "/experiments/13.sculpture-gallery.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/13.sculpture-gallery.jpg",
+    "og": "https://lab.basement.studio/ogs/13.sculpture-gallery.jpg",
     "number": 13,
     "contributors": [
       {
@@ -286,7 +286,7 @@
         "url": "https://github.com/justkahdri",
         "name": "Joaquín R. Montes",
         "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "joaquin@basement.studio",
+        "email": "",
         "company": "@basementstudio "
       },
       {
@@ -374,7 +374,7 @@
     "title": "18.CD.js",
     "href": "/experiments/18.CD.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/18.CD.jpg",
+    "og": "https://lab.basement.studio/ogs/18.CD.jpg",
     "number": 18,
     "contributors": [
       {
@@ -408,7 +408,7 @@
     "title": "19.Box.js",
     "href": "/experiments/19.Box.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/19.Box.jpg",
+    "og": "https://lab.basement.studio/ogs/19.Box.jpg",
     "number": 19,
     "contributors": [
       {
@@ -488,7 +488,7 @@
     "title": "23.cupcake.js",
     "href": "/experiments/23.cupcake.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/23.cupcake.jpg",
+    "og": "https://lab.basement.studio/ogs/23.cupcake.jpg",
     "number": 23,
     "contributors": [
       {
@@ -610,7 +610,7 @@
         "url": "https://github.com/justkahdri",
         "name": "Joaquín R. Montes",
         "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "joaquin@basement.studio",
+        "email": "",
         "company": "@basementstudio "
       },
       {
@@ -628,7 +628,7 @@
     "title": "29.circular-fog.js",
     "href": "/experiments/29.circular-fog.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/29.circular-fog.jpg",
+    "og": "https://lab.basement.studio/ogs/29.circular-fog.jpg",
     "number": 29,
     "contributors": [
       {
@@ -736,7 +736,7 @@
     "title": "35.gradient-svg.js",
     "href": "/experiments/35.gradient-svg.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/35.gradient-svg.jpg",
+    "og": "https://lab.basement.studio/ogs/35.gradient-svg.jpg",
     "number": 35,
     "contributors": [
       {
@@ -780,7 +780,7 @@
         "url": "https://github.com/justkahdri",
         "name": "Joaquín R. Montes",
         "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "joaquin@basement.studio",
+        "email": "",
         "company": "@basementstudio "
       },
       {
@@ -914,7 +914,7 @@
         "url": "https://github.com/justkahdri",
         "name": "Joaquín R. Montes",
         "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "joaquin@basement.studio",
+        "email": "",
         "company": "@basementstudio "
       },
       {
@@ -932,7 +932,7 @@
     "title": "47.refraction.js",
     "href": "/experiments/47.refraction.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/47.refraction.jpg",
+    "og": "https://lab.basement.studio/ogs/47.refraction.jpg",
     "number": 45,
     "contributors": [
       {
@@ -984,7 +984,7 @@
         "url": "https://github.com/justkahdri",
         "name": "Joaquín R. Montes",
         "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "joaquin@basement.studio",
+        "email": "",
         "company": "@basementstudio "
       }
     ]
@@ -1026,11 +1026,11 @@
     ]
   },
   {
-    "filename": "52.rotating-twisted-3d-typography.js",
-    "title": "52.rotating-twisted-3d-typography.js",
-    "href": "/experiments/52.rotating-twisted-3d-typography.js",
+    "filename": "52.twisted-3d-text.js",
+    "title": "52.twisted-3d-text.js",
+    "href": "/experiments/52.twisted-3d-text.js",
     "tags": [],
-    "og": null,
+    "og": "https://lab.basement.studio/ogs/52.twisted-3d-text.png",
     "number": 50,
     "contributors": [
       {
@@ -1164,7 +1164,7 @@
         "url": "https://github.com/justkahdri",
         "name": "Joaquín R. Montes",
         "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "joaquin@basement.studio",
+        "email": "",
         "company": "@basementstudio "
       }
     ]
@@ -1200,6 +1200,24 @@
         "url": "https://github.com/matiasperz",
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "61.image-pixelation.tsx",
+    "title": "61.image-pixelation.tsx",
+    "href": "/experiments/61.image-pixelation.tsx",
+    "tags": [],
+    "og": null,
+    "number": 60,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
         "email": "",
         "company": "@basementstudio"
       }

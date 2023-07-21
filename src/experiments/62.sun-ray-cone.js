@@ -88,7 +88,6 @@ const SunRayCone = () => {
 
   const position = [0, 4, 0]
   const cylinderArgs = [0.4, 4, 8, 32, 1, true, Math.PI / 2, Math.PI]
-  const debug = true
 
   return (
     <>

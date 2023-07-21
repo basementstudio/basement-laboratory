@@ -194,7 +194,7 @@ const Grid = ({ number = 23, lineWidth = 0.026, height = 0.5 }) => (
   </Instances>
 )
 
-const RotatingTwisted3DText = () => {
+const Twisted3DText = () => {
   const config = useControls('Text', {
     text: 'basement.studio',
     color: '#FFF',
@@ -242,13 +242,13 @@ const RotatingTwisted3DText = () => {
   )
 }
 
-RotatingTwisted3DText.Layout = (props) => (
+Twisted3DText.Layout = (props) => (
   <>
     <Leva />
     <R3FCanvasLayout {...props} />
   </>
 )
-RotatingTwisted3DText.Title = 'Rotating Twisted 3D Text'
-RotatingTwisted3DText.Tags = 'three, typography'
+Twisted3DText.Title = 'Rotating Twisted 3D Text'
+Twisted3DText.Tags = 'three, typography'
 
-export default RotatingTwisted3DText
+export default Twisted3DText
