@@ -1,6 +1,6 @@
 import { OrbitControls, PerspectiveCamera, useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useControls } from 'leva'
+import { folder, useControls } from 'leva'
 import * as THREE from 'three'
 
 import { useUniforms } from '~/hooks/use-uniforms'
@@ -13,38 +13,57 @@ const SunRayCone = () => {
 
   const controls = useControls({
     debug: false,
-    alpha: {
-      value: 1,
-      min: 0,
-      max: 1
-    },
-    glowAlpha: {
-      value: 0.6,
-      min: 0,
-      max: 1
-    },
-    topFadeMin: {
-      value: 0.75,
-      min: 0,
-      max: 1
-    },
-    raysColor: '#ffffff',
-    glowColor: '#ffffff',
-    raysStepMin: {
-      value: 0.2,
-      min: 0,
-      max: 1
-    },
-    raysStepMax: {
-      value: 0.8,
-      min: 0,
-      max: 1
-    },
-    glowStepMin: {
-      value: 0.5,
-      min: 0,
-      max: 1
-    }
+    Geometry: folder({
+      radiusTop: {
+        value: 0.4,
+        min: 0,
+        max: 10
+      },
+      radiusBottom: {
+        value: 4,
+        min: 0,
+        max: 10
+      },
+      height: {
+        value: 8,
+        min: 0,
+        max: 30
+      }
+    }),
+    Material: folder({
+      alpha: {
+        value: 1,
+        min: 0,
+        max: 1
+      },
+      glowAlpha: {
+        value: 0.6,
+        min: 0,
+        max: 1
+      },
+      topFadeMin: {
+        value: 0.75,
+        min: 0,
+        max: 1
+      },
+      raysColor: '#ffffff',
+      glowColor: '#ffffff',
+      raysStepMin: {
+        value: 0.2,
+        min: 0,
+        max: 1
+      },
+      raysStepMax: {
+        value: 0.8,
+        min: 0,
+        max: 1
+      },
+      glowStepMin: {
+        value: 0.5,
+        min: 0,
+        max: 1
+      }
+    })
   })
 
   const uniforms = useUniforms(
@@ -86,8 +105,17 @@ const SunRayCone = () => {
     uniforms.current.uTime.value = clock.getElapsedTime()
   })
 
-  const position = [0, 4, 0]
-  const cylinderArgs = [0.4, 4, 8, 32, 1, true, Math.PI / 2, Math.PI]
+  const position = [0, controls.height / 2, 0]
+  const cylinderArgs = [
+    controls.radiusTop,
+    controls.radiusBottom,
+    controls.height,
+    32,
+    1,
+    true,
+    Math.PI / 2,
+    Math.PI
+  ]
 
   return (
     <>
