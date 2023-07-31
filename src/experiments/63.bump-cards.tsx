@@ -28,20 +28,25 @@ const BumpCards = () => {
       y: cardCenter.y + hitVectorFromCenter.y
     })
 
-    gsap.to([target], {
-      x: -normalizedHitVector.x * 50,
-      y: -normalizedHitVector.y * 50,
-      duration: 0.15,
-      ease: 'power1.out',
-      onComplete: () => {
-        gsap.to([target], {
-          overwrite: true,
-          x: 0,
-          y: 0,
-          duration: 1,
-          ease: 'elastic.out(1, 0.3)'
-        })
-      }
+    const durationFactor = 1.75
+    const bumpFactor = 30
+
+    const timeline = gsap.timeline()
+
+    timeline.to([target], {
+      overwrite: 'auto',
+      x: -normalizedHitVector.x * bumpFactor,
+      y: -normalizedHitVector.y * bumpFactor,
+      duration: 0.15 * durationFactor,
+      ease: 'power1.out'
+    })
+
+    timeline.to([target], {
+      overwrite: 'auto',
+      x: 0,
+      y: 0,
+      duration: 1 * durationFactor,
+      ease: 'elastic.out(1, 0.3)'
     })
   }
 
@@ -56,7 +61,8 @@ const BumpCards = () => {
           left: 0,
           width: 5,
           height: 5,
-          background: 'blue'
+          background: 'blue',
+          pointerEvents: 'none'
         }}
       />
       <div
