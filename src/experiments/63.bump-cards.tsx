@@ -97,7 +97,6 @@ const BumpCards = () => {
 }
 
 BumpCards.Layout = HTMLLayout
-BumpCards.Title = 'Bump Cards'
-BumpCards.Description = 'Bump Cards'
+BumpCards.Title = 'Bump Card'
 
 export default BumpCards
