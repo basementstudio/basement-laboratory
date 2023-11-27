@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { suspend } from 'suspend-react'
 
 import { HTMLLayout } from '~/components/layout/html-layout'
@@ -31,7 +31,7 @@ class AudioSource {
 
     const offset = this.pausedAt % this.buffer.duration
 
-    this.audioSource.start(0, offset)
+    this.audioSource.start(0, offset, this.buffer.duration - offset)
 
     this.startedAt = this.audioContext.currentTime - offset
     this.pausedAt = 0
@@ -77,19 +77,35 @@ class WebAudioPlayer {
     this.isPlaying = true
   }
 
+  unlockAudioContext() {
+    const unlock = () => {
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume().then(() => {
+          alert('Audio context unlocked')
+          document.removeEventListener('click', unlock)
+        })
+      }
+    }
+    document.addEventListener('click', unlock)
+  }
+
   loadAudioFromURL(url: string): Promise<AudioSource> {
-    return fetch(url)
-      .then((response) => response.arrayBuffer())
-      .then((arrayBuffer) => {
-        return this.audioContext.decodeAudioData(arrayBuffer)
-      })
-      .then((buffer) => {
-        return new AudioSource(this, buffer)
-      })
-      .catch((error) => {
-        console.error('Error loading audio from URL:', error)
-        throw error
-      })
+    return new Promise((resolve, reject) => {
+      fetch(url)
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => {
+          return this.audioContext.decodeAudioData(
+            arrayBuffer,
+            (buffer) => {
+              resolve(new AudioSource(this, buffer))
+            },
+            (error) => {
+              console.error('Error loading audio from URL:', error)
+              reject(error)
+            }
+          )
+        })
+    })
   }
 
   setVolume(volume: number) {
@@ -111,9 +127,15 @@ class WebAudioPlayer {
   }
 }
 
-const player = new WebAudioPlayer()
-
-const SFX = ({ src, name }: { src: string; name: string }) => {
+const SFX = ({
+  src,
+  name,
+  player
+}: {
+  src: string
+  name: string
+  player: WebAudioPlayer
+}) => {
   const source = suspend<[string], () => Promise<AudioSource>>(
     () =>
       player.loadAudioFromURL(src).then((s) => {
@@ -163,7 +185,7 @@ const SFX = ({ src, name }: { src: string; name: string }) => {
   )
 }
 
-const AudioControls = () => {
+const AudioControls = ({ player }: { player: WebAudioPlayer }) => {
   return (
     <div style={{ display: 'flex', gap: '0 1rem' }}>
       {/* volume slider input */}
@@ -194,8 +216,19 @@ const AudioControls = () => {
 }
 
 const GameAudio = () => {
+  const [interacted, setInteracted] = useState(false)
+  const [player, setPlayer] = useState<WebAudioPlayer>()
+
+  useEffect(() => {
+    if (!interacted) return
+    setPlayer(new WebAudioPlayer())
+  }, [interacted])
+
   return (
     <div
+      onClick={() => {
+        setInteracted(true)
+      }}
       style={{
         display: 'flex',
         justifyContent: 'center',
@@ -216,12 +249,19 @@ const GameAudio = () => {
             alignItems: 'center'
           }}
         >
-          <AudioControls />
-          <SFX name="1" src="/audio/chronicles-the-fall.mp3" />
-          <SFX name="2" src="/audio/chronicles-the-fall.mp3" />
-          <SFX name="3" src="/audio/chronicles-the-fall.mp3" />
-          <SFX name="4" src="/audio/chronicles-the-fall.mp3" />
+          {player && (
+            <>
+              <AudioControls player={player} />
+              <SFX
+                player={player}
+                name="1"
+                src="/audio/chronicles-the-fall.mp3"
+              />
+              <SFX player={player} name="2" src="/audio/grotesque-audio.mp3" />
+            </>
+          )}
         </div>
+        <button>lalala</button>
       </Suspense>
     </div>
   )
