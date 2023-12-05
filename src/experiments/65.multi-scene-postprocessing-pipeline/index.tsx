@@ -130,10 +130,8 @@ const MultiScenePostpo = () => {
           /* occlude tSecond based on depth */
           if (depthFirst < depthSecond) {
             gl_FragColor = firstColor;
-          } else if (depthSecond < depthFirst) {
-            gl_FragColor = secondColor;
           } else {
-            discard;
+            gl_FragColor = secondColor;
           }
         }
       `
@@ -156,6 +154,7 @@ const MultiScenePostpo = () => {
 
   useFrame(() => {
     gl.clear(true, true, true)
+
     firstComposer.render()
     secondComposer.render()
 
@@ -193,11 +192,7 @@ MultiScenePostpo.Layout = (props: any) => (
     <R3FCanvasLayout
       gl={{
         autoClear: false,
-        // autoClearColor: false,
-        // autoClearStencil: false,
-        // autoClearDepth: false,
         depth: false,
-        // preserveDrawingBuffer: true,
         alpha: true
       }}
       camera={{
