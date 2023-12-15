@@ -1296,12 +1296,21 @@
     ]
   },
   {
-    "filename": "66.multi-scene-postprocessing-pipeline-2",
-    "title": "66.multi-scene-postprocessing-pipeline-2",
-    "href": "/experiments/66.multi-scene-postprocessing-pipeline-2",
+    "filename": "66.multi-scene-composer-pipeline-2",
+    "title": "66.multi-scene-composer-pipeline-2",
+    "href": "/experiments/66.multi-scene-composer-pipeline-2",
     "tags": [],
     "og": null,
     "number": 65,
-    "contributors": []
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
   }
 ]

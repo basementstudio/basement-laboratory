@@ -3,11 +3,12 @@ import { createPortal, useFrame, useThree } from '@react-three/fiber'
 import { useState } from 'react'
 import * as THREE from 'three'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
-import { CopyShader } from 'three/examples/jsm/shaders/CopyShader'
+import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader'
 
-// import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader'
+import { DebugTextureViewer } from '~/components/common/texture-debugger'
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 
 /* 
@@ -23,50 +24,59 @@ const MultiScenePostpo = () => {
   const [firstScene] = useState(() => new THREE.Scene())
   const [secondScene] = useState(() => new THREE.Scene())
 
+  const [rt1] = useState(() => {
+    const target = new THREE.WebGLRenderTarget(
+      gl.domElement.width,
+      gl.domElement.height,
+      {
+        depthBuffer: true,
+        depthTexture: new THREE.DepthTexture(
+          gl.domElement.width,
+          gl.domElement.height
+        )
+      }
+    )
+    return target
+  })
+
   /* Final Composer */
   const [finalComposer] = useState(() => {
-    const composer = new EffectComposer(gl)
+    const composer = new EffectComposer(gl, rt1)
 
-    composer.renderToScreen = true
+    const renderPass = new RenderPass(firstScene, defaultCamera)
+    composer.addPass(renderPass)
 
-    const renderPass1 = new RenderPass(firstScene, defaultCamera)
-    /* THIS ONE SHOULD CLEAR! */
-    renderPass1.clear = true
-    composer.addPass(renderPass1)
+    const rgbShiftPass = new ShaderPass(RGBShiftShader)
+    rgbShiftPass.clear = false
+    /* Prevent the fsQuad from modifying the depthBuffer */
+    rgbShiftPass.fsQuad.material.depthWrite = false
+    rgbShiftPass.fsQuad.material.depthTest = false
+    rgbShiftPass.uniforms['amount'].value = 0.005
+    composer.addPass(rgbShiftPass)
 
     const renderPass2 = new RenderPass(secondScene, defaultCamera)
-    /* THIS ONE SHOULD'T CLEAR */
-    renderPass2.clear = false
+    renderPass2.clear = false // Don't clear the readBuffer
     composer.addPass(renderPass2)
 
-    // const rgbShiftPass = new ShaderPass(RGBShiftShader)
-    // rgbShiftPass.clear = false
-    // composer.addPass(rgbShiftPass)
-
-    /*
-      We need to use this CopyPass to prevent the "renderPass2"
-      from writing to screen and force it using the swapped buffer.
-    */
-    const copyPass = new ShaderPass(CopyShader)
-    composer.addPass(copyPass)
+    const outputPass = new OutputPass()
+    composer.addPass(outputPass)
 
     return composer
   })
 
   useFrame(() => {
-    // gl.clear(true, true, true)
-
-    // blurPassUniforms.uTime.value = s.clock.getElapsedTime()
-
-    // firstComposer.render()
-    // secondComposer.render()
-
     finalComposer.render()
   }, 0)
 
   return (
     <>
       <OrbitControls />
+
+      <DebugTextureViewer
+        height={256}
+        texture={finalComposer.renderTarget1.depthTexture}
+        offset={[0, 0]}
+      />
 
       {/* First Scene */}
       {createPortal(
@@ -95,9 +105,8 @@ MultiScenePostpo.Layout = (props: any) => (
   <>
     <R3FCanvasLayout
       gl={{
-        autoClear: false,
-        depth: false,
         antialias: false,
+        autoClear: false,
         alpha: false,
         powerPreference: 'high-performance',
         outputColorSpace: THREE.SRGBColorSpace,
