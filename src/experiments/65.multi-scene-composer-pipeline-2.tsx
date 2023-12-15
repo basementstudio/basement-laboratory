@@ -17,6 +17,11 @@ import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
   And then apply postprocessing to the entire canvas.
 */
 
+const blurPassUniforms = {
+  uTime: { value: 0 },
+  tDiffuse: { value: null }
+}
+
 const MultiScenePostpo = () => {
   const gl = useThree((state) => state.gl)
   const defaultCamera = useThree((state) => state.camera)
@@ -55,8 +60,69 @@ const MultiScenePostpo = () => {
     composer.addPass(rgbShiftPass)
 
     const renderPass2 = new RenderPass(secondScene, defaultCamera)
+    rgbShiftPass.fsQuad.material.depthWrite = false
+    rgbShiftPass.fsQuad.material.depthTest = false
     renderPass2.clear = false // Don't clear the readBuffer
     composer.addPass(renderPass2)
+
+    const blurPass = new ShaderPass({
+      uniforms: blurPassUniforms,
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        varying vec2 vUv;
+
+        uniform sampler2D tDiffuse;
+        uniform float uTime;
+
+        // #define JITTER
+        // #define MOUSE
+
+        float hash(in vec2 p) {
+          return fract(
+            sin(
+              dot(
+                p,
+                vec2(283.6, 127.1)
+              )
+            ) * 43758.5453
+          );
+        }
+
+        #define CENTER vec2(.5)
+
+        #define SAMPLES 10
+        #define RADIUS .025
+
+        void main() {
+          vec2 uv = vUv;
+          vec3 res = vec3(0);
+
+          for(int i = 0; i < SAMPLES; ++i) {
+            res += texture2D(tDiffuse, uv).rgb;
+
+            vec2 d = CENTER - uv;
+
+            // #ifdef JITTER
+            //   d *= .5 + .01 * hash(d * uTime);
+            // #endif
+
+            uv += d * RADIUS;
+          }
+
+          gl_FragColor = vec4(res / float(SAMPLES), 1.0);
+          // gl_FragColor = vec4(vec3(1.0, 0.0, 0.0), 1.0);
+        }
+      `
+    })
+    blurPass.fsQuad.material.depthWrite = false
+
+    composer.addPass(blurPass)
 
     const outputPass = new OutputPass()
     composer.addPass(outputPass)
