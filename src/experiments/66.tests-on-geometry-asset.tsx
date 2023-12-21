@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Physics, RapierRigidBody, RigidBody, vec3 } from '@react-three/rapier'
 import { useControls } from 'leva'
 import { range } from 'lodash'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { GLTF } from 'three-stdlib'
 
@@ -15,7 +15,11 @@ type GLTFResult = GLTF & {
   }
 }
 
-const Frist = () => {
+type TankProps = {
+  crossMaterial?: THREE.Material
+}
+
+const Tank = ({ crossMaterial }: TankProps) => {
   const viewport = useThree((state) => state.viewport)
   const mouseSphereRef = useRef<RapierRigidBody>(null)
   const groupRef = useRef<THREE.Group>(null)
@@ -55,8 +59,8 @@ const Frist = () => {
             enabledTranslations={[true, true, false]}
             key={i}
           >
-            <mesh geometry={cross.geometry}>
-              <meshNormalMaterial />
+            <mesh geometry={cross.geometry} material={crossMaterial}>
+              {!crossMaterial && <meshNormalMaterial depthWrite={false} />}
             </mesh>
           </RigidBody>
         ))}
@@ -78,7 +82,11 @@ const Frist = () => {
                 MOUSE_COLLIDER_SIZE
               ]}
             />
-            <meshBasicMaterial color="green" />
+            <meshBasicMaterial
+              color="green"
+              depthTest={false}
+              depthWrite={false}
+            />
           </mesh>
         </RigidBody>
 
@@ -141,7 +149,7 @@ const Frist = () => {
 
 const TestsOnGeometryAsset = () => {
   const trackDiv1 = useRef<HTMLDivElement>(null)
-  // const trackDiv2 = useRef<HTMLDivElement>(null)
+  const trackDiv2 = useRef<HTMLDivElement>(null)
 
   return (
     <>
@@ -153,10 +161,18 @@ const TestsOnGeometryAsset = () => {
           eventSource={document.querySelector('#__next')}
         >
           {/* @ts-ignore */}
-          <View index={1} track={trackDiv1} frames={1}>
-            <Frist />
+          <View track={trackDiv1} frames={10}>
+            <Tank />
           </View>
-          {/* <View track={trackDiv2} frames={1} /> */}
+          {/* @ts-ignore */}
+          <View track={trackDiv2} frames={10}>
+            <Tank
+              crossMaterial={useMemo(() => {
+                const material = new THREE.MeshDepthMaterial()
+                return material
+              }, [])}
+            />
+          </View>
         </Canvas>
       </div>
       <div
