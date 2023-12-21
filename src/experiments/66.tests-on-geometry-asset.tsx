@@ -1,4 +1,10 @@
-import { OrbitControls, Stats, useGLTF, View } from '@react-three/drei'
+import {
+  OrbitControls,
+  OrthographicCamera,
+  Stats,
+  useGLTF,
+  View
+} from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Physics, RapierRigidBody, RigidBody, vec3 } from '@react-three/rapier'
 import { useControls } from 'leva'
@@ -151,12 +157,15 @@ const TestsOnGeometryAsset = () => {
   const trackDiv1 = useRef<HTMLDivElement>(null)
   const trackDiv2 = useRef<HTMLDivElement>(null)
 
+  const ZOOM = 150
+  const CAM_POSITION = new THREE.Vector3(0, 0, 5)
+
   return (
     <>
       <div style={{ position: 'fixed', width: '100%', height: '100%' }}>
         <Canvas
           orthographic
-          camera={{ zoom: 150 }}
+          camera={{ zoom: ZOOM, near: 3, far: 8, position: CAM_POSITION }}
           // @ts-ignore
           eventSource={document.querySelector('#__next')}
         >
@@ -166,9 +175,20 @@ const TestsOnGeometryAsset = () => {
           </View>
           {/* @ts-ignore */}
           <View track={trackDiv2} frames={10}>
+            <OrthographicCamera
+              manual={false}
+              near={3}
+              zoom={ZOOM}
+              far={5.5}
+              position={CAM_POSITION}
+              makeDefault
+            />
             <Tank
               crossMaterial={useMemo(() => {
-                const material = new THREE.MeshDepthMaterial()
+                const material = new THREE.MeshDepthMaterial({})
+                // material.color
+                material.side = THREE.BackSide
+                // material.color = new THREE.Color('red')
                 return material
               }, [])}
             />
@@ -182,12 +202,12 @@ const TestsOnGeometryAsset = () => {
           position: 'fixed',
           width: '100%',
           height: '100%',
-          gridTemplateColumns: 'repeat(1, 1fr)',
+          gridTemplateColumns: 'repeat(2, 1fr)',
           zIndex: 10
         }}
       >
         <div style={{ border: '1px solid red' }} ref={trackDiv1}></div>
-        {/* <div style={{ border: '1px solid blue' }} ref={trackDiv2}></div> */}
+        <div style={{ border: '1px solid blue' }} ref={trackDiv2}></div>
       </div>
     </>
   )
