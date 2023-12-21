@@ -342,10 +342,10 @@
   resolved "https://registry.yarnpkg.com/@corex/deepmerge/-/deepmerge-2.6.148.tgz#8fa825d53ffd1cbcafce1b6a830eefd3dcc09dd5"
   integrity sha512-6QMz0/2h5C3ua51iAnXMPWFbb1QOU1UvSM4bKBw5mzdT+WtLgjbETBBIQZ+Sh9WvEcGwlAt/DEdRpIC3XlDBMA==
 
-"@dimforge/rapier3d-compat@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@dimforge/rapier3d-compat/-/rapier3d-compat-0.9.0.tgz#c1a3c41fa39ae7d8dde22ef628baedf2b8f24dad"
-  integrity sha512-zjgpXS/fFx1lZqjW1DfVUEaRHFpekzWjF6eSGb/xeEUf74YO0NDlQ93Hj0oI2k+i6QIoQk9KcIaEGwQZkullrw==
+"@dimforge/rapier3d-compat@0.11.2":
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/@dimforge/rapier3d-compat/-/rapier3d-compat-0.11.2.tgz#ae2b335f545decf1e82ff45bb10368e143de0fcb"
+  integrity sha512-vdWmlkpS3G8nGAzLuK7GYTpNdrkn/0NKCe0l1Jqxc7ZZOB3N0q9uG/Ap9l9bothWuAvxscIt0U97GVLr0lXWLg==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
@@ -974,14 +974,14 @@
     screen-space-reflections "2.5.0"
     three-stdlib "^2.21.10"
 
-"@react-three/rapier@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@react-three/rapier/-/rapier-0.9.0.tgz#d2bdc97e5047ef52f0f73607c8388a8c589aaf5e"
-  integrity sha512-FElAWzPwyKdx+9zJT/TE1w1yLhY6IgTlYoXtcO4hNDoIvyErxexldp2kp+fiFQGtiL1CxJsHxeEyTXomXZ2MlA==
+"@react-three/rapier@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@react-three/rapier/-/rapier-1.2.1.tgz#c752770b7b0fc27b1079e04a55fee0cc62b3507a"
+  integrity sha512-h22uqwvMBVVmwfe37fs0tF3u+gNDJv/LzS4lRYnZ4IaHZPlprAjvccef6R7pFlW2EU/o26HhzTMoE5/Btkdcew==
   dependencies:
-    "@dimforge/rapier3d-compat" "0.9.0"
-    three-stdlib "^2.15.0"
-    use-asset "^1.0.4"
+    "@dimforge/rapier3d-compat" "0.11.2"
+    three-stdlib "2.23.9"
+    use-asset "1.0.4"
 
 "@rushstack/eslint-patch@^1.0.8":
   version "1.2.0"
@@ -6154,14 +6154,14 @@ three-mesh-bvh@^0.6.7:
   resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.6.8.tgz#f27d18ca75bdc59316dff0f561af8fb316621a54"
   integrity sha512-EGebF9DZx1S8+7OZYNNTT80GXJZVf+UYXD/HyTg/e2kR/ApofIFfUS4ZzIHNnUVIadpnLSzM4n96wX+l7GMbnQ==
 
-three-stdlib@^2.15.0:
-  version "2.17.3"
-  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.17.3.tgz#f92d322810d81379a51344b21e0a2e941b84cb8f"
-  integrity sha512-k2VwPXi75ySy0fxPIeUk3mLkj3/j+sCFK4g9Kp5J7w0PUh6qrCdhah7L6+On6fW5mBdVtML4Q5yEyN1R0Cfvqw==
+three-stdlib@2.23.9:
+  version "2.23.9"
+  resolved "https://registry.yarnpkg.com/three-stdlib/-/three-stdlib-2.23.9.tgz#09c74fc6acced3d124e4f9d695156136c587a355"
+  integrity sha512-fYBClVGQptD7UZcoRZGNlR3sKcUW37hVPoEW1v68E4XuiwD0Ml/VqDUJ0yEMVE2DlooDvqgqv/rIcHC/B4N5pg==
   dependencies:
-    "@babel/runtime" "^7.16.7"
+    "@types/draco3d" "^1.4.0"
     "@types/offscreencanvas" "^2019.6.4"
-    "@webgpu/glslang" "^0.0.15"
+    "@types/webxr" "^0.5.2"
     chevrotain "^10.1.2"
     draco3d "^1.4.1"
     fflate "^0.6.9"
@@ -6484,7 +6484,7 @@ url-parse@^1.5.3:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-use-asset@^1.0.4:
+use-asset@1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/use-asset/-/use-asset-1.0.4.tgz#506caafc29f602890593799e58b577b70293a6e2"
   integrity sha512-7/hqDrWa0iMnCoET9W1T07EmD4Eg/Wmoj/X8TGBc++ECRK4m5yTsjP4O6s0yagbxfqIOuUkIxe2/sA+VR2GxZA==

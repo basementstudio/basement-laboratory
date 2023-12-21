@@ -1278,21 +1278,21 @@
     ]
   },
   {
-    "filename": "65.multi-scene-composer-pipeline-2.tsx",
-    "title": "65.multi-scene-composer-pipeline-2.tsx",
-    "href": "/experiments/65.multi-scene-composer-pipeline-2.tsx",
+    "filename": "65.multi-scene-composer-pipeline.tsx",
+    "title": "65.multi-scene-composer-pipeline.tsx",
+    "href": "/experiments/65.multi-scene-composer-pipeline.tsx",
     "tags": [],
     "og": null,
     "number": 64,
-    "contributors": [
-      {
-        "id": "MDQ6VXNlcjQzODk0MzQz",
-        "url": "https://github.com/matiasperz",
-        "name": "Matias Perez",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
-        "email": "",
-        "company": "@basementstudio"
-      }
-    ]
+    "contributors": []
+  },
+  {
+    "filename": "66.tests-on-geometry-asset.tsx",
+    "title": "66.tests-on-geometry-asset.tsx",
+    "href": "/experiments/66.tests-on-geometry-asset.tsx",
+    "tags": [],
+    "og": null,
+    "number": 65,
+    "contributors": []
   }
 ]
