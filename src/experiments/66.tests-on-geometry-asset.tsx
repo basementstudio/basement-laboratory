@@ -44,7 +44,7 @@ const Frist = () => {
   return (
     <Physics gravity={[0, 0, 0]} debug={controls.debug}>
       <axesHelper visible={controls.debug} />
-      <OrbitControls />
+      <OrbitControls enablePan={false} enableRotate={false} />
       <group position={[0, 0, 0]} ref={groupRef}>
         {/* Body */}
         {range(15).map((i) => (
@@ -65,12 +65,12 @@ const Frist = () => {
         <RigidBody
           colliders={'cuboid'}
           type="kinematicVelocity"
-          gravityScale={0}
           mass={5}
           enabledTranslations={[true, true, false]}
           ref={mouseSphereRef}
+          includeInvisible
         >
-          <mesh position={[0, 0, 0]}>
+          <mesh position={[0, 0, 0]} visible={controls.debug}>
             <boxGeometry
               args={[
                 MOUSE_COLLIDER_SIZE,
