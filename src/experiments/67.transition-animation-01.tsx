@@ -1,12 +1,49 @@
-import { gsap } from 'lib/gsap'
+import { Euler } from 'three/src/math/Euler'
 import { Matrix4 } from 'three/src/math/Matrix4'
+import { Quaternion } from 'three/src/math/Quaternion'
+import { Vector3 } from 'three/src/math/Vector3'
 
 import { Script } from '~/components/common/script'
 import { PlainCanvasLayout } from '~/components/layout/plain-canvas-layout'
 
-interface Geometry {
-  draw: () => void
-  mat: Matrix4
+const globalMatrix = new Matrix4()
+const e = new Euler()
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const v = new Vector3()
+
+class Geometry {
+  position: Vector3
+  rotation: Euler
+  quaternion: Quaternion
+  scale: Vector3
+  matrix: Matrix4
+
+  constructor() {
+    this.position = new Vector3()
+    this.rotation = new Euler()
+    this.scale = new Vector3()
+    this.quaternion = new Quaternion()
+    this.matrix = new Matrix4()
+
+    const onRotationChange = () => {
+      this.quaternion.setFromEuler(this.rotation, false)
+    }
+
+    const onQuaternionChange = () => {
+      this.rotation.setFromQuaternion(this.quaternion, undefined, false)
+    }
+
+    this.rotation._onChange(onRotationChange)
+    this.quaternion._onChange(onQuaternionChange)
+  }
+
+  updateMatrix() {
+    this.matrix.compose(this.position, this.quaternion, this.scale)
+    this.matrix.premultiply(globalMatrix)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  draw() {}
 }
 
 const main = () => {
@@ -68,34 +105,13 @@ const main = () => {
     [1, 1, 1]
   ]
 
-  class Cube implements Geometry {
-    x: number
-    y: number
-    z: number
-    radius: number
-    mat: Matrix4
-
-    constructor() {
-      this.x = (Math.random() - 0.5) * width
-      this.y = (Math.random() - 0.5) * width
-      this.z = (Math.random() - 0.5) * width
-      this.radius = Math.floor(Math.random() * 12 + 10)
-
-      this.mat = new Matrix4()
-      this.mat.makeRotationX(0.2)
-
-      gsap.to(this, {
-        x: (Math.random() - 0.5) * (width * 0.5),
-        y: (Math.random() - 0.5) * (width * 0.5),
-        z: (Math.random() - 0.5) * width,
-        repeat: -1,
-        yoyo: true,
-        duration: Math.random() * 20 + 15,
-        ease: 'power2.out'
-      })
+  class Cube extends Geometry {
+    constructor(x: number, y: number, z: number) {
+      super()
+      this.scale.set(x, y, z)
     }
-    // Do some math to project the 3D position into the 2D canvas
 
+    // Do some math to project the 3D position into the 2D canvas
     project(x: number, y: number, z: number) {
       const sizeProjection = FIELD_OF_VIEW / (FIELD_OF_VIEW + z)
       const xProject = x * sizeProjection + PROJECTION_CENTER_X
@@ -108,21 +124,13 @@ const main = () => {
     }
 
     applyMatrix4(x: number, y: number, z: number) {
-      const tx =
-        x * this.mat.elements[0] +
-        y * this.mat.elements[1] +
-        z * this.mat.elements[2] +
-        this.mat.elements[3]
-      const ty =
-        x * this.mat.elements[4] +
-        y * this.mat.elements[5] +
-        z * this.mat.elements[6] +
-        this.mat.elements[7]
-      const tz =
-        x * this.mat.elements[8] +
-        y * this.mat.elements[9] +
-        z * this.mat.elements[10] +
-        this.mat.elements[11]
+      const e = this.matrix.elements
+
+      const w = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15])
+
+      const tx = (e[0] * x + e[4] * y + e[8] * z + e[12]) * w
+      const ty = (e[1] * x + e[5] * y + e[9] * z + e[13]) * w
+      const tz = (e[2] * x + e[6] * y + e[10] * z + e[14]) * w
 
       return {
         x: tx,
@@ -133,36 +141,36 @@ const main = () => {
 
     // Draw the dot on the canvas
     draw() {
+      this.updateMatrix()
       // Do not render a cube that is in front of the camera
-      if (this.z < -FIELD_OF_VIEW + this.radius) {
+      if (this.position.z < -FIELD_OF_VIEW) {
         return
       }
       for (let i = 0; i < CUBE_LINES.length; i++) {
+        const transformedV1Cube = this.applyMatrix4(
+          CUBE_VERTICES[CUBE_LINES[i][0]][0],
+          CUBE_VERTICES[CUBE_LINES[i][0]][1],
+          CUBE_VERTICES[CUBE_LINES[i][0]][2]
+        )
+        const transformedV2Cube = this.applyMatrix4(
+          CUBE_VERTICES[CUBE_LINES[i][1]][0],
+          CUBE_VERTICES[CUBE_LINES[i][1]][1],
+          CUBE_VERTICES[CUBE_LINES[i][1]][2]
+        )
+
         const v1 = {
-          x: this.x + this.radius * CUBE_VERTICES[CUBE_LINES[i][0]][0],
-          y: this.y + this.radius * CUBE_VERTICES[CUBE_LINES[i][0]][1],
-          z: this.z + this.radius * CUBE_VERTICES[CUBE_LINES[i][0]][2]
+          x: this.position.x + transformedV1Cube.x,
+          y: this.position.y + transformedV1Cube.y,
+          z: this.position.z + transformedV1Cube.z
         }
         const v2 = {
-          x: this.x + this.radius * CUBE_VERTICES[CUBE_LINES[i][1]][0],
-          y: this.y + this.radius * CUBE_VERTICES[CUBE_LINES[i][1]][1],
-          z: this.z + this.radius * CUBE_VERTICES[CUBE_LINES[i][1]][2]
+          x: this.position.x + transformedV2Cube.x,
+          y: this.position.y + transformedV2Cube.y,
+          z: this.position.z + transformedV2Cube.z
         }
 
-        /* Apply matrix transformation for rotating vertices */
-        const transformedV1 = this.applyMatrix4(v1.x, v1.y, v1.z)
-        const transformedV2 = this.applyMatrix4(v2.x, v2.y, v2.z)
-
-        const v1Project = this.project(
-          transformedV1.x,
-          transformedV1.y,
-          transformedV1.z
-        )
-        const v2Project = this.project(
-          transformedV2.x,
-          transformedV2.y,
-          transformedV2.z
-        )
+        const v1Project = this.project(v1.x, v1.y, v1.z)
+        const v2Project = this.project(v2.x, v2.y, v2.z)
 
         if (!ctx) return
         ctx.beginPath()
@@ -171,16 +179,6 @@ const main = () => {
         ctx.strokeStyle = '#fff'
         ctx.stroke()
       }
-    }
-  }
-
-  function createDots() {
-    // Empty the array of dots
-    geometries.length = 0
-
-    // Create a new dot based on the amount needed
-    for (let i = 0; i < 100; i++) {
-      geometries.push(new Cube())
     }
   }
 
@@ -204,8 +202,11 @@ const main = () => {
     // Loop through the dots array and draw every dot
     for (let i = 0; i < geometries.length; i++) {
       geometries?.[i].draw()
-      geometries?.[i].mat.makeRotationX(elapsedTime)
     }
+
+    /* Circular motion on globalMatrix */
+    e.set(elapsedTime / 2, elapsedTime / 2, 0)
+    globalMatrix.makeRotationFromEuler(e)
 
     renderId = window.requestAnimationFrame(render)
   }
@@ -225,8 +226,6 @@ const main = () => {
     PROJECTION_CENTER_X = width / 2
     PROJECTION_CENTER_Y = height / 2
     FIELD_OF_VIEW = width * 0.8
-
-    createDots() // Reset all dots
   }
 
   // Variable used to store a timeout when user resized its screen
@@ -242,8 +241,16 @@ const main = () => {
 
   window.addEventListener('resize', onResize)
 
-  // Populate the dots array with random dots
-  createDots()
+  /* Create the cubes */
+  const baseScale = 32
+  const c1 = new Cube(5.5 * baseScale, 1 * baseScale, 1 * baseScale)
+  geometries.push(c1)
+  const c2 = new Cube(5.5 * baseScale, 1 * baseScale, 1 * baseScale)
+  c2.rotation.set(0, 0, Math.PI / 2)
+  geometries.push(c2)
+  const c3 = new Cube(5.5 * baseScale, 1 * baseScale, 1 * baseScale)
+  c3.rotation.set(0, Math.PI / 2, 0)
+  geometries.push(c3)
 
   // Render the scene
   window.requestAnimationFrame(render)
