@@ -246,7 +246,7 @@ const main = () => {
     }
     PROJECTION_CENTER_X = width / 2
     PROJECTION_CENTER_Y = height / 2
-    FIELD_OF_VIEW = width * 0.8
+    FIELD_OF_VIEW = width * 1.5
   }
 
   // Variable used to store a timeout when user resized its screen
@@ -294,7 +294,7 @@ const main = () => {
       repeat: -1,
       yoyo: false,
       repeatDelay: 2,
-      delay: 2,
+      // delay: 2,
       defaults: { duration: 0.77 }
     })
     .fromTo(c2.position, { y: 700 }, { y: 0, ease: easings.inOutCubic }, 0)
