@@ -1,3 +1,4 @@
+import { gsap } from 'lib/gsap'
 import { Euler } from 'three/src/math/Euler'
 import { Matrix4 } from 'three/src/math/Matrix4'
 import { Quaternion } from 'three/src/math/Quaternion'
@@ -10,6 +11,27 @@ const globalMatrix = new Matrix4()
 const e = new Euler()
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const v = new Vector3()
+
+const easings = {
+  inOutExpo(x: number): number {
+    return x === 0
+      ? 0
+      : x === 1
+      ? 1
+      : x < 0.5
+      ? Math.pow(2, 20 * x - 10) / 2
+      : (2 - Math.pow(2, -20 * x + 10)) / 2
+  },
+  outQuint(x: number): number {
+    return 1 - Math.pow(1 - x, 5)
+  },
+  outCubic(x: number): number {
+    return 1 - Math.pow(1 - x, 3)
+  },
+  inOutCubic(x: number): number {
+    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
+  }
+}
 
 class Geometry {
   position: Vector3
@@ -79,7 +101,7 @@ const main = () => {
   /* Some of those constants may change if the user resizes their screen but I still strongly believe they belong to the Constants part of the variables */
   let PROJECTION_CENTER_X = width / 2 // X center of the canvas HTML
   let PROJECTION_CENTER_Y = height / 2 // Y center of the canvas HTML
-  let FIELD_OF_VIEW = width * 0.8
+  let FIELD_OF_VIEW = width * 1
   const CUBE_LINES = [
     [0, 1],
     [1, 3],
@@ -142,6 +164,7 @@ const main = () => {
     // Draw the dot on the canvas
     draw() {
       this.updateMatrix()
+
       // Do not render a cube that is in front of the camera
       if (this.position.z < -FIELD_OF_VIEW) {
         return
@@ -185,7 +208,6 @@ const main = () => {
   /* ====================== */
   /* ======== RENDER ====== */
   /* ====================== */
-  let renderId: number
   let elapsedTime = 0
   let lastTime = new Date().getTime()
 
@@ -193,6 +215,7 @@ const main = () => {
     // Calculate deltatime to update animation
     const currentTime = new Date().getTime()
     const deltaTime = currentTime - lastTime
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     elapsedTime += deltaTime / 1000
     lastTime = currentTime
 
@@ -205,10 +228,8 @@ const main = () => {
     }
 
     /* Circular motion on globalMatrix */
-    e.set(elapsedTime / 2, elapsedTime / 2, 0)
+    e.set(Math.PI / 10, Math.PI / 4, 0)
     globalMatrix.makeRotationFromEuler(e)
-
-    renderId = window.requestAnimationFrame(render)
   }
 
   // Function called after the user resized its screen
@@ -243,21 +264,74 @@ const main = () => {
 
   /* Create the cubes */
   const baseScale = 32
-  const c1 = new Cube(5.5 * baseScale, 1 * baseScale, 1 * baseScale)
+  const thickness = 0.7
+  const length = 5.5
+  const c1 = new Cube(
+    length * baseScale,
+    thickness * baseScale,
+    thickness * baseScale
+  )
+
   geometries.push(c1)
-  const c2 = new Cube(5.5 * baseScale, 1 * baseScale, 1 * baseScale)
+  const c2 = new Cube(
+    length * baseScale,
+    thickness * baseScale,
+    thickness * baseScale
+  )
   c2.rotation.set(0, 0, Math.PI / 2)
   geometries.push(c2)
-  const c3 = new Cube(5.5 * baseScale, 1 * baseScale, 1 * baseScale)
+
+  const c3 = new Cube(
+    length * baseScale,
+    thickness * baseScale,
+    thickness * baseScale
+  )
   c3.rotation.set(0, Math.PI / 2, 0)
   geometries.push(c3)
 
-  // Render the scene
-  window.requestAnimationFrame(render)
+  gsap
+    .timeline({
+      repeat: -1,
+      yoyo: false,
+      repeatDelay: 2,
+      delay: 2,
+      defaults: { duration: 0.77 }
+    })
+    .fromTo(c2.position, { y: 700 }, { y: 0, ease: easings.inOutCubic }, 0)
+    .fromTo(
+      c1.position,
+      { x: 700 },
+      { x: 0, ease: easings.inOutCubic },
+      '<+=0.11'
+    )
+    .fromTo(c3.position, { z: -700 }, { z: 0, ease: easings.inOutCubic }, '<')
+    .fromTo(
+      {},
+      {},
+      {
+        delay: 0.25,
+        ease: easings.inOutExpo,
+        duration: 1.2,
+        onUpdate() {
+          e.set(Math.PI / 10, Math.PI / 4 + Math.PI * 2 * this.ratio, 0)
+          globalMatrix.makeRotationFromEuler(e)
+        }
+      }
+    )
+    .fromTo(c2.position, { y: 0 }, { y: 700, ease: easings.inOutCubic })
+    .fromTo(
+      c1.position,
+      { x: 0 },
+      { x: 700, ease: easings.inOutCubic },
+      '<+=0.11'
+    )
+    .fromTo(c3.position, { z: 0 }, { z: -700, ease: easings.inOutCubic }, '<')
+
+  gsap.ticker.add(render)
 
   /* Cleanup */
   return () => {
-    window.cancelAnimationFrame(renderId)
+    gsap.ticker.remove(render)
   }
 }
 
