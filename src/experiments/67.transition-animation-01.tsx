@@ -1,4 +1,5 @@
 import { gsap } from 'lib/gsap'
+import { Spherical } from 'three'
 import { Euler } from 'three/src/math/Euler'
 import { Matrix4 } from 'three/src/math/Matrix4'
 import { Quaternion } from 'three/src/math/Quaternion'
@@ -7,10 +8,57 @@ import { Vector3 } from 'three/src/math/Vector3'
 import { Script } from '~/components/common/script'
 import { PlainCanvasLayout } from '~/components/layout/plain-canvas-layout'
 
-const globalMatrix = new Matrix4()
+const width = window.innerWidth
+const height = window.innerHeight
+
+const getCameraPositionAndRotationFromSphericalCoords = (
+  radius: number,
+  phi: number,
+  theta: number
+) => {
+  const spherical = new Spherical(radius, phi, theta)
+  const rotation = new Quaternion()
+  const position = new Vector3()
+
+  position.setFromSpherical(spherical)
+  rotation.setFromEuler(new Euler(phi, theta, 0))
+
+  return {
+    position,
+    rotation
+  }
+}
+
 const e = new Euler()
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const v = new Vector3()
+
+const globalMatrix = new Matrix4()
+const globalRotation = new Quaternion()
+const globalPosition = new Vector3()
+
+/* Camera */
+const projectionMatrix = new Matrix4()
+
+projectionMatrix.makeOrthographic(
+  -width / 2,
+  width / 2,
+  height / 2,
+  -height / 2,
+  0.1,
+  1000,
+  2000
+)
+const inverseProjectionMatrix = new Matrix4()
+inverseProjectionMatrix.copy(projectionMatrix).invert()
+const camMatrix = new Matrix4()
+
+const cam = getCameraPositionAndRotationFromSphericalCoords(
+  1,
+  Math.PI / 4,
+  -Math.PI / 4 + Math.PI
+)
+cam.position.add(v.set(width / 2, height / 2, 0))
+camMatrix.compose(cam.position, cam.rotation, new Vector3(1, 1, 1))
 
 const easings = {
   inOutExpo(x: number): number {
@@ -30,6 +78,9 @@ const easings = {
   },
   inOutCubic(x: number): number {
     return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
+  },
+  inCubic(x: number): number {
+    return x * x * x
   }
 }
 
@@ -95,39 +146,33 @@ const main = () => {
   let height = canvas.clientHeight // Height of the canvas
   const geometries: Geometry[] = [] // Every dots in an array
 
-  /* ====================== */
-  /* ====== CONSTANTS ===== */
-  /* ====================== */
-  /* Some of those constants may change if the user resizes their screen but I still strongly believe they belong to the Constants part of the variables */
-  let PROJECTION_CENTER_X = width / 2 // X center of the canvas HTML
-  let PROJECTION_CENTER_Y = height / 2 // Y center of the canvas HTML
-  let FIELD_OF_VIEW = width * 1
-  const CUBE_LINES = [
-    [0, 1],
-    [1, 3],
-    [3, 2],
-    [2, 0],
-    [2, 6],
-    [3, 7],
-    [0, 4],
-    [1, 5],
-    [6, 7],
-    [6, 4],
-    [7, 5],
-    [4, 5]
-  ]
-  const CUBE_VERTICES = [
-    [-1, -1, -1],
-    [1, -1, -1],
-    [-1, 1, -1],
-    [1, 1, -1],
-    [-1, -1, 1],
-    [1, -1, 1],
-    [-1, 1, 1],
-    [1, 1, 1]
-  ]
-
   class Cube extends Geometry {
+    LINES = [
+      [0, 1],
+      [1, 3],
+      [3, 2],
+      [2, 0],
+      [2, 6],
+      [3, 7],
+      [0, 4],
+      [1, 5],
+      [6, 7],
+      [6, 4],
+      [7, 5],
+      [4, 5]
+    ]
+
+    VERTICES = [
+      [-1, -1, -1],
+      [1, -1, -1],
+      [-1, 1, -1],
+      [1, 1, -1],
+      [-1, -1, 1],
+      [1, -1, 1],
+      [-1, 1, 1],
+      [1, 1, 1]
+    ]
+
     constructor(x: number, y: number, z: number) {
       super()
       this.scale.set(x, y, z)
@@ -135,13 +180,15 @@ const main = () => {
 
     // Do some math to project the 3D position into the 2D canvas
     project(x: number, y: number, z: number) {
-      const sizeProjection = FIELD_OF_VIEW / (FIELD_OF_VIEW + z)
-      const xProject = x * sizeProjection + PROJECTION_CENTER_X
-      const yProject = y * sizeProjection + PROJECTION_CENTER_Y
+      const pv = v
+        .set(x, y, z)
+        .applyMatrix4(inverseProjectionMatrix)
+        .applyMatrix4(projectionMatrix)
+        .applyMatrix4(camMatrix)
+
       return {
-        size: sizeProjection,
-        x: xProject,
-        y: yProject
+        x: pv.x,
+        y: pv.y
       }
     }
 
@@ -161,24 +208,19 @@ const main = () => {
       }
     }
 
-    // Draw the dot on the canvas
     draw() {
       this.updateMatrix()
 
-      // Do not render a cube that is in front of the camera
-      if (this.position.z < -FIELD_OF_VIEW) {
-        return
-      }
-      for (let i = 0; i < CUBE_LINES.length; i++) {
+      for (let i = 0; i < this.LINES.length; i++) {
         const transformedV1Cube = this.applyMatrix4(
-          CUBE_VERTICES[CUBE_LINES[i][0]][0],
-          CUBE_VERTICES[CUBE_LINES[i][0]][1],
-          CUBE_VERTICES[CUBE_LINES[i][0]][2]
+          this.VERTICES[this.LINES[i][0]][0],
+          this.VERTICES[this.LINES[i][0]][1],
+          this.VERTICES[this.LINES[i][0]][2]
         )
         const transformedV2Cube = this.applyMatrix4(
-          CUBE_VERTICES[CUBE_LINES[i][1]][0],
-          CUBE_VERTICES[CUBE_LINES[i][1]][1],
-          CUBE_VERTICES[CUBE_LINES[i][1]][2]
+          this.VERTICES[this.LINES[i][1]][0],
+          this.VERTICES[this.LINES[i][1]][1],
+          this.VERTICES[this.LINES[i][1]][2]
         )
 
         const v1 = {
@@ -222,14 +264,13 @@ const main = () => {
     // Clear the scene
     ctx?.clearRect(0, 0, width, height)
 
+    /* Update global matrix */
+    globalMatrix.compose(globalPosition, globalRotation, v.set(1, 1, 1))
+
     // Loop through the dots array and draw every dot
     for (let i = 0; i < geometries.length; i++) {
       geometries?.[i].draw()
     }
-
-    /* Circular motion on globalMatrix */
-    e.set(Math.PI / 10, Math.PI / 4, 0)
-    globalMatrix.makeRotationFromEuler(e)
   }
 
   // Function called after the user resized its screen
@@ -244,9 +285,6 @@ const main = () => {
       canvas.width = width
       canvas.height = height
     }
-    PROJECTION_CENTER_X = width / 2
-    PROJECTION_CENTER_Y = height / 2
-    FIELD_OF_VIEW = width * 1.5
   }
 
   // Variable used to store a timeout when user resized its screen
@@ -271,6 +309,8 @@ const main = () => {
     thickness * baseScale,
     thickness * baseScale
   )
+  c1.rotation.set(0, 0, 0)
+  c1.position.set(200, 0, 0)
 
   geometries.push(c1)
   const c2 = new Cube(
@@ -279,6 +319,7 @@ const main = () => {
     thickness * baseScale
   )
   c2.rotation.set(0, 0, Math.PI / 2)
+  c2.position.set(0, -200, 0)
   geometries.push(c2)
 
   const c3 = new Cube(
@@ -287,6 +328,7 @@ const main = () => {
     thickness * baseScale
   )
   c3.rotation.set(0, Math.PI / 2, 0)
+  c3.position.set(0, 0, -200)
   geometries.push(c3)
 
   gsap
@@ -297,35 +339,38 @@ const main = () => {
       // delay: 2,
       defaults: { duration: 0.77 }
     })
-    .fromTo(c2.position, { y: 700 }, { y: 0, ease: easings.inOutCubic }, 0)
-    .fromTo(
-      c1.position,
-      { x: 700 },
-      { x: 0, ease: easings.inOutCubic },
-      '<+=0.11'
-    )
-    .fromTo(c3.position, { z: -700 }, { z: 0, ease: easings.inOutCubic }, '<')
+    .fromTo(c2.position, { y: -700 }, { y: 0, ease: easings.inOutCubic }, 0)
+    .fromTo(c1.position, { x: 700 }, { x: 0, ease: easings.inOutCubic }, '<')
+    .fromTo(c3.position, { z: 700 }, { z: 0, ease: easings.inOutCubic }, '<')
     .fromTo(
       {},
       {},
       {
-        delay: 0.25,
+        delay: 0.1,
         ease: easings.inOutExpo,
-        duration: 1.2,
+        duration: 1,
         onUpdate() {
-          e.set(Math.PI / 10, Math.PI / 4 + Math.PI * 2 * this.ratio, 0)
-          globalMatrix.makeRotationFromEuler(e)
+          globalRotation.setFromEuler(e.set(0, Math.PI * 2 * this.ratio, 0))
         }
       }
     )
-    .fromTo(c2.position, { y: 0 }, { y: 700, ease: easings.inOutCubic })
+    .fromTo(
+      c2.position,
+      { y: 0 },
+      { y: -700, duration: 0.525, ease: easings.inCubic }
+    )
     .fromTo(
       c1.position,
       { x: 0 },
-      { x: 700, ease: easings.inOutCubic },
-      '<+=0.11'
+      { x: 700, duration: 0.525, ease: easings.inCubic },
+      '<'
     )
-    .fromTo(c3.position, { z: 0 }, { z: -700, ease: easings.inOutCubic }, '<')
+    .fromTo(
+      c3.position,
+      { z: 0 },
+      { z: 700, duration: 0.525, ease: easings.inCubic },
+      '<'
+    )
 
   gsap.ticker.add(render)
 
