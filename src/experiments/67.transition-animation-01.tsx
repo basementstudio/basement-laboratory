@@ -386,7 +386,8 @@ const main = (inverted = false) => {
       repeat: -1,
       yoyo: false,
       repeatDelay: 2,
-      defaults: { duration: 0.866 }
+      defaults: { duration: 0.866 },
+      smoothChildTiming: true
     })
     .fromTo(
       circle,
