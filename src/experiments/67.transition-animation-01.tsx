@@ -1,3 +1,4 @@
+import { useControls } from 'leva'
 import { gsap } from 'lib/gsap'
 import { Spherical } from 'three'
 import { Euler } from 'three/src/math/Euler'
@@ -29,37 +30,6 @@ const getCameraPositionAndRotationFromSphericalCoords = (
   }
 }
 
-const e = new Euler()
-const v = new Vector3()
-
-const globalMatrix = new Matrix4()
-const globalRotation = new Quaternion()
-const globalPosition = new Vector3()
-
-/* Camera */
-const projectionMatrix = new Matrix4()
-
-projectionMatrix.makeOrthographic(
-  -width / 2,
-  width / 2,
-  height / 2,
-  -height / 2,
-  0.1,
-  1000,
-  2000
-)
-const inverseProjectionMatrix = new Matrix4()
-inverseProjectionMatrix.copy(projectionMatrix).invert()
-const camMatrix = new Matrix4()
-
-const cam = getCameraPositionAndRotationFromSphericalCoords(
-  1,
-  Math.PI / 4,
-  -Math.PI / 4 + Math.PI
-)
-cam.position.add(v.set(width / 2, height / 2, 0))
-camMatrix.compose(cam.position, cam.rotation, new Vector3(1, 1, 1))
-
 const easings = {
   inOutExpo(x: number): number {
     return x === 0
@@ -84,12 +54,45 @@ const easings = {
   }
 }
 
+const e = new Euler()
+const v = new Vector3()
+
+const globalMatrix = new Matrix4()
+const globalRotation = new Quaternion()
+const globalPosition = new Vector3()
+
+/* Camera */
+const projectionMatrix = new Matrix4()
+
+projectionMatrix.makeOrthographic(
+  -width / 2,
+  width / 2,
+  height / 2,
+  -height / 2,
+  0.1,
+  1000,
+  2000
+)
+const inverseProjectionMatrix = new Matrix4()
+inverseProjectionMatrix.copy(projectionMatrix).invert()
+
+const camMatrix = new Matrix4()
+
+const cam = getCameraPositionAndRotationFromSphericalCoords(
+  1,
+  Math.PI / 4,
+  -Math.PI / 4 + Math.PI
+)
+cam.position.add(v.set(width / 2, height / 2, 0))
+camMatrix.compose(cam.position, cam.rotation, new Vector3(1, 1, 1))
+
 class Geometry {
   position: Vector3
   rotation: Euler
   quaternion: Quaternion
   scale: Vector3
   matrix: Matrix4
+  color: string
 
   constructor() {
     this.position = new Vector3()
@@ -97,6 +100,7 @@ class Geometry {
     this.scale = new Vector3()
     this.quaternion = new Quaternion()
     this.matrix = new Matrix4()
+    this.color = '#fff'
 
     const onRotationChange = () => {
       this.quaternion.setFromEuler(this.rotation, false)
@@ -115,11 +119,148 @@ class Geometry {
     this.matrix.premultiply(globalMatrix)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  draw() {}
+  applyMatrix4(x: number, y: number, z: number) {
+    const e = this.matrix.elements
+
+    const w = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15])
+
+    const tx = (e[0] * x + e[4] * y + e[8] * z + e[12]) * w
+    const ty = (e[1] * x + e[5] * y + e[9] * z + e[13]) * w
+    const tz = (e[2] * x + e[6] * y + e[10] * z + e[14]) * w
+
+    return {
+      x: tx,
+      y: ty,
+      z: tz
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+  draw(ctx: CanvasRenderingContext2D) {}
 }
 
-const main = () => {
+class Cube extends Geometry {
+  LINES = [
+    [0, 1],
+    [1, 3],
+    [3, 2],
+    [2, 0],
+    [2, 6],
+    [3, 7],
+    [0, 4],
+    [1, 5],
+    [6, 7],
+    [6, 4],
+    [7, 5],
+    [4, 5]
+  ]
+
+  VERTICES = [
+    [-1, -1, -1],
+    [1, -1, -1],
+    [-1, 1, -1],
+    [1, 1, -1],
+    [-1, -1, 1],
+    [1, -1, 1],
+    [-1, 1, 1],
+    [1, 1, 1]
+  ]
+
+  constructor(x: number, y: number, z: number) {
+    super()
+    this.scale.set(x, y, z)
+  }
+
+  // Do some math to project the 3D position into the 2D canvas
+  project(x: number, y: number, z: number) {
+    const pv = v
+      .set(x, y, z)
+      .applyMatrix4(inverseProjectionMatrix)
+      .applyMatrix4(projectionMatrix)
+      .applyMatrix4(camMatrix)
+
+    return {
+      x: pv.x,
+      y: pv.y
+    }
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    this.updateMatrix()
+
+    for (let i = 0; i < this.LINES.length; i++) {
+      const transformedV1Cube = this.applyMatrix4(
+        this.VERTICES[this.LINES[i][0]][0],
+        this.VERTICES[this.LINES[i][0]][1],
+        this.VERTICES[this.LINES[i][0]][2]
+      )
+      const transformedV2Cube = this.applyMatrix4(
+        this.VERTICES[this.LINES[i][1]][0],
+        this.VERTICES[this.LINES[i][1]][1],
+        this.VERTICES[this.LINES[i][1]][2]
+      )
+
+      const v1 = {
+        x: this.position.x + transformedV1Cube.x,
+        y: this.position.y + transformedV1Cube.y,
+        z: this.position.z + transformedV1Cube.z
+      }
+      const v2 = {
+        x: this.position.x + transformedV2Cube.x,
+        y: this.position.y + transformedV2Cube.y,
+        z: this.position.z + transformedV2Cube.z
+      }
+
+      const v1Project = this.project(v1.x, v1.y, v1.z)
+      const v2Project = this.project(v2.x, v2.y, v2.z)
+
+      ctx.beginPath()
+      ctx.moveTo(v1Project.x, v1Project.y)
+      ctx.lineTo(v2Project.x, v2Project.y)
+      ctx.strokeStyle = this.color
+      ctx.stroke()
+    }
+
+    ctx.closePath()
+  }
+}
+
+class Circle extends Geometry {
+  radius: number
+
+  constructor(radius: number) {
+    super()
+    this.radius = radius
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
+    ctx.fillStyle = this.color
+    ctx.fill()
+  }
+}
+
+class Scene {
+  children: Geometry[]
+  constructor() {
+    this.children = []
+  }
+
+  add(child: Geometry) {
+    this.children.push(child)
+  }
+
+  traverse(fn: (child: Geometry) => void) {
+    this.children.forEach(fn)
+  }
+}
+
+const main = (inverted = false) => {
+  document.documentElement.style.setProperty(
+    'background',
+    inverted ? '#000' : '#fff'
+  )
+
   // Get the canvas element from the DOM
   const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
@@ -130,6 +271,7 @@ const main = () => {
 
   // Store the 2D context
   const ctx = canvas.getContext('2d')
+  const scene = new Scene()
 
   if (!ctx) return
 
@@ -144,108 +286,6 @@ const main = () => {
   /* ====================== */
   let width = canvas.clientWidth // Width of the canvas
   let height = canvas.clientHeight // Height of the canvas
-  const geometries: Geometry[] = [] // Every dots in an array
-
-  class Cube extends Geometry {
-    LINES = [
-      [0, 1],
-      [1, 3],
-      [3, 2],
-      [2, 0],
-      [2, 6],
-      [3, 7],
-      [0, 4],
-      [1, 5],
-      [6, 7],
-      [6, 4],
-      [7, 5],
-      [4, 5]
-    ]
-
-    VERTICES = [
-      [-1, -1, -1],
-      [1, -1, -1],
-      [-1, 1, -1],
-      [1, 1, -1],
-      [-1, -1, 1],
-      [1, -1, 1],
-      [-1, 1, 1],
-      [1, 1, 1]
-    ]
-
-    constructor(x: number, y: number, z: number) {
-      super()
-      this.scale.set(x, y, z)
-    }
-
-    // Do some math to project the 3D position into the 2D canvas
-    project(x: number, y: number, z: number) {
-      const pv = v
-        .set(x, y, z)
-        .applyMatrix4(inverseProjectionMatrix)
-        .applyMatrix4(projectionMatrix)
-        .applyMatrix4(camMatrix)
-
-      return {
-        x: pv.x,
-        y: pv.y
-      }
-    }
-
-    applyMatrix4(x: number, y: number, z: number) {
-      const e = this.matrix.elements
-
-      const w = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15])
-
-      const tx = (e[0] * x + e[4] * y + e[8] * z + e[12]) * w
-      const ty = (e[1] * x + e[5] * y + e[9] * z + e[13]) * w
-      const tz = (e[2] * x + e[6] * y + e[10] * z + e[14]) * w
-
-      return {
-        x: tx,
-        y: ty,
-        z: tz
-      }
-    }
-
-    draw() {
-      this.updateMatrix()
-
-      for (let i = 0; i < this.LINES.length; i++) {
-        const transformedV1Cube = this.applyMatrix4(
-          this.VERTICES[this.LINES[i][0]][0],
-          this.VERTICES[this.LINES[i][0]][1],
-          this.VERTICES[this.LINES[i][0]][2]
-        )
-        const transformedV2Cube = this.applyMatrix4(
-          this.VERTICES[this.LINES[i][1]][0],
-          this.VERTICES[this.LINES[i][1]][1],
-          this.VERTICES[this.LINES[i][1]][2]
-        )
-
-        const v1 = {
-          x: this.position.x + transformedV1Cube.x,
-          y: this.position.y + transformedV1Cube.y,
-          z: this.position.z + transformedV1Cube.z
-        }
-        const v2 = {
-          x: this.position.x + transformedV2Cube.x,
-          y: this.position.y + transformedV2Cube.y,
-          z: this.position.z + transformedV2Cube.z
-        }
-
-        const v1Project = this.project(v1.x, v1.y, v1.z)
-        const v2Project = this.project(v2.x, v2.y, v2.z)
-
-        if (!ctx) return
-        ctx.beginPath()
-        ctx.moveTo(v1Project.x, v1Project.y)
-        ctx.lineTo(v2Project.x, v2Project.y)
-        ctx.strokeStyle = '#fff'
-        ctx.stroke()
-      }
-    }
-  }
 
   /* ====================== */
   /* ======== RENDER ====== */
@@ -267,10 +307,10 @@ const main = () => {
     /* Update global matrix */
     globalMatrix.compose(globalPosition, globalRotation, v.set(1, 1, 1))
 
+    if (!ctx) return
+
     // Loop through the dots array and draw every dot
-    for (let i = 0; i < geometries.length; i++) {
-      geometries?.[i].draw()
-    }
+    scene.traverse((g) => g.draw(ctx))
   }
 
   // Function called after the user resized its screen
@@ -304,23 +344,28 @@ const main = () => {
   const baseScale = 32
   const thickness = 0.7
   const length = 5.5
+
+  const circle = new Circle(0)
+  circle.position.set(window.innerWidth / 2, window.innerHeight / 2, 0)
+  scene.add(circle)
+
   const c1 = new Cube(
     length * baseScale,
     thickness * baseScale,
     thickness * baseScale
   )
   c1.rotation.set(0, 0, 0)
-  c1.position.set(200, 0, 0)
+  c1.position.set(-700, 0, 0)
 
-  geometries.push(c1)
+  scene.add(c1)
   const c2 = new Cube(
     length * baseScale,
     thickness * baseScale,
     thickness * baseScale
   )
   c2.rotation.set(0, 0, Math.PI / 2)
-  c2.position.set(0, -200, 0)
-  geometries.push(c2)
+  c2.position.set(0, 700, 0)
+  scene.add(c2)
 
   const c3 = new Cube(
     length * baseScale,
@@ -328,18 +373,27 @@ const main = () => {
     thickness * baseScale
   )
   c3.rotation.set(0, Math.PI / 2, 0)
-  c3.position.set(0, 0, -200)
-  geometries.push(c3)
+  c3.position.set(0, 0, 700)
+  scene.add(c3)
 
-  gsap
+  c1.color = inverted ? '#000' : '#fff'
+  c2.color = inverted ? '#000' : '#fff'
+  c3.color = inverted ? '#000' : '#fff'
+  circle.color = inverted ? '#fff' : '#000'
+
+  const tl = gsap
     .timeline({
       repeat: -1,
       yoyo: false,
       repeatDelay: 2,
-      // delay: 2,
       defaults: { duration: 0.77 }
     })
-    .fromTo(c2.position, { y: -700 }, { y: 0, ease: easings.inOutCubic }, 0)
+    .fromTo(
+      circle,
+      { radius: 0 },
+      { radius: window.innerWidth / 1.5, ease: easings.outQuint }
+    )
+    .fromTo(c2.position, { y: -700 }, { y: 0, ease: easings.inOutCubic }, '<')
     .fromTo(c1.position, { x: 700 }, { x: 0, ease: easings.inOutCubic }, '<')
     .fromTo(c3.position, { z: 700 }, { z: 0, ease: easings.inOutCubic }, '<')
     .fromTo(
@@ -371,17 +425,28 @@ const main = () => {
       { z: 700, duration: 0.525, ease: easings.inCubic },
       '<'
     )
+    .fromTo(
+      circle,
+      { radius: window.innerWidth / 1.5 },
+      { radius: 0, ease: easings.outQuint },
+      '<+=20%'
+    )
 
   gsap.ticker.add(render)
 
   /* Cleanup */
   return () => {
     gsap.ticker.remove(render)
+    tl.revert()
   }
 }
 
 const TransitionAnimation01 = () => {
-  return <Script fn={main} />
+  const controls = useControls({
+    inverted: false
+  })
+
+  return <Script fn={() => main(controls.inverted)} />
 }
 
 TransitionAnimation01.Layout = PlainCanvasLayout

@@ -142,20 +142,20 @@
     "number": 8,
     "contributors": [
       {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      },
-      {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
         "email": "",
         "company": "@basementstudio"
+      },
+      {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "",
+        "company": "@basementstudio "
       }
     ]
   },
@@ -282,20 +282,20 @@
     "number": 14,
     "contributors": [
       {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      },
-      {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
         "email": "",
         "company": "@basementstudio"
+      },
+      {
+        "id": "MDQ6VXNlcjQ4NDE4NjMz",
+        "url": "https://github.com/justkahdri",
+        "name": "Joaquín R. Montes",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
+        "email": "",
+        "company": "@basementstudio "
       }
     ]
   },
