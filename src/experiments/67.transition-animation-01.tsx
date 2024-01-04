@@ -386,12 +386,12 @@ const main = (inverted = false) => {
       repeat: -1,
       yoyo: false,
       repeatDelay: 2,
-      defaults: { duration: 0.77 }
+      defaults: { duration: 0.866 }
     })
     .fromTo(
       circle,
       { radius: 0 },
-      { radius: window.innerWidth / 1.5, ease: easings.outQuint }
+      { radius: window.innerWidth / 1.5, ease: easings.outQuint, duration: 1.2 }
     )
     .fromTo(c2.position, { y: -700 }, { y: 0, ease: easings.inOutCubic }, '<')
     .fromTo(c1.position, { x: 700 }, { x: 0, ease: easings.inOutCubic }, '<')
