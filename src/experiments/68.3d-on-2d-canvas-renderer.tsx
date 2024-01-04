@@ -355,11 +355,11 @@ const main = () => {
   }
 }
 
-const Canvas3dOn2dTests = () => {
+const Canvas3dOn2dRenderer = () => {
   return <Script fn={main} />
 }
 
-Canvas3dOn2dTests.Layout = PlainCanvasLayout
-Canvas3dOn2dTests.Title = 'Canvas 3d on 2d canvas tests'
+Canvas3dOn2dRenderer.Layout = PlainCanvasLayout
+Canvas3dOn2dRenderer.Title = 'Canvas 3d on 2d canvas renderer'
 
-export default Canvas3dOn2dTests
+export default Canvas3dOn2dRenderer
