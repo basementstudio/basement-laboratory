@@ -34,7 +34,7 @@ Object.assign(THREE.PlaneGeometry.prototype, {
 })
 
 const GridBump = (CONFIG) => {
-  const canvas = document.querySelector('#webgl')
+  const canvas = document.querySelector('#canvas')
 
   const viewport = getViewport()
   const { update, destroy, scene, camera, getWorld } = createWorld({

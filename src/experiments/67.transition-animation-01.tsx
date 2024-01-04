@@ -121,7 +121,7 @@ class Geometry {
 
 const main = () => {
   // Get the canvas element from the DOM
-  const canvas = document.getElementById('webgl') as HTMLCanvasElement
+  const canvas = document.getElementById('canvas') as HTMLCanvasElement
 
   if (!canvas) return
 

@@ -203,7 +203,7 @@ const createVertices = (box, division) => {
 }
 
 const ModelBox = (CONFIG) => {
-  const canvas = document.querySelector('#webgl')
+  const canvas = document.querySelector('#canvas')
 
   const { scene, update, camera, destroy, renderer } = createWorld({
     rendererConfig: {

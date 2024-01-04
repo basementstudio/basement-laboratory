@@ -16,7 +16,7 @@ const VRButton = dynamic(() => import('three/examples/jsm/webxr/VRButton'), {
 })
 
 const SculptureGallery = () => {
-  const canvas = document.querySelector('#webgl')
+  const canvas = document.querySelector('#canvas')
 
   const { destroy, camera, scene, renderer, update } = createWorld({
     rendererConfig: {

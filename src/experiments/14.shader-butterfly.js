@@ -17,7 +17,7 @@ if (isClient) {
 
 const PlainThreejs = (CONFIG) => {
   let loaded = false
-  const canvas = document.querySelector('#webgl')
+  const canvas = document.querySelector('#canvas')
 
   const { destroy, update, camera, scene, clock, raycaster, cursor } =
     createWorld({

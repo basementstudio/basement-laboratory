@@ -11,7 +11,7 @@ export const PlainCanvasLayout: FC<NavigationLayoutProps> = ({
   return (
     <NavigationLayout title={title} description={description} slug={slug}>
       <canvas
-        id="webgl"
+        id="canvas"
         style={{ position: 'fixed', width: '100vw', height: '100vh' }}
       />
       {children}

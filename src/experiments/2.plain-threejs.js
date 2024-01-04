@@ -6,7 +6,7 @@ import { PlainCanvasLayout } from '../components/layout/plain-canvas-layout.tsx'
 import { createWorld } from '../lib/three'
 
 const PlainThreejs = () => {
-  const canvas = document.querySelector('#webgl')
+  const canvas = document.querySelector('#canvas')
 
   const { destroy, update, camera, scene } = createWorld({
     rendererConfig: {
