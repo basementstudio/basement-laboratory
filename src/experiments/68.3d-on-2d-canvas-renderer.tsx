@@ -360,6 +360,6 @@ const Canvas3dOn2dRenderer = () => {
 }
 
 Canvas3dOn2dRenderer.Layout = PlainCanvasLayout
-Canvas3dOn2dRenderer.Title = 'Canvas 3d on 2d canvas renderer'
+Canvas3dOn2dRenderer.Title = '3d on 2d canvas renderer'
 
 export default Canvas3dOn2dRenderer
