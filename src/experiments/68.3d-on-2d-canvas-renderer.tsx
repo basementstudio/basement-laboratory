@@ -241,17 +241,15 @@ class Canvas {
     canvas.width = canvas.clientWidth
     canvas.height = canvas.clientHeight
 
-    if (this.dpr > 1) {
-      canvas.width = canvas.clientWidth * this.dpr
-      canvas.height = canvas.clientHeight * this.dpr
-      this.ctx.scale(this.dpr, this.dpr)
+    canvas.width = canvas.clientWidth * this.dpr
+    canvas.height = canvas.clientHeight * this.dpr
+    this.ctx.scale(this.dpr, this.dpr)
 
-      /* Translate to center */
-      this.ctx.translate(
-        canvas.width / (2 * this.dpr),
-        canvas.height / (2 * this.dpr)
-      )
-    }
+    /* Translate to center */
+    this.ctx.translate(
+      canvas.width / (2 * this.dpr),
+      canvas.height / (2 * this.dpr)
+    )
   }
 
   render(world: World, camera: FullScreenOrthographicCamera) {
