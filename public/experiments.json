@@ -1332,9 +1332,9 @@
     ]
   },
   {
-    "filename": "68.3d-on-2d-canvas-tests.tsx",
-    "title": "68.3d-on-2d-canvas-tests.tsx",
-    "href": "/experiments/68.3d-on-2d-canvas-tests.tsx",
+    "filename": "68.3d-on-2d-canvas-renderer.tsx",
+    "title": "68.3d-on-2d-canvas-renderer.tsx",
+    "href": "/experiments/68.3d-on-2d-canvas-renderer.tsx",
     "tags": [],
     "og": null,
     "number": 67,

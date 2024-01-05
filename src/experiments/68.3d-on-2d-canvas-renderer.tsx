@@ -340,7 +340,7 @@ const main = () => {
     canvas.render(world, camera)
     cube.rotation.x += 0.01
     cube.rotation.z += 0.01
-    // cube.scale.x = 1 + Math.sin(Date.now() * 0.001) * 0.5
+    cube.scale.x = 1 + Math.sin(Date.now() * 0.001) * 0.5
     world.rotation.y += 0.01
     world.rotation.x = Math.sin(Date.now() * 0.001) * (Math.PI / 6)
   }
