@@ -139,7 +139,6 @@ class Line extends Object3d {
       const line = lines[i]
 
       v3.copy(vertices[line.x])
-        .applyMatrix4(this.matrix)
         .applyMatrix4(this.matrixWorld)
         .applyMatrix4(camera.inverseProjectionMatrix)
         .applyMatrix4(camera.projectionMatrix)
@@ -147,7 +146,6 @@ class Line extends Object3d {
       ctx.moveTo(v3.x, v3.y)
 
       v3.copy(vertices[line.y])
-        .applyMatrix4(this.matrix)
         .applyMatrix4(this.matrixWorld)
         .applyMatrix4(camera.inverseProjectionMatrix)
         .applyMatrix4(camera.projectionMatrix)
@@ -209,7 +207,6 @@ class Cube extends Object3d {
       const line = lines[i]
 
       v3.copy(vertices[line.x])
-        .applyMatrix4(this.matrix)
         .applyMatrix4(this.matrixWorld)
         .applyMatrix4(camera.inverseProjectionMatrix)
         .applyMatrix4(camera.projectionMatrix)
@@ -217,7 +214,6 @@ class Cube extends Object3d {
       ctx.moveTo(v3.x, v3.y)
 
       v3.copy(vertices[line.y])
-        .applyMatrix4(this.matrix)
         .applyMatrix4(this.matrixWorld)
         .applyMatrix4(camera.inverseProjectionMatrix)
         .applyMatrix4(camera.projectionMatrix)
@@ -268,6 +264,7 @@ class Canvas {
       this.element.height * this.dpr
     )
 
+    /* Default ctx values */
     this.ctx.fillStyle = '#fff'
     this.ctx.strokeStyle = '#fff'
 
@@ -341,8 +338,8 @@ const main = () => {
 
   const render = () => {
     canvas.render(world, camera)
-    // cube.rotation.x += 0.01
-    // cube.rotation.z += 0.01
+    cube.rotation.x += 0.01
+    cube.rotation.z += 0.01
     // cube.scale.x = 1 + Math.sin(Date.now() * 0.001) * 0.5
     world.rotation.y += 0.01
     world.rotation.x = Math.sin(Date.now() * 0.001) * (Math.PI / 6)
