@@ -40,7 +40,7 @@ export const getStaticProps: GetStaticProps = async () => {
       }
     })
     .sort((a, b) =>
-      a.filename.localeCompare(b.filename, undefined, { numeric: true })
+      b.filename.localeCompare(a.filename, undefined, { numeric: true })
     )
 
   // Add og images
@@ -63,10 +63,22 @@ export const getStaticProps: GetStaticProps = async () => {
     experiments = experiments.filter((e) => !e.tags.includes('private'))
   }
 
+  const fileNameToTile = (filename: string) => {
+    let title = filename
+      .replace(/^\d+\./, '')
+      .replace(/\.[jt]sx?$/, '')
+      .replace(/-/g, ' ')
+
+    title = title.charAt(0).toUpperCase() + title.slice(1) + '.'
+
+    return title
+  }
+
   // Numerate experiments
   experiments = experiments.map((e, i) => ({
     ...e,
-    number: i + 1
+    title: fileNameToTile(e.title),
+    number: experiments.length - i
   }))
 
   // Add contributors
