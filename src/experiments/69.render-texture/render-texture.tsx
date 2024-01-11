@@ -248,7 +248,7 @@ const SceneContainer = ({
   renderPriority,
   children
 }: PropsWithChildren<SceneContainerProps>) => {
-  useFrame((state) => {
+  useTextureFrame(({ state }) => {
     state.gl.setRenderTarget(fbo)
     state.gl.render(state.scene, state.camera)
     state.gl.setRenderTarget(null)
