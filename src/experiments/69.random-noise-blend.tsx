@@ -65,17 +65,19 @@ const shaderPass = new ShaderMaterial({
 
         vec2 d = CENTER - uv;
 
-        uv += d * RADIUS;
+        d *= .5 + .01 * hash(d * uTime);
+
+        uv += d * RADIUS * (1.0 + sin(uTime) * 0.1);
       }
 
       float noise = random(vUv * 1.0);
 
       gl_FragColor = vec4(res / float(SAMPLES), 1.0);
-      // gl_FragColor = vec4(blendOverlay(
-			// 	res / float(SAMPLES),
-			// 	vec3(noise),
-			// 	0.5
-			// ), 1.0);
+      gl_FragColor = vec4(blendOverlay(
+				res / float(SAMPLES),
+				vec3(noise),
+				0.5
+			),1.0);
     }
   `
 })
