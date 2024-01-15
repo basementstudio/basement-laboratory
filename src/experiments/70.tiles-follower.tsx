@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 
 import { HTMLLayout } from '~/components/layout/html-layout'
 
-const TILE_SIZE = 16
+const TILE_SIZE = 24
 const TILE_COUNT = 32
 
 class MouseFollower {
@@ -68,7 +68,7 @@ const Tile = () => {
     <div
       style={{
         height: TILE_SIZE,
-        width: TILE_SIZE / 3,
+        width: TILE_SIZE / 4,
         background: 'white'
       }}
       ref={ref}
