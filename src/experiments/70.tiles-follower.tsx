@@ -48,8 +48,8 @@ const Tile = () => {
       gsap.set(ref.current, {
         rotation:
           (Math.atan2(
-            follower.position.y - tileBounds.top,
-            follower.position.x - tileBounds.left
+            follower.position.y - (tileBounds.top + tileBounds.height / 2),
+            follower.position.x - (tileBounds.left + tileBounds.width / 2)
           ) *
             180) /
           Math.PI
