@@ -20,9 +20,10 @@ const HarveyHero = () => {
   ) as unknown as GLTFResult
   const texture = useTexture('/textures/71.512-low.png', (texture) => {
     const t = texture as THREE.Texture
-    t.repeat = new THREE.Vector2(84, 84)
+    t.repeat = new THREE.Vector2(96, 96)
     t.wrapS = t.wrapT = THREE.RepeatWrapping
-    t.minFilter = t.magFilter = THREE.NearestFilter
+    t.anisotropy = 4
+    // t.minFilter = t.magFilter = THREE.NearestFilter
   })
 
   useFrame((state) => {
@@ -58,7 +59,11 @@ const HarveyHero = () => {
           morphTargetDictionary={nodes.Plane.morphTargetDictionary}
           morphTargetInfluences={nodes.Plane.morphTargetInfluences}
         >
-          <meshStandardMaterial map={texture} color="white" />
+          <meshStandardMaterial
+            map={texture}
+            color="white"
+            emissive={new THREE.Color(0xd3daf)}
+          />
         </mesh>
       </group>
     </>
@@ -78,6 +83,15 @@ HarveyHero.Layout = (props: any) => (
         height: '100vh'
       }}
     >
+      <div
+        style={{
+          background:
+            'radial-gradient(ellipse at center, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 70%,rgba(255,255,255,1) 100%)',
+          position: 'absolute',
+          inset: 0,
+          zIndex: 10
+        }}
+      />
       <R3FCanvasLayout
         gl={{
           antialias: false,
@@ -88,7 +102,7 @@ HarveyHero.Layout = (props: any) => (
           toneMapping: THREE.NoToneMapping
         }}
         camera={{
-          position: [0, 0, 1],
+          position: [0, 0, 0.3],
           near: 0.1,
           far: 10
         }}
