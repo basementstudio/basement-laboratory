@@ -13,10 +13,6 @@ type GLTFResult = GLTF & {
   materials: Record<any, any>
 }
 
-const pulse = (time: number, freq = 0.2) => {
-  return 0.5 * (1 + Math.sin(2 * Math.PI * freq * time))
-}
-
 const HarveyHero = () => {
   const modelRef = useRef<THREE.Mesh>()
   const { nodes } = useGLTF(
@@ -29,18 +25,18 @@ const HarveyHero = () => {
     t.minFilter = t.magFilter = THREE.NearestFilter
   })
 
-  console.log(nodes.Plane.morphTargetInfluences)
-
   useFrame((state) => {
     if (modelRef.current) {
       // @ts-ignore
-      modelRef.current.material.map.offset.x += 0.01
+      modelRef.current.material.map.offset.x -= 0.01
       // @ts-ignore
-      modelRef.current.material.map.offset.y += 0.02
+      modelRef.current.material.map.offset.y += 0.01
 
-      const t = state.clock.getElapsedTime()
+      const time = state.clock.getElapsedTime()
+      const frequency = 0.025
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      modelRef.current.morphTargetInfluences![0] = pulse(t)
+      modelRef.current.morphTargetInfluences![0] =
+        0.5 * (1 + Math.sin(2 * Math.PI * frequency * time))
     }
   })
 
@@ -48,7 +44,7 @@ const HarveyHero = () => {
     <>
       <OrbitControls />
 
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={3} />
 
       <group dispose={null}>
         <mesh
@@ -62,7 +58,7 @@ const HarveyHero = () => {
           morphTargetDictionary={nodes.Plane.morphTargetDictionary}
           morphTargetInfluences={nodes.Plane.morphTargetInfluences}
         >
-          <meshStandardMaterial map={texture} />
+          <meshStandardMaterial map={texture} color="white" />
         </mesh>
       </group>
     </>
