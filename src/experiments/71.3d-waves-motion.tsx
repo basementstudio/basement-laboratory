@@ -13,6 +13,10 @@ type GLTFResult = GLTF & {
   materials: Record<any, any>
 }
 
+const pulse = (time: number, freq = 0.2) => {
+  return 0.5 * (1 + Math.sin(2 * Math.PI * freq * time))
+}
+
 const HarveyHero = () => {
   const modelRef = useRef<THREE.Mesh>()
   const { nodes } = useGLTF(
@@ -25,12 +29,18 @@ const HarveyHero = () => {
     t.minFilter = t.magFilter = THREE.NearestFilter
   })
 
-  useFrame(() => {
+  console.log(nodes.Plane.morphTargetInfluences)
+
+  useFrame((state) => {
     if (modelRef.current) {
       // @ts-ignore
       modelRef.current.material.map.offset.x += 0.01
       // @ts-ignore
       modelRef.current.material.map.offset.y += 0.02
+
+      const t = state.clock.getElapsedTime()
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      modelRef.current.morphTargetInfluences![0] = pulse(t)
     }
   })
 
