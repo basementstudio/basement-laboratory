@@ -84,21 +84,29 @@ const ExperimentsSection: FC<ExperimentsSectionProps> = ({ experiments }) => {
                     ))}
                   </div>
                   <div className={s.contributors}>
-                    {contributors.map((user) => (
+                    {contributors.map((user, idx) => (
                       <span
                         className={s.contributor}
-                        key={user.id}
-                        title={user.name}
+                        key={idx}
+                        title={user?.name ?? ''}
                       >
-                        <Link href={user.url}>
+                        {user?.url ? (
+                          <Link href={user?.url ?? '#'}>
+                            <Image
+                              width={32}
+                              height={32}
+                              src={user?.avatarUrl ?? '/apple-touch-icon.png'}
+                              alt="avatar"
+                            />
+                          </Link>
+                        ) : (
                           <Image
-                            // @ts-ignore
                             width={32}
                             height={32}
-                            src={user.avatarUrl}
+                            src={user?.avatarUrl ?? '/apple-touch-icon.png'}
                             alt="avatar"
                           />
-                        </Link>
+                        )}
                       </span>
                     ))}
                   </div>
