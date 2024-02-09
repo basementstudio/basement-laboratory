@@ -69,22 +69,32 @@ HarveyHero.Title = 'Abstract geometric waves in motion'
 HarveyHero.Description = <></>
 HarveyHero.Layout = (props: any) => (
   <>
-    <R3FCanvasLayout
-      gl={{
-        antialias: false,
-        autoClear: false,
-        alpha: false,
-        powerPreference: 'high-performance',
-        outputColorSpace: THREE.SRGBColorSpace,
-        toneMapping: THREE.NoToneMapping
+    <div
+      style={{
+        backgroundColor: '#F9FAFB',
+        position: 'fixed',
+        inset: 0,
+        width: '100vw',
+        height: '100vh'
       }}
-      camera={{
-        position: [0, 0, 1],
-        near: 0.1,
-        far: 10
-      }}
-      {...props}
-    />
+    >
+      <R3FCanvasLayout
+        gl={{
+          antialias: false,
+          autoClear: false,
+          alpha: false,
+          powerPreference: 'high-performance',
+          outputColorSpace: THREE.SRGBColorSpace,
+          toneMapping: THREE.NoToneMapping
+        }}
+        camera={{
+          position: [0, 0, 1],
+          near: 0.1,
+          far: 10
+        }}
+        {...props}
+      />
+    </div>
   </>
 )
 HarveyHero.Tags = 'private'
