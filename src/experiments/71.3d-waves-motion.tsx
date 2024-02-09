@@ -1,6 +1,7 @@
 import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
+import { useControls } from 'leva'
+import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
@@ -13,28 +14,123 @@ type GLTFResult = GLTF & {
   materials: Record<any, any>
 }
 
+const TextureFilteringMap = {
+  NearestFilter: THREE.NearestFilter,
+  NearestMipmapNearestFilter: THREE.NearestMipmapNearestFilter,
+  NearestMipmapLinearFilter: THREE.NearestMipmapLinearFilter,
+  LinearFilter: THREE.LinearFilter,
+  LinearMipmapNearestFilter: THREE.LinearMipmapNearestFilter,
+  LinearMipmapLinearFilter: THREE.LinearMipmapLinearFilter
+}
+
 const HarveyHero = () => {
   const modelRef = useRef<THREE.Mesh>()
   const { nodes } = useGLTF(
     '/models/71.plane-shapekeys-low.glb'
   ) as unknown as GLTFResult
-  const texture = useTexture('/textures/71.512-low.png', (texture) => {
-    const t = texture as THREE.Texture
-    t.repeat = new THREE.Vector2(96, 96)
-    t.wrapS = t.wrapT = THREE.RepeatWrapping
-    t.anisotropy = 4
-    // t.minFilter = t.magFilter = THREE.NearestFilter
+
+  const config = useControls('Options', {
+    textureRepeat: {
+      value: 96,
+      min: 0,
+      max: 1024,
+      step: 2
+    },
+    textureAnisotropy: {
+      value: 4,
+      min: 0,
+      max: 16,
+      step: 1
+    },
+    textureMinFilter: {
+      value: 'LinearMipmapLinearFilter',
+      options: [
+        'NearestFilter',
+        'NearestMipmapNearestFilter',
+        'NearestMipmapLinearFilter',
+        'LinearFilter',
+        'LinearMipmapNearestFilter',
+        'LinearMipmapLinearFilter'
+      ]
+    },
+    textureMagFilter: {
+      value: 'LinearFilter',
+      options: ['NearestFilter', 'LinearFilter']
+    },
+    textureOffsetX: {
+      value: 0.01,
+      min: -1,
+      max: 1,
+      step: 0.01
+    },
+    textureOffsetY: {
+      value: 0.01,
+      min: -1,
+      max: 1,
+      step: 0.01
+    },
+    morphInfluenceSinFrequency: {
+      value: 0.025,
+      min: 0,
+      max: 0.1,
+      step: 0.001
+    },
+    materialColor: {
+      value: '#ffffff'
+    },
+    materialEmissive: {
+      value: '#0d33f2'
+    },
+    materialWireframe: {
+      value: false
+    },
+    ambientLightInstensity: {
+      value: 3,
+      min: 0,
+      max: 10,
+      step: 0.1
+    },
+    ambientLightColor: {
+      value: '#ffffff'
+    }
   })
+
+  const texture = useTexture('/textures/71.512-low.png')
+
+  useEffect(() => {
+    const t = texture as THREE.Texture
+    t.repeat = new THREE.Vector2(config.textureRepeat, config.textureRepeat)
+    t.wrapS = t.wrapT = THREE.RepeatWrapping
+    t.anisotropy = config.textureAnisotropy
+    t.minFilter =
+      TextureFilteringMap[
+        config.textureMinFilter as keyof typeof TextureFilteringMap
+      ]
+    // @ts-ignore
+    t.magFilter =
+      TextureFilteringMap[
+        config.textureMagFilter as keyof typeof TextureFilteringMap
+      ]
+    texture.needsUpdate = true
+  }, [
+    config.textureAnisotropy,
+    config.textureMagFilter,
+    config.textureMinFilter,
+    config.textureRepeat,
+    texture
+  ])
 
   useFrame((state) => {
     if (modelRef.current) {
-      // @ts-ignore
-      modelRef.current.material.map.offset.x -= 0.01
-      // @ts-ignore
-      modelRef.current.material.map.offset.y += 0.01
+      if (!config.materialWireframe) {
+        // @ts-ignore
+        modelRef.current.material.map.offset.x -= config.textureOffsetX
+        // @ts-ignore
+        modelRef.current.material.map.offset.y += config.textureOffsetY
+      }
 
       const time = state.clock.getElapsedTime()
-      const frequency = 0.025
+      const frequency = config.morphInfluenceSinFrequency
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       modelRef.current.morphTargetInfluences![0] =
         0.5 * (1 + Math.sin(2 * Math.PI * frequency * time))
@@ -45,7 +141,10 @@ const HarveyHero = () => {
     <>
       <OrbitControls />
 
-      <ambientLight intensity={3} />
+      <ambientLight
+        intensity={config.ambientLightInstensity}
+        color={config.ambientLightColor}
+      />
 
       <group dispose={null}>
         <mesh
@@ -61,8 +160,9 @@ const HarveyHero = () => {
         >
           <meshStandardMaterial
             map={texture}
-            color="white"
-            emissive={new THREE.Color(0xd3daf)}
+            color={config.materialColor}
+            emissive={config.materialEmissive}
+            wireframe={config.materialWireframe}
           />
         </mesh>
       </group>
@@ -72,45 +172,55 @@ const HarveyHero = () => {
 
 HarveyHero.Title = 'Abstract geometric waves in motion'
 HarveyHero.Description = <></>
-HarveyHero.Layout = (props: any) => (
-  <>
-    <div
-      style={{
-        backgroundColor: '#F9FAFB',
-        position: 'fixed',
-        inset: 0,
-        width: '100vw',
-        height: '100vh'
-      }}
-    >
+HarveyHero.Layout = (props: any) => {
+  const config = useControls('Options', {
+    removeVignnette: {
+      value: false
+    }
+  })
+
+  return (
+    <>
       <div
         style={{
-          background:
-            'radial-gradient(ellipse at center, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 70%,rgba(255,255,255,1) 100%)',
-          position: 'absolute',
+          backgroundColor: '#F9FAFB',
+          position: 'fixed',
           inset: 0,
-          zIndex: 10
+          width: '100vw',
+          height: '100vh'
         }}
-      />
-      <R3FCanvasLayout
-        gl={{
-          antialias: false,
-          autoClear: false,
-          alpha: false,
-          powerPreference: 'high-performance',
-          outputColorSpace: THREE.SRGBColorSpace,
-          toneMapping: THREE.NoToneMapping
-        }}
-        camera={{
-          position: [0, 0, 0.3],
-          near: 0.1,
-          far: 10
-        }}
-        {...props}
-      />
-    </div>
-  </>
-)
+      >
+        {!config.removeVignnette && (
+          <div
+            style={{
+              background:
+                'radial-gradient(ellipse at center, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 70%,rgba(255,255,255,1) 100%)',
+              position: 'absolute',
+              inset: 0,
+              zIndex: 10
+            }}
+          />
+        )}
+        <R3FCanvasLayout
+          gl={{
+            antialias: false,
+            autoClear: false,
+            alpha: false,
+            powerPreference: 'high-performance',
+            outputColorSpace: THREE.SRGBColorSpace,
+            toneMapping: THREE.NoToneMapping
+          }}
+          camera={{
+            position: [0, 0, 0.3],
+            near: 0.1,
+            far: 10
+          }}
+          {...props}
+        />
+      </div>
+    </>
+  )
+}
 HarveyHero.Tags = 'private'
 
 export default HarveyHero
