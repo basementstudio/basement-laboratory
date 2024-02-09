@@ -1,6 +1,6 @@
 import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useControls } from 'leva'
+import { folder, useControls } from 'leva'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
@@ -30,68 +30,74 @@ const HarveyHero = () => {
   ) as unknown as GLTFResult
 
   const config = useControls('Options', {
-    textureRepeat: {
-      value: 96,
-      min: 0,
-      max: 1024,
-      step: 2
-    },
-    textureAnisotropy: {
-      value: 4,
-      min: 0,
-      max: 16,
-      step: 1
-    },
-    textureMinFilter: {
-      value: 'LinearMipmapLinearFilter',
-      options: [
-        'NearestFilter',
-        'NearestMipmapNearestFilter',
-        'NearestMipmapLinearFilter',
-        'LinearFilter',
-        'LinearMipmapNearestFilter',
-        'LinearMipmapLinearFilter'
-      ]
-    },
-    textureMagFilter: {
-      value: 'LinearFilter',
-      options: ['NearestFilter', 'LinearFilter']
-    },
-    textureOffsetX: {
-      value: 0.01,
-      min: -1,
-      max: 1,
-      step: 0.01
-    },
-    textureOffsetY: {
-      value: 0.01,
-      min: -1,
-      max: 1,
-      step: 0.01
-    },
+    texture: folder({
+      textureRepeat: {
+        value: 190,
+        min: 0,
+        max: 1024,
+        step: 2
+      },
+      textureAnisotropy: {
+        value: 16,
+        min: 0,
+        max: 16,
+        step: 1
+      },
+      textureMinFilter: {
+        value: 'LinearMipmapLinearFilter',
+        options: [
+          'NearestFilter',
+          'NearestMipmapNearestFilter',
+          'NearestMipmapLinearFilter',
+          'LinearFilter',
+          'LinearMipmapNearestFilter',
+          'LinearMipmapLinearFilter'
+        ]
+      },
+      textureMagFilter: {
+        value: 'LinearFilter',
+        options: ['NearestFilter', 'LinearFilter']
+      },
+      textureOffsetX: {
+        value: 0.01,
+        min: -1,
+        max: 1,
+        step: 0.001
+      },
+      textureOffsetY: {
+        value: 0.01,
+        min: -1,
+        max: 1,
+        step: 0.001
+      }
+    }),
+    material: folder({
+      materialColor: {
+        value: '#ffffff'
+      },
+      materialEmissive: {
+        value: '#0d33f2'
+      },
+      materialWireframe: {
+        value: false
+      }
+    }),
+    ambientLight: folder({
+      ambientLightInstensity: {
+        value: 3,
+        min: 0,
+        max: 10,
+        step: 0.1
+      },
+      ambientLightColor: {
+        value: '#ffffff'
+      }
+    }),
     morphInfluenceSinFrequency: {
       value: 0.025,
       min: 0,
       max: 0.1,
       step: 0.001
-    },
-    materialColor: {
-      value: '#ffffff'
-    },
-    materialEmissive: {
-      value: '#0d33f2'
-    },
-    materialWireframe: {
-      value: false
-    },
-    ambientLightInstensity: {
-      value: 3,
-      min: 0,
-      max: 10,
-      step: 0.1
-    },
-    ambientLightColor: {
-      value: '#ffffff'
     }
   })
 
@@ -174,6 +180,38 @@ HarveyHero.Title = 'Abstract geometric waves in motion'
 HarveyHero.Description = <></>
 HarveyHero.Layout = (props: any) => {
   const config = useControls('Options', {
+    camera: folder({
+      cameraPositonX: {
+        value: 0,
+        min: -20,
+        max: 20,
+        step: 0.1
+      },
+      cameraPositonY: {
+        value: 0,
+        min: -20,
+        max: 20,
+        step: 0.1
+      },
+      cameraPositonZ: {
+        value: 0.3,
+        min: -20,
+        max: 20,
+        step: 0.1
+      },
+      near: {
+        value: 0.1,
+        min: 0,
+        max: 10,
+        step: 0.1
+      },
+      far: {
+        value: 10,
+        min: 0,
+        max: 100,
+        step: 0.1
+      }
+    }),
     removeVignnette: {
       value: false
     }
@@ -211,7 +249,11 @@ HarveyHero.Layout = (props: any) => {
             toneMapping: THREE.NoToneMapping
           }}
           camera={{
-            position: [0, 0, 0.3],
+            position: [
+              config.cameraPositonX,
+              config.cameraPositonY,
+              config.cameraPositonZ
+            ],
             near: 0.1,
             far: 10
           }}
