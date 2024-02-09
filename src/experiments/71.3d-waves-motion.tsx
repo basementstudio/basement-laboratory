@@ -59,16 +59,16 @@ const HarveyHero = () => {
         options: ['NearestFilter', 'LinearFilter']
       },
       textureOffsetX: {
-        value: 0.01,
-        min: -1,
-        max: 1,
+        value: 0.5,
+        min: 0,
+        max: 5,
         step: 0.001
       },
       textureOffsetY: {
-        value: 0.01,
-        min: -1,
-        max: 1,
-        step: 0.001
+        value: 0.5,
+        min: 0,
+        max: 5,
+        step: 0.01
       }
     }),
     material: folder({
@@ -94,10 +94,10 @@ const HarveyHero = () => {
       }
     }),
     morphInfluenceSinFrequency: {
-      value: 0.025,
+      value: 0.25,
       min: 0,
-      max: 0.1,
-      step: 0.001
+      max: 5,
+      step: 0.01
     }
   })
 
@@ -130,13 +130,13 @@ const HarveyHero = () => {
     if (modelRef.current) {
       if (!config.materialWireframe) {
         // @ts-ignore
-        modelRef.current.material.map.offset.x -= config.textureOffsetX
+        modelRef.current.material.map.offset.x -= config.textureOffsetX * 0.01
         // @ts-ignore
-        modelRef.current.material.map.offset.y += config.textureOffsetY
+        modelRef.current.material.map.offset.y += config.textureOffsetY * 0.01
       }
 
       const time = state.clock.getElapsedTime()
-      const frequency = config.morphInfluenceSinFrequency
+      const frequency = config.morphInfluenceSinFrequency * 0.1
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       modelRef.current.morphTargetInfluences![0] =
         0.5 * (1 + Math.sin(2 * Math.PI * frequency * time))
