@@ -35,19 +35,37 @@ const HarveyHero = () => {
         value: 0,
         min: -20,
         max: 20,
-        step: 0.1
+        step: 0.01
       },
       cameraPositionY: {
         value: 0,
         min: -20,
         max: 20,
-        step: 0.1
+        step: 0.01
       },
       cameraPositionZ: {
         value: 0.3,
         min: -20,
         max: 20,
-        step: 0.1
+        step: 0.01
+      },
+      cameraRotationX: {
+        value: 0,
+        min: -20,
+        max: 20,
+        step: 0.01
+      },
+      cameraRotationY: {
+        value: 0,
+        min: -20,
+        max: 20,
+        step: 0.01
+      },
+      cameraRotationZ: {
+        value: 0,
+        min: -20,
+        max: 20,
+        step: 0.01
       },
       near: {
         value: 0.1,
@@ -183,6 +201,11 @@ const HarveyHero = () => {
           config.cameraPositionX,
           config.cameraPositionY,
           config.cameraPositionZ
+        ]}
+        rotation={[
+          config.cameraRotationX,
+          config.cameraRotationY,
+          config.cameraRotationZ
         ]}
         near={config.near}
         far={config.far}
