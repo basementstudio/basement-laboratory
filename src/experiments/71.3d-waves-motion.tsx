@@ -1,4 +1,4 @@
-import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
+import { PerspectiveCamera, useGLTF, useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { folder, useControls } from 'leva'
 import { useEffect, useRef } from 'react'
@@ -30,6 +30,38 @@ const HarveyHero = () => {
   ) as unknown as GLTFResult
 
   const config = useControls('Options', {
+    camera: folder({
+      cameraPositionX: {
+        value: 0,
+        min: -20,
+        max: 20,
+        step: 0.1
+      },
+      cameraPositionY: {
+        value: 0,
+        min: -20,
+        max: 20,
+        step: 0.1
+      },
+      cameraPositionZ: {
+        value: 0.3,
+        min: -20,
+        max: 20,
+        step: 0.1
+      },
+      near: {
+        value: 0.1,
+        min: 0,
+        max: 10,
+        step: 0.1
+      },
+      far: {
+        value: 10,
+        min: 0,
+        max: 100,
+        step: 0.1
+      }
+    }),
     texture: folder({
       textureRepeat: {
         value: 190,
@@ -145,7 +177,16 @@ const HarveyHero = () => {
 
   return (
     <>
-      <OrbitControls />
+      <PerspectiveCamera
+        makeDefault
+        position={[
+          config.cameraPositionX,
+          config.cameraPositionY,
+          config.cameraPositionZ
+        ]}
+        near={config.near}
+        far={config.far}
+      />
 
       <ambientLight
         intensity={config.ambientLightInstensity}
@@ -180,38 +221,6 @@ HarveyHero.Title = 'Abstract geometric waves in motion'
 HarveyHero.Description = <></>
 HarveyHero.Layout = (props: any) => {
   const config = useControls('Options', {
-    camera: folder({
-      cameraPositonX: {
-        value: 0,
-        min: -20,
-        max: 20,
-        step: 0.1
-      },
-      cameraPositonY: {
-        value: 0,
-        min: -20,
-        max: 20,
-        step: 0.1
-      },
-      cameraPositonZ: {
-        value: 0.3,
-        min: -20,
-        max: 20,
-        step: 0.1
-      },
-      near: {
-        value: 0.1,
-        min: 0,
-        max: 10,
-        step: 0.1
-      },
-      far: {
-        value: 10,
-        min: 0,
-        max: 100,
-        step: 0.1
-      }
-    }),
     removeVignnette: {
       value: false
     }
@@ -247,15 +256,6 @@ HarveyHero.Layout = (props: any) => {
             powerPreference: 'high-performance',
             outputColorSpace: THREE.SRGBColorSpace,
             toneMapping: THREE.NoToneMapping
-          }}
-          camera={{
-            position: [
-              config.cameraPositonX,
-              config.cameraPositonY,
-              config.cameraPositonZ
-            ],
-            near: 0.1,
-            far: 10
           }}
           {...props}
         />
