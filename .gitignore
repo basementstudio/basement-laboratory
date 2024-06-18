@@ -39,3 +39,4 @@ yarn-error.log*
 
 # npmrc
 .npmrc
+.env*.local
