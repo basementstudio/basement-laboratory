@@ -1,5 +1,14 @@
 [
   {
+    "filename": "71.vertex-animation-texture.tsx",
+    "title": "Vertex animation texture.",
+    "href": "/experiments/71.vertex-animation-texture.tsx",
+    "tags": [],
+    "og": null,
+    "number": 70,
+    "contributors": []
+  },
+  {
     "filename": "70.tiles-follower.tsx",
     "title": "Tiles follower.",
     "href": "/experiments/70.tiles-follower.tsx",
@@ -222,16 +231,7 @@
     "tags": [],
     "og": null,
     "number": 57,
-    "contributors": [
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      }
-    ]
+    "contributors": []
   },
   {
     "filename": "57.asset-progress.tsx",
@@ -346,7 +346,7 @@
     "title": "Twisted 3d text.",
     "href": "/experiments/52.twisted-3d-text.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/52.twisted-3d-text.png",
+    "og": "https://lab.basement.studio/ogs/52.twisted-3d-text.png",
     "number": 50,
     "contributors": [
       {
@@ -410,14 +410,6 @@
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
         "email": "",
         "company": "@basementstudio"
-      },
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
       }
     ]
   },
@@ -444,7 +436,7 @@
     "title": "Refraction.",
     "href": "/experiments/47.refraction.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/47.refraction.jpg",
+    "og": "https://lab.basement.studio/ogs/47.refraction.jpg",
     "number": 45,
     "contributors": [
       {
@@ -465,14 +457,6 @@
     "og": null,
     "number": 44,
     "contributors": [
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      },
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
@@ -600,14 +584,6 @@
     "number": 37,
     "contributors": [
       {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      },
-      {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
         "name": "Matias Perez",
@@ -640,16 +616,16 @@
     "title": "Gradient svg.",
     "href": "/experiments/35.gradient-svg.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/35.gradient-svg.jpg",
+    "og": "https://lab.basement.studio/ogs/35.gradient-svg.jpg",
     "number": 35,
     "contributors": [
       {
         "id": "MDQ6VXNlcjUwOTcwMzQ0",
         "url": "https://github.com/moransantiago",
         "name": "Santiago Moran",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/50970344?u=1b382b3a855dd6f0505148f13c50ab0d5494366a&v=4",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/50970344?u=a43ed9942eb586b847dc144117fc1c58b3f09f4d&v=4",
         "email": "morangsantiago@gmail.com",
-        "company": "@basementstudio"
+        "company": "@basehub-ai"
       }
     ]
   },
@@ -748,7 +724,7 @@
     "title": "Circular fog.",
     "href": "/experiments/29.circular-fog.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/29.circular-fog.jpg",
+    "og": "https://lab.basement.studio/ogs/29.circular-fog.jpg",
     "number": 29,
     "contributors": [
       {
@@ -769,14 +745,6 @@
     "og": null,
     "number": 28,
     "contributors": [
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      },
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
@@ -880,7 +848,7 @@
     "title": "Cupcake.",
     "href": "/experiments/23.cupcake.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/23.cupcake.jpg",
+    "og": "https://lab.basement.studio/ogs/23.cupcake.jpg",
     "number": 23,
     "contributors": [
       {
@@ -913,9 +881,9 @@
         "id": "MDQ6VXNlcjQwMDM0MTE1",
         "url": "https://github.com/julianbenegas",
         "name": "Julian Benegas",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/40034115?u=5edaabe4959a77e899bb537430e222166d0f85c7&v=4",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/40034115?u=4798b0e670d216e9023c087fbb2ed38e81d8c80e&v=4",
         "email": "julianbenegas99@gmail.com",
-        "company": "@basementstudio "
+        "company": "@basehub-ai"
       }
     ]
   },
@@ -960,7 +928,7 @@
     "title": "Box.",
     "href": "/experiments/19.Box.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/19.Box.jpg",
+    "og": "https://lab.basement.studio/ogs/19.Box.jpg",
     "number": 19,
     "contributors": [
       {
@@ -986,7 +954,7 @@
     "title": "CD.",
     "href": "/experiments/18.CD.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/18.CD.jpg",
+    "og": "https://lab.basement.studio/ogs/18.CD.jpg",
     "number": 18,
     "contributors": [
       {
@@ -1100,14 +1068,6 @@
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
         "email": "",
         "company": "@basementstudio"
-      },
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
       }
     ]
   },
@@ -1116,7 +1076,7 @@
     "title": "Sculpture gallery.",
     "href": "/experiments/13.sculpture-gallery.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/13.sculpture-gallery.jpg",
+    "og": "https://lab.basement.studio/ogs/13.sculpture-gallery.jpg",
     "number": 13,
     "contributors": [
       {
@@ -1230,7 +1190,7 @@
     "title": "Grid bump.",
     "href": "/experiments/8.grid-bump.js",
     "tags": [],
-    "og": "http://localhost:3000/ogs/8.grid-bump.jpg",
+    "og": "https://lab.basement.studio/ogs/8.grid-bump.jpg",
     "number": 8,
     "contributors": [
       {
@@ -1240,14 +1200,6 @@
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
         "email": "",
         "company": "@basementstudio"
-      },
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
       }
     ]
   },
