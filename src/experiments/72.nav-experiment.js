@@ -143,7 +143,7 @@ const NavExperiment = () => {
         rotate: 180,
         opacity: 0,
         duration: 0.6,
-        scale: 0.8,
+        scale: 0.2,
         ease: 'power3.in'
       },
       '<'
