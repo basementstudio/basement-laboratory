@@ -1,23 +1,30 @@
 import { useControls } from 'leva'
 import { gsap } from 'lib/gsap'
-import React, { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { HTMLLayout } from '~/components/layout/html-layout'
-import { useRefState } from '~/hooks/use-ref-state'
+import { useLerpRef } from '~/hooks/use-lerp-ref'
 import { useTimeline } from '~/hooks/use-timeline'
 import { useTrackDragInertia } from '~/hooks/use-track-drag'
+import { useWheel } from '~/hooks/use-wheel'
 
 const links = ['Home', 'About', 'Contact', 'Projects']
-const REPS = 3
+const REPS = 4
 const DISPLAY_LINKS_LENGTH = links.length * REPS
+
+/* 
+  I'm using the "seek target" technique here, I'm not directly manipulating the
+  radOffset, instead I'm using the delta to calculate the target value and then
+  using the easing function to animate the value to the target.
+*/
 
 const NavExperiment = () => {
   const { radius, factorX, factorY, translateX, posX, stepFactor, debug } =
     useControls({
       radius: {
-        value: 450,
+        value: 595,
         min: 100,
-        max: 500
+        max: 1000
       },
       factorX: {
         value: 0.5,
@@ -44,29 +51,41 @@ const NavExperiment = () => {
         min: 0.1,
         max: 1
       },
-      debug: true
+      debug: false
     })
 
   const ANGLE_STEP = (360 / DISPLAY_LINKS_LENGTH) * stepFactor
   const ANGLE_STEP_RAD = ANGLE_STEP * (Math.PI / 180)
+  const INITIAL_OFFSET = -Math.PI / 2 + ANGLE_STEP_RAD
 
-  const [radOffset, setRadOffset] = useRefState(
-    /* 90deg + angle step */
-    -Math.PI / 2 + ANGLE_STEP_RAD
-  )
-  const [delta, setDelta] = useState(0)
+  const radOffset = useLerpRef(INITIAL_OFFSET, {
+    lerp: 0.24,
+    onTick: () => {
+      const _radOffset = radOffset.current.current
+      const items = document.querySelectorAll('#wheel > .nav-item')
+
+      items.forEach((item, idx) => {
+        const { style } = getItemProps(idx, _radOffset)
+        item.style.transform = style.transform
+      })
+
+      document.querySelector('#offset-debugger').style.transform = `rotate(${
+        radOffset.target.current * (180 / Math.PI)
+      }deg)`
+    }
+  })
+  const [open, setOpen] = useState(false)
+
   const { listeners } = useTrackDragInertia({
     onMotion: ({ deltaY }) => {
-      setDelta(deltaY)
-      setRadOffset((v) => {
-        const newRad = v + deltaY / 100
-
-        return newRad
-      })
+      radOffset.target.current = radOffset.target.current + deltaY / 400
     },
     weight: 0.98
   })
-  const [open, setOpen] = useState(false)
+
+  useWheel(({ deltaY }) => {
+    radOffset.target.current = radOffset.target.current + deltaY / 200
+  })
 
   const openTimeline = useTimeline(() => {
     // return
@@ -172,6 +191,7 @@ const NavExperiment = () => {
 
   useEffect(() => {
     if (open) {
+      radOffset.target.current = INITIAL_OFFSET
       closeTimeline?.pause()
       openTimeline?.invalidate()
       openTimeline?.restart()
@@ -180,7 +200,7 @@ const NavExperiment = () => {
       closeTimeline?.invalidate()
       closeTimeline?.restart()
     }
-  }, [open, openTimeline, closeTimeline])
+  }, [open, openTimeline, closeTimeline, INITIAL_OFFSET, radOffset])
 
   useEffect(() => {
     const html = document.querySelector('html')
@@ -190,6 +210,28 @@ const NavExperiment = () => {
       html.style.overscrollBehavior = prevOverscrollBehavior
     }
   }, [])
+
+  const getItemProps = useCallback(
+    (idx, _radOffset = INITIAL_OFFSET) => {
+      const anglePos = ANGLE_STEP * idx
+      const anglePosRad = anglePos * (Math.PI / 180)
+      const x = radius * Math.cos(anglePosRad + _radOffset)
+      const y = radius * Math.sin(anglePosRad + _radOffset)
+      const rotate = Math.atan2(y * factorX, x * factorY) * (180 / Math.PI)
+
+      return {
+        x,
+        y,
+        rotate,
+        style: {
+          transform: `translateX(calc(${
+            x * factorX
+          }px)) translateY(calc(-50% + ${y * factorY}px)) rotate(${rotate}deg)`
+        }
+      }
+    },
+    [ANGLE_STEP, INITIAL_OFFSET, factorX, factorY, radius]
+  )
 
   return (
     <>
@@ -209,9 +251,6 @@ const NavExperiment = () => {
         }}
         className="fixed z-10 w-full h-[100svh]"
       >
-        <p className="absolute bottom-0 right-0">
-          offset: {radOffset.toFixed(2)}rad - delta: {delta.toFixed(2)}
-        </p>
         <ul
           id="wheel"
           style={{
@@ -236,35 +275,36 @@ const NavExperiment = () => {
             }}
             className="rounded-full"
           />
-          {[links, links, links].flat().map((m, idx) => {
-            const anglePos = ANGLE_STEP * idx
-            const anglePosRad = anglePos * (Math.PI / 180)
-            const x = radius * Math.cos(anglePosRad + radOffset)
-            const y = radius * Math.sin(anglePosRad + radOffset)
-            const rotate =
-              Math.atan2(y * factorX, x * factorY) * (180 / Math.PI)
 
-            return (
-              <li
-                key={m + idx}
-                style={{
-                  top: `${50}%`,
-                  left: `${50}%`,
-                  transform: `translateX(calc(${
-                    x * factorX
-                  }px)) translateY(calc(-50% + ${
-                    y * factorY
-                  }px)) rotate(${rotate}deg)`,
-                  transformOrigin: 'left center'
-                }}
-                className="absolute text-em-[54/16]"
-              >
-                <a className="" href="#">
-                  {m}
-                </a>
-              </li>
-            )
-          })}
+          <div
+            id="offset-debugger"
+            style={{
+              height: 1,
+              width: radius,
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              background: 'white',
+              transformOrigin: 'left center',
+              display: debug ? 'block' : 'none'
+            }}
+          />
+
+          {Array.from({ length: REPS })
+            .fill(links)
+            .flat()
+            .map((link, idx) => {
+              return (
+                <li
+                  key={link + idx}
+                  className="absolute left-1/2 top-1/2 origin-left nav-item text-em-[54/16]"
+                >
+                  <a className="" href="#">
+                    {link}
+                  </a>
+                </li>
+              )
+            })}
         </ul>
 
         <button
@@ -330,7 +370,9 @@ const NavExperiment = () => {
   )
 }
 
-NavExperiment.Layout = HTMLLayout
+NavExperiment.Layout = (props) => {
+  return <HTMLLayout {...props} defaultHidden />
+}
 NavExperiment.Title = 'Nav Experiment'
 NavExperiment.Description = 'This is a Nav Experiment'
 

@@ -102,7 +102,7 @@ export const useTrackDragInertia = ({
   weight = 0.95,
   inertiaThreshold = 0.001
 }: {
-  onMotion: (params: { deltaX: number; deltaY: number }) => void
+  onMotion: (params: { deltaX: number; deltaY: number; }) => void
   weight?: number
   inertiaThreshold?: number
 }) => {
