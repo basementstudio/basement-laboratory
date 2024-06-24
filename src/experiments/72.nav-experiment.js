@@ -1,15 +1,16 @@
 import { useControls } from 'leva'
 import { gsap } from 'lib/gsap'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { HTMLLayout } from '~/components/layout/html-layout'
 import { useLerpRef } from '~/hooks/use-lerp-ref'
 import { useTimeline } from '~/hooks/use-timeline'
 import { useTrackDragInertia } from '~/hooks/use-track-drag'
 import { useWheel } from '~/hooks/use-wheel'
+import { mod } from '~/lib/utils/math'
 
 const links = ['Home', 'About', 'Contact', 'Projects']
-const REPS = 4
+const REPS = 5
 const DISPLAY_LINKS_LENGTH = links.length * REPS
 
 /* 
@@ -17,6 +18,140 @@ const DISPLAY_LINKS_LENGTH = links.length * REPS
   radOffset, instead I'm using the delta to calculate the target value and then
   using the easing function to animate the value to the target.
 */
+
+const NavItem = ({ active, label }) => {
+  const itemRef = useRef(null)
+
+  const inTimeline = useTimeline(() => {
+    const selector = gsap.utils.selector(itemRef.current)
+    const tl = gsap.timeline({
+      paused: true
+    })
+
+    tl.set(selector('#item-arrow-wrapper'), {
+      opacity: 1,
+      x: -25
+    })
+      .set(selector('#item-arrow'), {
+        opacity: 0,
+        x: -20,
+        scale: 1,
+        rotate: 0
+      })
+      .set(selector('#item-border'), {
+        scale: 0.8,
+        rotateX: 45,
+        rotateY: 90,
+        force3D: true,
+        transformPerspective: 600,
+        opacity: 0
+      })
+      .to(
+        selector('#item-arrow-wrapper'),
+        {
+          x: 0,
+          duration: 0.9
+        },
+        '<'
+      )
+      .to(
+        selector('#item-border'),
+        {
+          duration: 0.8,
+          scale: 1,
+          opacity: 1,
+          rotateX: 0,
+          rotateY: 0
+        },
+        '<'
+      )
+      .to(
+        selector('#item-arrow'),
+        {
+          opacity: 1,
+          ease: 'back.out(2)',
+          x: 0
+        },
+        '>'
+      )
+
+    return tl
+  }, [])
+
+  const outTimeline = useTimeline(() => {
+    const selector = gsap.utils.selector(itemRef.current)
+    const tl = gsap.timeline({
+      paused: true
+    })
+
+    tl.to(selector('#item-border'), {
+      duration: 0.5,
+      scale: 0.8,
+      opacity: 0
+    })
+      .to(
+        selector('#item-arrow'),
+        {
+          duration: 0.5,
+          opacity: 0,
+          scale: 0.8,
+          rotate: -180,
+          ease: 'back.in(2)'
+        },
+        '<'
+      )
+      .set(selector('#item-arrow-wrapper'), {
+        opacity: 0
+      })
+
+    return tl
+  }, [])
+
+  useEffect(() => {
+    if (active) {
+      outTimeline?.pause()
+      inTimeline?.invalidate()
+      inTimeline?.restart()
+    } else {
+      inTimeline?.pause()
+      outTimeline?.invalidate()
+      outTimeline?.restart()
+    }
+  }, [active, inTimeline, outTimeline])
+
+  return (
+    <li
+      className="absolute left-1/2 top-1/2 origin-left nav-item text-em-[54/16]"
+      ref={itemRef}
+    >
+      <a href="#">
+        <div className="flex items-center gap-x-4">
+          <span>{label}</span>
+
+          <div id="item-arrow-wrapper" className="relative p-2.5 opacity-0">
+            <span
+              id="item-border"
+              className="absolute top-0 left-0 w-full h-full border-2 rounded-full border-zinc-800"
+            />
+            <svg
+              width="32"
+              viewBox="0 0 25 25"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              id="item-arrow"
+            >
+              <path
+                d="M20.5 12.5H4.5M20.5 12.5L13.5 5.5M20.5 12.5L13.5 19.5"
+                stroke="white"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+      </a>
+    </li>
+  )
+}
 
 const NavExperiment = () => {
   const { radius, factorX, factorY, translateX, posX, stepFactor, debug } =
@@ -58,6 +193,13 @@ const NavExperiment = () => {
   const ANGLE_STEP_RAD = ANGLE_STEP * (Math.PI / 180)
   const INITIAL_OFFSET = -Math.PI / 2 + ANGLE_STEP_RAD
 
+  const getActiveAngularStep = useCallback(
+    (radOffset) => {
+      return Math.round(mod(radOffset, 2 * Math.PI) / ANGLE_STEP_RAD)
+    },
+    [ANGLE_STEP_RAD]
+  )
+
   const radOffset = useLerpRef(INITIAL_OFFSET, {
     lerp: 0.24,
     onTick: () => {
@@ -72,9 +214,12 @@ const NavExperiment = () => {
       document.querySelector('#offset-debugger').style.transform = `rotate(${
         radOffset.target.current * (180 / Math.PI)
       }deg)`
+
+      setActiveIndex(getActiveAngularStep(_radOffset))
     }
   })
   const [open, setOpen] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(false)
 
   const { listeners } = useTrackDragInertia({
     onMotion: ({ deltaY }) => {
@@ -274,7 +419,27 @@ const NavExperiment = () => {
               display: debug ? 'block' : 'none'
             }}
             className="rounded-full"
-          />
+          >
+            {/* draw straight lines from center based on the ANGLE_STEP */}
+            {Array.from({ length: DISPLAY_LINKS_LENGTH }).map((_, idx) => {
+              const { rotate } = getItemProps(idx, 0)
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    height: 1,
+                    width: radius,
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    background: activeIndex === idx ? 'blue' : 'black',
+                    transform: `rotate(${rotate}deg)`,
+                    transformOrigin: 'left center'
+                  }}
+                />
+              )
+            })}
+          </div>
 
           <div
             id="offset-debugger"
@@ -293,16 +458,13 @@ const NavExperiment = () => {
           {Array.from({ length: REPS })
             .fill(links)
             .flat()
-            .map((link, idx) => {
+            .map((link, idx, arr) => {
               return (
-                <li
+                <NavItem
+                  active={arr.length - activeIndex === idx && open}
                   key={link + idx}
-                  className="absolute left-1/2 top-1/2 origin-left nav-item text-em-[54/16]"
-                >
-                  <a className="" href="#">
-                    {link}
-                  </a>
-                </li>
+                  label={link}
+                />
               )
             })}
         </ul>
