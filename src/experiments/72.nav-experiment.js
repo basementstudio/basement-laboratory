@@ -247,7 +247,10 @@ const NavExperiment = () => {
 
   const getActiveAngularStep = useCallback(
     (radOffset) => {
-      return Math.round(mod(radOffset, 2 * Math.PI) / ANGLE_STEP_RAD)
+      return (
+        Math.round(mod(radOffset, 2 * Math.PI) / ANGLE_STEP_RAD) %
+        DISPLAY_LINKS_LENGTH
+      )
     },
     [ANGLE_STEP_RAD]
   )
@@ -283,13 +286,13 @@ const NavExperiment = () => {
   useEffect(() => {
     if (tick && hasInteracted.current) {
       tick.play()
-      tick.volume = 0.5
+      tick.setVolume(0.3)
     }
   }, [tick, activeIndex])
 
   const { listeners } = useTrackDragInertia({
     onMotion: ({ deltaY }) => {
-      radOffset.target.current = radOffset.target.current + deltaY / 400
+      radOffset.target.current = radOffset.target.current + deltaY / 200
       hasInteracted.current = true
     },
     weight: 0.98
@@ -531,7 +534,9 @@ const NavExperiment = () => {
             .map((link, idx, arr) => {
               return (
                 <NavItem
-                  active={arr.length - activeIndex === idx && open}
+                  active={
+                    (arr.length - activeIndex) % arr.length === idx && open
+                  }
                   key={link + idx}
                   label={link}
                 />
