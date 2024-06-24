@@ -1,8 +1,11 @@
 import { useControls } from 'leva'
 import { gsap } from 'lib/gsap'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { suspend } from 'suspend-react'
 
+import { Loader } from '~/components/common/loader'
 import { HTMLLayout } from '~/components/layout/html-layout'
+import { useAudio } from '~/hooks/use-audio'
 import { useLerpRef } from '~/hooks/use-lerp-ref'
 import { useTimeline } from '~/hooks/use-timeline'
 import { useTrackDragInertia } from '~/hooks/use-track-drag'
@@ -12,6 +15,7 @@ import { mod } from '~/lib/utils/math'
 const links = ['Home', 'About', 'Contact', 'Projects']
 const REPS = 5
 const DISPLAY_LINKS_LENGTH = links.length * REPS
+const TWO_PI = Math.PI * 2
 
 /* 
   I'm using the "seek target" technique here, I'm not directly manipulating the
@@ -40,7 +44,7 @@ const NavItem = ({ active, label }) => {
       })
       .set(selector('#item-border'), {
         scale: 0.8,
-        rotateX: 45,
+        rotateX: 120,
         rotateY: 90,
         force3D: true,
         transformPerspective: 600,
@@ -121,31 +125,79 @@ const NavItem = ({ active, label }) => {
 
   return (
     <li
-      className="absolute left-1/2 top-1/2 origin-left nav-item text-em-[54/16]"
+      className="absolute group left-1/2 top-1/2 origin-left nav-item text-em-[54/16]"
       ref={itemRef}
     >
       <a href="#">
         <div className="flex items-center gap-x-4">
           <span>{label}</span>
 
-          <div id="item-arrow-wrapper" className="relative p-2.5 opacity-0">
+          <div
+            id="item-arrow-wrapper"
+            className="relative p-2.5 opacity-0 rounded-full overflow-hidden"
+          >
             <span
               id="item-border"
-              className="absolute top-0 left-0 w-full h-full border-2 rounded-full border-zinc-800"
-            />
-            <svg
-              width="32"
-              viewBox="0 0 25 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              id="item-arrow"
+              className="absolute top-0 left-0 w-full h-full"
             >
-              <path
-                d="M20.5 12.5H4.5M20.5 12.5L13.5 5.5M20.5 12.5L13.5 19.5"
-                stroke="white"
-                strokeLinejoin="round"
-              />
-            </svg>
+              <svg width="100%" viewBox="0 0 25 25">
+                <circle
+                  cx={12.5}
+                  cy={12.5}
+                  r={12}
+                  fill="none"
+                  className="stroke-zinc-800"
+                  strokeWidth={1}
+                />
+                <circle
+                  cx={12.5}
+                  cy={12.5}
+                  r={12}
+                  fill="none"
+                  strokeWidth="1px"
+                  stroke="white"
+                  style={{
+                    '--dash-array': TWO_PI * 12
+                  }}
+                  strokeDasharray="var(--dash-array)"
+                  strokeDashoffset="var(--dash-array)"
+                  className="group-hover:[stroke-dashoffset:0] transition-[stroke-dashoffset] duration-500 ease-in-out"
+                />
+              </svg>
+            </span>
+
+            <div id="item-arrow" className="relative">
+              <svg
+                width="32"
+                viewBox="0 0 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="transition-[opacity_transform] duration-500 ease-in-out translate-x-0 opacity-100 group-hover:opacity-0 group-hover:translate-x-full"
+              >
+                <path
+                  d="M20.5 12.5H4.5M20.5 12.5L13.5 5.5M20.5 12.5L13.5 19.5"
+                  stroke="white"
+                  strokeWidth={1}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <svg
+                className="absolute inline-block top-0 left-0 transition-[opacity_transform] duration-500 ease-in-out -translate-x-full opacity-0 group-hover:opacity-100 group-hover:translate-x-0"
+                width="32"
+                viewBox="0 0 25 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20.5 12.5H4.5M20.5 12.5L13.5 5.5M20.5 12.5L13.5 19.5"
+                  stroke="white"
+                  strokeWidth={1}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
           </div>
         </div>
       </a>
@@ -157,12 +209,12 @@ const NavExperiment = () => {
   const { radius, factorX, factorY, translateX, posX, stepFactor, debug } =
     useControls({
       radius: {
-        value: 595,
+        value: 510,
         min: 100,
         max: 1000
       },
       factorX: {
-        value: 0.5,
+        value: 0.8,
         min: 0,
         max: 1
       },
@@ -172,7 +224,7 @@ const NavExperiment = () => {
         max: 1
       },
       translateX: {
-        value: -58,
+        value: -72,
         min: -100,
         max: 100
       },
@@ -220,16 +272,33 @@ const NavExperiment = () => {
   })
   const [open, setOpen] = useState(false)
   const [activeIndex, setActiveIndex] = useState(false)
+  const hasInteracted = useRef(false)
+  const { player } = useAudio()
+
+  const tick = suspend(
+    () => player?.loadAudioFromURL('/audio/tick.mp3'),
+    [player]
+  )
+
+  useEffect(() => {
+    if (tick && hasInteracted.current) {
+      tick.play()
+      tick.volume = 0.5
+    }
+  }, [tick, activeIndex])
 
   const { listeners } = useTrackDragInertia({
     onMotion: ({ deltaY }) => {
       radOffset.target.current = radOffset.target.current + deltaY / 400
+      hasInteracted.current = true
     },
     weight: 0.98
   })
 
   useWheel(({ deltaY }) => {
+    if (!open) return
     radOffset.target.current = radOffset.target.current + deltaY / 200
+    hasInteracted.current = true
   })
 
   const openTimeline = useTimeline(() => {
@@ -336,6 +405,7 @@ const NavExperiment = () => {
 
   useEffect(() => {
     if (open) {
+      hasInteracted.current = false
       radOffset.target.current = INITIAL_OFFSET
       closeTimeline?.pause()
       openTimeline?.invalidate()
@@ -532,8 +602,12 @@ const NavExperiment = () => {
   )
 }
 
-NavExperiment.Layout = (props) => {
-  return <HTMLLayout {...props} defaultHidden />
+NavExperiment.Layout = ({ children, ...props }) => {
+  return (
+    <HTMLLayout {...props} defaultHidden>
+      <Suspense fallback={<Loader />}>{children}</Suspense>
+    </HTMLLayout>
+  )
 }
 NavExperiment.Title = 'Nav Experiment'
 NavExperiment.Description = 'This is a Nav Experiment'
