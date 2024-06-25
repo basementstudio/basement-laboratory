@@ -1,45 +1,43 @@
-import { OrbitControls, useGLTF, useTexture } from '@react-three/drei'
-import { useFrame, useLoader as useThreeLoader } from '@react-three/fiber'
-import { useControls } from 'leva'
-import { useEffect, useMemo } from 'react'
 import {
-  BufferAttribute,
-  BufferGeometry,
-  DoubleSide,
-  ShaderMaterial
-} from 'three'
+  Environment,
+  OrbitControls,
+  PerspectiveCamera,
+  Sky,
+  useGLTF,
+  useMatcapTexture,
+  useTexture
+} from '@react-three/drei'
+import {
+  GroupProps,
+  useFrame,
+  useLoader as useThreeLoader
+} from '@react-three/fiber'
+import { useControls } from 'leva'
+import { useMemo } from 'react'
+import { DoubleSide, ShaderMaterial } from 'three'
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader'
 import { GLTF } from 'three-stdlib'
 
 import { R3FSuspenseLayout } from '~/components/layout/r3f-suspense-layout'
 
-const TOTAL_FRAMES = 212
+// height on pixels of the animation texture
+const TOTAL_FRAMES = 214
 
 const flagVertexShader = /* glsl */ `
 
   const float PI = 3.1415926535897932384626433832795;
 
   uniform sampler2D tDisplacement;
+  uniform sampler2D tNormals;
   uniform float vertexCount;
   uniform float currentFrame;
   uniform float offsetScale;
   uniform float totalFrames;
 
-  attribute float vertexNumber;
-
-
   varying vec2 vDisplacementUv;
   varying vec3 displacement;
   varying vec2 vUv;
   varying vec3 vNormal;
-
-  // the X axis indicates the vertex and the Y axis, the current frame
-  vec2 getFrameUv(float frame) {
-    return vec2(
-      vertexNumber / vertexCount,
-      1. - frame / totalFrames
-    );
-  }
 
   vec2 rotateVector(vec2 v, vec2 origin, float angle) {
     float s = sin(angle);
@@ -56,13 +54,13 @@ const flagVertexShader = /* glsl */ `
 
     // translate point back:
     return newV + origin;
-
   }
 
   void main() {
-    vUv = rotateVector(uv, vec2(0.5), PI * -0.5);
-    vDisplacementUv = getFrameUv(currentFrame);
+    vUv = vec2(uv.x, 1. - uv.y);
+    vDisplacementUv = vec2(uv1.x, 1. - (currentFrame / totalFrames));
     vec3 offset = texture2D(tDisplacement, vDisplacementUv).xzy;
+    vNormal = texture2D(tNormals, vDisplacementUv).xyz;
     displacement = offset;
     offset *= offsetScale;
     vec3 newPosition = position + offset;
@@ -77,60 +75,69 @@ const flagFragmentShader = /* glsl */ `
   varying vec2 vUv;
   varying vec2 vDisplacementUv;
   varying vec3 displacement;
+  varying vec3 vNormal;
 
   void main() {
     vec3 color = texture2D(tColor, vUv).xyz;
-
-    float displacementF = clamp(length(displacement), 0., 0.8);
-    color *= 1. - displacementF;
-    
+    vec3 normal = normalize(vNormal);
+    vec3 lightDirection = normalize(vec3(0.5, 0.5, 1.));
+    float light = dot(normal, lightDirection);
+    color *= light;
 
     gl_FragColor = vec4(color, 1.);
   }
 `
 
+// Type the GLTF nodes to use later
 interface FlagGlTFResult extends GLTF {
   nodes: {
-    Plane002: THREE.Mesh
+    export_mesh: THREE.Mesh
   }
 }
 
-function addVertexNumberAttribute(geometry: BufferGeometry) {
-  const vertexCount = geometry.attributes.position.count
-
-  const vertexNumbers = new Float32Array(vertexCount)
-
-  for (let i = 0; i < vertexCount; i++) {
-    vertexNumbers[i] = i
+interface MastilGlTFResult extends GLTF {
+  nodes: {
+    sm_mastil: THREE.Mesh
   }
-
-  geometry.setAttribute('vertexNumber', new BufferAttribute(vertexNumbers, 1))
 }
 
-const VertexAnimationTexture = () => {
+interface BaseGlTFResult extends GLTF {
+  nodes: {
+    sm_base: THREE.Mesh
+  }
+}
+
+interface FlagProps extends GroupProps {
+  texture?: string
+  animationOffset?: number
+}
+
+const Flag = ({
+  texture = 'bandera-argentina.png',
+  animationOffset = 0,
+  ...props
+}: FlagProps) => {
   const { nodes } = useGLTF(
-    `/models/flag/flag.glb`
+    `/models/flag/Bandera3.glb`
   ) as unknown as FlagGlTFResult
 
+  const { nodes: mastilNodes } = useGLTF(
+    `/models/flag/Mastil.glb`
+  ) as unknown as MastilGlTFResult
+
   const t = useThreeLoader(EXRLoader, `/models/flag/offsets.exr`)
-  const flagTexture = useTexture(`/models/flag/bandera-argentina.png`)
+  const n = useTexture(`/models/flag/normals.png`)
+  const flagTexture = useTexture(`/models/flag/${texture}`)
 
-  useEffect(() => {
-    // entend the image with closes pixel
-    // t.wrapS = t.wrapT = 1002
-    // t.anisotropy = 64
-    // t.magFilter = NearestFilter
-  }, [t])
-
-  const { flag, flagMaterial } = useMemo(() => {
-    const flag = nodes.Plane002.clone() as THREE.Mesh
-    addVertexNumberAttribute(flag.geometry as BufferGeometry)
+  const { flag, flagMaterial, mastil } = useMemo(() => {
+    const flag = nodes.export_mesh.clone() as THREE.Mesh
     const flagMaterial = new ShaderMaterial({
       side: DoubleSide,
       vertexShader: flagVertexShader,
       fragmentShader: flagFragmentShader,
       uniforms: {
         tDisplacement: { value: t },
+        tNormals: { value: n },
         tColor: { value: flagTexture },
         vertexCount: { value: flag.geometry.attributes.position.count },
         currentFrame: { value: 0 },
@@ -141,11 +148,14 @@ const VertexAnimationTexture = () => {
 
     flag.material = flagMaterial
 
+    const mastil = mastilNodes.sm_mastil.clone() as THREE.Mesh
+
     return {
       flag,
-      flagMaterial
+      flagMaterial,
+      mastil
     } as const
-  }, [nodes, t, flagTexture])
+  }, [nodes, t, flagTexture, n, mastilNodes])
 
   const [{ play }] = useControls(() => ({
     play: {
@@ -165,25 +175,56 @@ const VertexAnimationTexture = () => {
   useFrame(({ clock }) => {
     if (play) {
       flagMaterial.uniforms.currentFrame.value =
-        (clock.getElapsedTime() * 30) % TOTAL_FRAMES
+        (clock.getElapsedTime() * 24 + animationOffset) % TOTAL_FRAMES
     }
   })
 
+  const [matcap] = useMatcapTexture('555555_C8C8C8_8B8B8B_A4A4A4')
+
   return (
-    <>
-      <color attach="background" args={['#222']} />
-      <OrbitControls />
-      <mesh position={[0, -4, 0]}>
-        <cylinderGeometry args={[0.01, 0.06, 10]} />
-        <meshBasicMaterial color="white" />
-      </mesh>
-      <mesh position={[0, 1, 0]}>
-        <sphereGeometry args={[0.03, 16, 16]} />
-        <meshBasicMaterial color="white" />
-      </mesh>
-      <group position={[2, -0.1, 0]}>
+    <group {...props}>
+      <group rotation={[0, Math.PI * -0.5, 0]} position={[0, 0, 0]}>
         <primitive object={flag} />
       </group>
+      <primitive object={mastil}>
+        <meshMatcapMaterial matcap={matcap} />
+      </primitive>
+    </group>
+  )
+}
+
+const VertexAnimationTexture = () => {
+  const { nodes: baseNodes } = useGLTF(
+    `/models/flag/Base.glb`
+  ) as unknown as BaseGlTFResult
+
+  return (
+    <>
+      <OrbitControls target={[0, 4.5, 0]} />
+
+      <PerspectiveCamera makeDefault position={[5, 2, 5]} />
+
+      <Environment preset="city" />
+      <Sky
+        distance={450000}
+        sunPosition={[0, 1, 0]}
+        inclination={0}
+        azimuth={0.25}
+      />
+
+      <group rotation={[0, Math.PI * -0.5, 0]}>
+        <primitive object={baseNodes.sm_base}>
+          <meshStandardMaterial color="#ccc" />
+        </primitive>
+      </group>
+      {Array.from({ length: 7 }).map((_, i) => (
+        <Flag
+          texture={i % 2 ? 'bandera-basement.png' : 'bandera-argentina.png'}
+          key={i}
+          animationOffset={i * 30}
+          position={[0, 0, i * -1.94]}
+        />
+      ))}
     </>
   )
 }
