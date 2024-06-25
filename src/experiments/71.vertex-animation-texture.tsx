@@ -13,7 +13,7 @@ import {
   useLoader as useThreeLoader
 } from '@react-three/fiber'
 import { useControls } from 'leva'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { DoubleSide, ShaderMaterial } from 'three'
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader'
 import { GLTF } from 'three-stdlib'
@@ -38,24 +38,7 @@ const flagVertexShader = /* glsl */ `
   varying vec3 displacement;
   varying vec2 vUv;
   varying vec3 vNormal;
-
-  vec2 rotateVector(vec2 v, vec2 origin, float angle) {
-    float s = sin(angle);
-    float c = cos(angle);
-
-    // translate point back to origin:
-    v -= origin;
-
-    // rotate point
-    vec2 newV = vec2(
-      v.x * c - v.y * s,
-      v.x * s + v.y * c
-    );
-
-    // translate point back:
-    return newV + origin;
-  }
-
+  
   void main() {
     vUv = vec2(uv.x, 1. - uv.y);
     vDisplacementUv = vec2(uv1.x, 1. - (currentFrame / totalFrames));
@@ -172,10 +155,13 @@ const Flag = ({
     }
   }))
 
-  useFrame(({ clock }) => {
+  const progressRef = useRef(0)
+
+  useFrame((_, delta) => {
     if (play) {
+      progressRef.current += delta
       flagMaterial.uniforms.currentFrame.value =
-        (clock.getElapsedTime() * 24 + animationOffset) % TOTAL_FRAMES
+        (progressRef.current * 24 + animationOffset) % TOTAL_FRAMES
     }
   })
 
