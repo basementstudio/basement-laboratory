@@ -20,6 +20,8 @@ export const siteURL = new URL(process.env.NEXT_PUBLIC_SITE_URL)
 export const siteOrigin = siteURL.origin
 export const githubUrl = 'https://github.com/basementstudio/experiments'
 
+export const EPSILON = 0.000001
+
 // we like putting this in the JavaScript console,
 // as our signature.
 // you can delete it if not needed.
