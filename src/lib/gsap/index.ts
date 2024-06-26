@@ -3,20 +3,12 @@ import { CSSRulePlugin } from 'gsap/dist/CSSRulePlugin'
 import { CustomEase } from 'gsap/dist/CustomEase'
 import { DrawSVGPlugin } from 'gsap/dist/DrawSVGPlugin'
 import { Flip } from 'gsap/dist/Flip'
+import { GSDevTools } from 'gsap/dist/GSDevTools'
 import { ScrollToPlugin } from 'gsap/dist/ScrollToPlugin'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 import { SplitText } from 'gsap/dist/SplitText'
 import { TextPlugin } from 'gsap/dist/TextPlugin'
 import isElement from 'lodash/isElement'
-
-let GSDevTools
-
-if (process.env.NODE_ENV === 'development') {
-  import('gsap/dist/GSDevTools').then((GSDevToolsLib) => {
-    GSDevTools = GSDevToolsLib.GSDevTools
-    gsap.registerPlugin(GSDevTools)
-  })
-}
 
 gsap.registerPlugin(
   CSSRulePlugin,
@@ -26,7 +18,8 @@ gsap.registerPlugin(
   ScrollTrigger,
   TextPlugin,
   Flip,
-  SplitText
+  SplitText,
+  GSDevTools
 )
 
 const GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2

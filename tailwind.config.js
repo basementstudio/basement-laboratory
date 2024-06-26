@@ -18,5 +18,5 @@ module.exports = {
       }
     }
   },
-  plugins: []
+  plugins: [require('./src/lib/plugins/toemTailwindPlugin')]
 }

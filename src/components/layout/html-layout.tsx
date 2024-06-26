@@ -6,11 +6,17 @@ export const HTMLLayout: FC<NavigationLayoutProps> = ({
   children,
   title,
   description,
-  slug
+  slug,
+  defaultHidden
 }) => {
   return (
     <>
-      <NavigationLayout title={title} description={description} slug={slug}>
+      <NavigationLayout
+        defaultHidden={defaultHidden}
+        title={title}
+        description={description}
+        slug={slug}
+      >
         {children}
       </NavigationLayout>
     </>

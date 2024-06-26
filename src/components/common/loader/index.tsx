@@ -1,3 +1,4 @@
+import { useProgress } from '@react-three/drei'
 import clsx from 'clsx'
 import React, { useRef } from 'react'
 
@@ -29,6 +30,39 @@ export const Loader = () => {
         }}
       >
         <span className={clsx({ [s['loading']]: loading })} ref={dotsRef}>
+          {range(3).map((i) => (
+            // @ts-ignore
+            <span style={{ '--idx': i }} key={i}>
+              .
+            </span>
+          ))}
+        </span>
+      </div>
+    </Portal>
+  )
+}
+
+export const LoadingScreen = () => {
+  const { loaded } = useProgress()
+
+  return (
+    <Portal id="overlay">
+      <div
+        style={{
+          backgroundColor: 'black',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100vw',
+          height: '100vh',
+          zIndex: 10,
+          visibility: loaded ? 'hidden' : 'visible'
+        }}
+      >
+        <span className={clsx({ [s['loading']]: !loaded })}>
           {range(3).map((i) => (
             // @ts-ignore
             <span style={{ '--idx': i }} key={i}>

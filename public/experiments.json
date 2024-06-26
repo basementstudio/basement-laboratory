@@ -9,6 +9,78 @@
     "contributors": []
   },
   {
+    "filename": "72.nav-experiment.js",
+    "title": "Nav experiment.",
+    "href": "/experiments/72.nav-experiment.js",
+    "tags": [],
+    "og": null,
+    "number": 71,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "71.vertex-animation-texture.tsx",
+    "title": "Vertex animation texture.",
+    "href": "/experiments/71.vertex-animation-texture.tsx",
+    "tags": [],
+    "og": null,
+    "number": 70,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjI5NjgwNTQ0",
+        "url": "https://github.com/matiasngf",
+        "name": "Matias Gonzalez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/29680544?u=761939fec55489490e54a7cb2674f6e5907716fd&v=4",
+        "email": "matiasngf@hotmail.com",
+        "company": "Basement"
+      }
+    ]
+  },
+  {
+    "filename": "70.tiles-follower.tsx",
+    "title": "Tiles follower.",
+    "href": "/experiments/70.tiles-follower.tsx",
+    "tags": [],
+    "og": null,
+    "number": 69,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
+    "filename": "69.random-noise-blend.tsx",
+    "title": "Random noise blend.",
+    "href": "/experiments/69.random-noise-blend.tsx",
+    "tags": [],
+    "og": null,
+    "number": 68,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjQzODk0MzQz",
+        "url": "https://github.com/matiasperz",
+        "name": "Matias Perez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
+  },
+  {
     "filename": "68.3d-on-2d-canvas-renderer.tsx",
     "title": "3d on 2d canvas renderer.",
     "href": "/experiments/68.3d-on-2d-canvas-renderer.tsx",
@@ -195,16 +267,7 @@
     "tags": [],
     "og": null,
     "number": 57,
-    "contributors": [
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      }
-    ]
+    "contributors": []
   },
   {
     "filename": "57.asset-progress.tsx",
@@ -383,14 +446,6 @@
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
         "email": "",
         "company": "@basementstudio"
-      },
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
       }
     ]
   },
@@ -438,14 +493,6 @@
     "og": null,
     "number": 44,
     "contributors": [
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      },
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
@@ -573,14 +620,6 @@
     "number": 37,
     "contributors": [
       {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      },
-      {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
         "name": "Matias Perez",
@@ -620,9 +659,9 @@
         "id": "MDQ6VXNlcjUwOTcwMzQ0",
         "url": "https://github.com/moransantiago",
         "name": "Santiago Moran",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/50970344?u=1b382b3a855dd6f0505148f13c50ab0d5494366a&v=4",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/50970344?u=a43ed9942eb586b847dc144117fc1c58b3f09f4d&v=4",
         "email": "morangsantiago@gmail.com",
-        "company": "@basementstudio"
+        "company": "@basehub-ai"
       }
     ]
   },
@@ -742,14 +781,6 @@
     "og": null,
     "number": 28,
     "contributors": [
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
-      },
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
@@ -886,9 +917,9 @@
         "id": "MDQ6VXNlcjQwMDM0MTE1",
         "url": "https://github.com/julianbenegas",
         "name": "Julian Benegas",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/40034115?u=5edaabe4959a77e899bb537430e222166d0f85c7&v=4",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/40034115?u=4798b0e670d216e9023c087fbb2ed38e81d8c80e&v=4",
         "email": "julianbenegas99@gmail.com",
-        "company": "@basementstudio "
+        "company": "@basehub-ai"
       }
     ]
   },
@@ -1073,14 +1104,6 @@
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
         "email": "",
         "company": "@basementstudio"
-      },
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
       }
     ]
   },
@@ -1213,14 +1236,6 @@
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=c3cb32cb487ee7089d60b068c060f89e68a65c54&v=4",
         "email": "",
         "company": "@basementstudio"
-      },
-      {
-        "id": "MDQ6VXNlcjQ4NDE4NjMz",
-        "url": "https://github.com/justkahdri",
-        "name": "Joaquín R. Montes",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/48418633?u=302a24bcfc59b0055f4d2195328158f3756da1fa&v=4",
-        "email": "",
-        "company": "@basementstudio "
       }
     ]
   },
