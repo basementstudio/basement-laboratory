@@ -10,8 +10,6 @@ type Response = {
   headers?: Record<string, string>
 }
 
-export const runtime = 'nodejs'
-
 export default async (req: NextRequest) => {
   const res: Response = { ip: req.ip }
 
@@ -39,5 +37,5 @@ export default async (req: NextRequest) => {
 }
 
 export const config = {
-  runtime: 'experimental-edge'
+  runtime: 'nodejs'
 }
