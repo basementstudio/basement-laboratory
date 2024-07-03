@@ -108,7 +108,7 @@ const Flag = ({
     `/models/flag/Mastil.glb`
   ) as unknown as MastilGlTFResult
 
-  const t = useThreeLoader(EXRLoader, `/models/flag/offsets.exr`)
+  const t = useThreeLoader(EXRLoader, `/models/flag/offsets_DWAA.exr`)
   const n = useTexture(`/models/flag/normals.png`)
   const flagTexture = useTexture(`/models/flag/${texture}`)
 
