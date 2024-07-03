@@ -10,6 +10,8 @@ type Response = {
   headers?: Record<string, string>
 }
 
+export const runtime = 'nodejs'
+
 export default async (req: NextRequest) => {
   const res: Response = { ip: req.ip }
 
