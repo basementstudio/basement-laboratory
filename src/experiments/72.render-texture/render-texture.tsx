@@ -44,9 +44,15 @@ export interface PaintCanvasProps {
 
 export const renderTextureContext = createContext<{
   isInsideRenderTexture: boolean
+  width: number
+  height: number
+  aspect: number
   isPlaying: boolean
 }>({
   isInsideRenderTexture: false,
+  width: 1000,
+  height: 1000,
+  aspect: 1,
   isPlaying: true
 })
 
@@ -99,7 +105,7 @@ export const RenderTexture = ({
     const fbo =
       _fbo ||
       new THREE.WebGLRenderTarget(width, height, {
-        samples: 8,
+        samples: 16,
         stencilBuffer: true,
         depthTexture: new THREE.DepthTexture(
           width,
@@ -213,6 +219,9 @@ export const RenderTexture = ({
       <renderTextureContext.Provider
         value={{
           isInsideRenderTexture: true,
+          width,
+          height,
+          aspect: width / height,
           isPlaying
         }}
       >
