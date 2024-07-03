@@ -6,7 +6,16 @@
     "tags": [],
     "og": null,
     "number": 72,
-    "contributors": []
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjI5NjgwNTQ0",
+        "url": "https://github.com/matiasngf",
+        "name": "Matias Gonzalez",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/29680544?u=761939fec55489490e54a7cb2674f6e5907716fd&v=4",
+        "email": "matiasngf@hotmail.com",
+        "company": "Basement"
+      }
+    ]
   },
   {
     "filename": "72.nav-experiment.js",
