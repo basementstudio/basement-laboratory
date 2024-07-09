@@ -46,7 +46,9 @@ html.hide-scroll body {
 html,
 body,
 #__next {
-  min-height: 100vh;
+  /* stylelint-disable-next-line unit-no-unknown */
+  min-height: 100svh;
+  overscroll-behavior: none;
 }
 
 body.inspect * {

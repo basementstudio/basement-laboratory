@@ -1,9 +1,9 @@
 import { createClient } from '@liveblocks/client'
 import { OrbitControls, Plane, Sphere } from '@react-three/drei'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Physics, RigidBody, useRapier } from '@react-three/rapier'
+import { Physics, RigidBody } from '@react-three/rapier'
 import { useQRCode } from 'next-qrcode'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMobileOrientation } from 'react-device-detect'
 import useMeasure from 'react-use-measure'
 import * as THREE from 'three'
@@ -74,7 +74,8 @@ const TrackPad = ({ onChange, coords }) => {
         position: 'relative',
         height: '100%',
         width: '100%',
-        border: '1px solid white'
+        border: '1px solid white',
+        userSelect: 'none'
       }}
       ref={ref}
     >
@@ -482,13 +483,17 @@ const RemoteControl = ({ layoutProps }) => {
 }
 
 const World = () => {
-  const { world } = useRapier()
+  const sphereBodyRef = useRef()
 
   useFrame(() => {
+    if (!sphereBodyRef.current) return
     const [x, y] = ControllerInstance.get()
-    console.log('Controller:', x, y)
-    world.gravity.x = x * 10
-    world.gravity.z = y * 10
+
+    sphereBodyRef.current.applyImpulse({
+      x: x,
+      y: 0,
+      z: y
+    })
   })
 
   return (
@@ -502,6 +507,7 @@ const World = () => {
         colliders="ball"
         position={[0, 5, 0]}
         type="dynamic"
+        ref={sphereBodyRef}
       >
         <Sphere />
       </RigidBody>
