@@ -1,4 +1,3 @@
-import crypto from 'crypto'
 import type { NextRequest } from 'next/server'
 
 import { isDev } from '~/lib/constants'
@@ -9,6 +8,8 @@ type Response = {
   roomUUID?: string
   headers?: Record<string, string>
 }
+
+export const runtime = 'edge'
 
 export default async (req: NextRequest) => {
   const res: Response = { ip: req.ip }
@@ -26,7 +27,7 @@ export default async (req: NextRequest) => {
     ''
 
   res['roomUUID'] = uuid
-  res['roomHash'] = crypto.createHash('sha256').update(uuid).digest('hex')
+  res['roomHash'] = crypto.randomUUID()
 
   return new Response(JSON.stringify(res), {
     status: 200,
