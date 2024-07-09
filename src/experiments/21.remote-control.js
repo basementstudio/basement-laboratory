@@ -1,11 +1,37 @@
 import { createClient } from '@liveblocks/client'
+import { OrbitControls, Plane, Sphere } from '@react-three/drei'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { Physics, RigidBody, useRapier } from '@react-three/rapier'
 import { useQRCode } from 'next-qrcode'
 import { useCallback, useEffect, useState } from 'react'
 import { useMobileOrientation } from 'react-device-detect'
+import useMeasure from 'react-use-measure'
+import * as THREE from 'three'
+
+import { CoolGrid } from '~/components/common/cool-grid'
 
 import { NavigationLayout } from '../components/layout/navigation-layout'
 import { useWebRTC } from '../hooks/use-web-rtc'
 import { isClient, safeWindow } from '../lib/constants'
+
+/* Create singleton controller */
+class Controller {
+  constructor() {
+    this.x = 0
+    this.y = 0
+  }
+
+  get() {
+    return [this.x, this.y]
+  }
+
+  set(x, y) {
+    this.x = THREE.MathUtils.clamp(x, -1, 1)
+    this.y = THREE.MathUtils.clamp(y, -1, 1)
+  }
+}
+
+const ControllerInstance = new Controller()
 
 const hasControl = () => {
   if (!isClient) return
@@ -19,15 +45,25 @@ const client = createClient({
 })
 
 const TrackPad = ({ onChange, coords }) => {
+  const [ref, bounds] = useMeasure()
+
   const handleUpdate = (e) => {
     e.preventDefault()
     e.stopPropagation()
 
     // Get relative coords
-    const rect = e.target.getBoundingClientRect()
-    const x = e.touches[0].clientX - rect.left
-    const y = e.touches[0].clientY - rect.top
-    onChange([x, y])
+    const x = e.touches[0].clientX - bounds.left
+    const y = e.touches[0].clientY - bounds.top
+
+    /* Normalize these in a range from -1 to 1 */
+
+    const xNormalized = (x / bounds.width) * 2 - 1
+    const yNormalized = (y / bounds.height) * 2 - 1
+
+    onChange([
+      THREE.MathUtils.clamp(xNormalized, -1, 1),
+      THREE.MathUtils.clamp(yNormalized, -1, 1)
+    ])
   }
 
   return (
@@ -40,12 +76,13 @@ const TrackPad = ({ onChange, coords }) => {
         width: '100%',
         border: '1px solid white'
       }}
+      ref={ref}
     >
       <span
         style={{
           position: 'absolute',
-          left: coords[0],
-          top: coords[1],
+          left: (coords[0] * bounds.width + bounds.width) / 2,
+          top: (coords[1] * bounds.height + bounds.height) / 2,
           display: 'inline-block',
           borderRadius: '50%',
           width: 50,
@@ -55,6 +92,9 @@ const TrackPad = ({ onChange, coords }) => {
           background: 'black'
         }}
       />
+      <span className="inline-block p-2">
+        [{coords[0]},{coords[1]}]
+      </span>
     </div>
   )
 }
@@ -139,6 +179,18 @@ const RemoteControl = ({ layoutProps }) => {
     connection,
     channel
   } = useWebRTC()
+
+  useEffect(() => {
+    console.log(
+      'Setting controls',
+      controls.trackpad?.[0],
+      controls.trackpad?.[1]
+    )
+    ControllerInstance.set(
+      controls.trackpad?.[0] ?? 0,
+      controls.trackpad?.[1] ?? 0
+    )
+  }, [controls.trackpad?.[0], controls.trackpad?.[1]])
 
   const onIceCandidate = useCallback(
     (e) => {
@@ -346,6 +398,34 @@ const RemoteControl = ({ layoutProps }) => {
         <div>Please flip your device</div>
       )}
     </div>
+  ) : controller ? (
+    <>
+      <NavigationLayout {...layoutProps}>
+        <Minigame />
+
+        <div
+          style={{
+            height: 250,
+            width: 500,
+            position: 'fixed',
+            right: 16,
+            bottom: 16,
+            background: 'black'
+          }}
+        >
+          <ControlView
+            controls={{
+              a: { value: controls.a },
+              b: { value: controls.b },
+              trackpad: {
+                value: controls.trackpad,
+                onChange: setControl('trackpad')
+              }
+            }}
+          />
+        </div>
+      </NavigationLayout>
+    </>
   ) : (
     <NavigationLayout {...layoutProps}>
       <div
@@ -398,6 +478,54 @@ const RemoteControl = ({ layoutProps }) => {
         </div>
       </div>
     </NavigationLayout>
+  )
+}
+
+const World = () => {
+  const { world } = useRapier()
+
+  useFrame(() => {
+    const [x, y] = ControllerInstance.get()
+    console.log('Controller:', x, y)
+    world.gravity.x = x * 10
+    world.gravity.z = y * 10
+  })
+
+  return (
+    <>
+      <ambientLight />
+      <OrbitControls />
+      <CoolGrid />
+
+      <RigidBody
+        shape="ball"
+        colliders="ball"
+        position={[0, 5, 0]}
+        type="dynamic"
+      >
+        <Sphere />
+      </RigidBody>
+      <RigidBody rotation={[-Math.PI / 2, 0, 0]} type="fixed" includeInvisible>
+        <Plane args={[46, 46]} visible={false} />
+      </RigidBody>
+    </>
+  )
+}
+
+const Minigame = () => {
+  return (
+    <div style={{ height: '100vh', width: '100vw' }}>
+      <Canvas
+        camera={{
+          position: [0, 4, 6],
+          near: 0.1
+        }}
+      >
+        <Physics debug>
+          <World />
+        </Physics>
+      </Canvas>
+    </div>
   )
 }
 
