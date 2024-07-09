@@ -90,10 +90,11 @@ const TrackPad = ({ onChange, coords }) => {
           height: 50,
           border: '1px solid white',
           transform: 'translate(-50%, -50%)',
-          background: 'black'
+          background: 'black',
+          pointerEvents: 'none'
         }}
       />
-      <span className="inline-block p-2">
+      <span className="inline-block p-2 select-none">
         [{coords[0]},{coords[1]}]
       </span>
     </div>
@@ -120,18 +121,24 @@ const Button = ({ active, style, ...rest }) => {
 }
 
 const ControlView = ({ controls }) => {
+  const { isLandscape } = useMobileOrientation()
+
   return (
     <div
       style={{
         display: 'grid',
         height: '100%',
         width: '100%',
-        gridTemplateColumns: 'auto 100px',
-        gridTemplateRows: 'repeat(2, 1fr)'
+        gridTemplateColumns: isLandscape ? 'auto 100px' : 'repeat(2, 1fr)',
+        gridTemplateRows: isLandscape ? 'repeat(2, 1fr)' : 'auto 100px'
       }}
     >
       <Button
-        style={{ gridColumn: 2, gridRow: 1 }}
+        style={
+          isLandscape
+            ? { gridColumn: 2, gridRow: 1 }
+            : { gridColumn: 1, gridRow: 2 }
+        }
         active={controls?.a?.value}
         onTouchStart={() => controls?.a?.onChange(true)}
         onTouchEnd={() => controls?.a?.onChange(false)}
@@ -139,14 +146,24 @@ const ControlView = ({ controls }) => {
         A
       </Button>
       <Button
-        style={{ gridColumn: 2, gridRow: 2 }}
+        style={
+          isLandscape
+            ? { gridColumn: 2, gridRow: 2 }
+            : { gridColumn: 2, gridRow: 2 }
+        }
         active={controls?.b?.value}
         onTouchStart={() => controls?.b?.onChange(true)}
         onTouchEnd={() => controls?.b?.onChange(false)}
       >
         B
       </Button>
-      <div style={{ gridColumn: 1, gridRow: '1/3' }}>
+      <div
+        style={
+          isLandscape
+            ? { gridColumn: 1, gridRow: '1/3' }
+            : { gridColumn: '1/3', gridRow: 1 }
+        }
+      >
         <TrackPad
           coords={controls.trackpad.value}
           onChange={(coords) => controls.trackpad.onChange(coords)}
@@ -162,7 +179,6 @@ const IS_RECEIVER = PART_TYPE === 'receiver'
 
 const RemoteControl = ({ layoutProps }) => {
   const { Image } = useQRCode()
-  const { isLandscape } = useMobileOrientation()
   const [controls, setControls] = useState({
     a: false,
     b: false,
@@ -374,7 +390,7 @@ const RemoteControl = ({ layoutProps }) => {
   return IS_CONTROL ? (
     <div
       style={{
-        height: '100vh',
+        height: '100svh',
         width: '100vw',
         display: 'flex',
         flexDirection: 'column',
@@ -382,22 +398,16 @@ const RemoteControl = ({ layoutProps }) => {
         alignItems: 'center'
       }}
     >
-      {isLandscape ? (
-        <>
-          <ControlView
-            controls={{
-              a: { value: controls.a, onChange: setControl('a') },
-              b: { value: controls.b, onChange: setControl('b') },
-              trackpad: {
-                value: controls.trackpad,
-                onChange: setControl('trackpad')
-              }
-            }}
-          />
-        </>
-      ) : (
-        <div>Please flip your device</div>
-      )}
+      <ControlView
+        controls={{
+          a: { value: controls.a, onChange: setControl('a') },
+          b: { value: controls.b, onChange: setControl('b') },
+          trackpad: {
+            value: controls.trackpad,
+            onChange: setControl('trackpad')
+          }
+        }}
+      />
     </div>
   ) : controller ? (
     <>
@@ -431,7 +441,7 @@ const RemoteControl = ({ layoutProps }) => {
     <NavigationLayout {...layoutProps}>
       <div
         style={{
-          height: '100vh',
+          height: '100svh',
           width: '100vw',
           display: 'flex',
           flexDirection: 'column',
@@ -520,7 +530,7 @@ const World = () => {
 
 const Minigame = () => {
   return (
-    <div style={{ height: '100vh', width: '100vw' }}>
+    <div style={{ height: '100svh', width: '100vw' }}>
       <Canvas
         camera={{
           position: [0, 4, 6],
