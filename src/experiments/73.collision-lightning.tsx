@@ -49,7 +49,6 @@ interface GlyphProps {
 }
 
 const Glyph = ({ letter, config, isMobile }: GlyphProps) => {
-  if (isMobile === undefined) return
   const r = THREE.MathUtils.randFloatSpread
   const api = useRef<any>(null)
   const pos = useMemo(() => new THREE.Vector3(r(10), r(10), r(10)), [r])
@@ -66,7 +65,7 @@ const Glyph = ({ letter, config, isMobile }: GlyphProps) => {
       )
     }
   })
-
+  if (isMobile === undefined) return <></>
   return (
     <>
       <RigidBody
