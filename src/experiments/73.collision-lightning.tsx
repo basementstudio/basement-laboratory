@@ -7,17 +7,38 @@ import {
   PerspectiveCamera,
   Text3D
 } from '@react-three/drei'
-import { BallCollider, Physics, RigidBody } from '@react-three/rapier'
+import {
+  BallCollider,
+  ContactForcePayload,
+  Physics,
+  RigidBody
+} from '@react-three/rapier'
 import { folder, useControls } from 'leva'
 import { R3FSuspenseLayout } from '~/components/layout/r3f-suspense-layout'
 import { gsap } from 'lib/gsap/index'
-import { Bloom, EffectComposer } from '@react-three/postprocessing'
 
 type TConfig = {
   emissive: string
   text: string
   minForce: number
   forceIntensity: number
+  transmissionSampler: boolean
+  backside: boolean
+  samples: number
+  resolution: number
+  transmission: number
+  roughness: number
+  thickness: number
+  ior: number
+  chromaticAberration: number
+  anisotropy: number
+  distortion: number
+  distortionScale: number
+  temporalDistortion: number
+  clearcoat: number
+  attenuationDistance: number
+  attenuationColor: string
+  color: string
 }
 
 interface GlyphProps {
@@ -52,12 +73,13 @@ const Glyph = ({ letter, config }: GlyphProps) => {
         position={pos}
         rotation={rot}
         ref={api}
-        onContactForce={(payload: any) => {
+        onContactForce={(payload: ContactForcePayload) => {
           const { totalForceMagnitude } = payload
 
           if (totalForceMagnitude > config.minForce) {
-            const objMaterial =
-              payload.target.rigidBodyObject?.children[0].material
+            const objMaterial = (
+              payload.target.rigidBodyObject?.children[0] as THREE.Mesh
+            ).material
             if (objMaterial) {
               const intensity =
                 (totalForceMagnitude * config.forceIntensity) / 1000
@@ -175,9 +197,6 @@ const CollisionLightning = () => {
           mirror={2}
         />
       </mesh>
-      {/* <EffectComposer>
-        <Bloom intensity={0.7} />
-      </EffectComposer> */}
     </>
   )
 }
