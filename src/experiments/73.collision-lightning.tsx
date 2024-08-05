@@ -161,7 +161,7 @@ const CollisionLightning = () => {
         ))}
         <Repeller />
       </Physics>
-      <mesh receiveShadow position={[0, 0, -8]}>
+      <mesh receiveShadow position={[0, 0, -6]}>
         <planeGeometry args={[50, 50]} />
         <MeshReflectorMaterial
           resolution={1024}
