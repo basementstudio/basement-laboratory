@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import {
@@ -16,6 +16,7 @@ import {
 import { folder, useControls } from 'leva'
 import { R3FSuspenseLayout } from '~/components/layout/r3f-suspense-layout'
 import { gsap } from 'lib/gsap/index'
+import { useDeviceDetect } from '~/hooks/use-device-detect'
 
 type TConfig = {
   emissive: string
@@ -44,9 +45,11 @@ type TConfig = {
 interface GlyphProps {
   letter: string
   config: TConfig
+  isMobile: boolean | undefined
 }
 
-const Glyph = ({ letter, config }: GlyphProps) => {
+const Glyph = ({ letter, config, isMobile }: GlyphProps) => {
+  if (isMobile === undefined) return
   const r = THREE.MathUtils.randFloatSpread
   const api = useRef<any>(null)
   const pos = useMemo(() => new THREE.Vector3(r(10), r(10), r(10)), [r])
@@ -108,24 +111,77 @@ const Glyph = ({ letter, config }: GlyphProps) => {
           bevelSegments={5}
         >
           {letter}
-          <meshPhysicalMaterial {...config} emissiveIntensity={0} />
+          {isMobile ? (
+            <meshLambertMaterial
+              color="#fff"
+              emissive={config.emissive}
+              emissiveIntensity={0}
+            />
+          ) : (
+            <meshPhysicalMaterial {...config} emissiveIntensity={0} />
+          )}
         </Text3D>
       </RigidBody>
     </>
   )
 }
 
-const Repeller = ({ vec = new THREE.Vector3() }) => {
+const Repeller = ({
+  size,
+  isMobile
+}: {
+  size: number
+  isMobile: boolean | undefined
+}) => {
   const ref = useRef<any>()
-  useFrame(({ pointer, viewport }) => {
-    ref.current?.setNextKinematicTranslation(
-      vec.set(
-        (pointer.x * viewport.width) / 2,
-        (pointer.y * viewport.height) / 2,
-        0
+  const vec = new THREE.Vector3()
+  const [touchPosition, setTouchPosition] = useState({ x: 0, y: 0 })
+
+  const handleTouchStart = (event: TouchEvent) => {
+    const touch = event.touches[0]
+    setTouchPosition({ x: touch.clientX, y: touch.clientY })
+  }
+
+  const handleTouchMove = (event: TouchEvent) => {
+    const touch = event.touches[0]
+    setTouchPosition({ x: touch.clientX, y: touch.clientY })
+  }
+
+  useEffect(() => {
+    window.addEventListener('touchstart', handleTouchStart)
+    window.addEventListener('touchmove', handleTouchMove)
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchmove', handleTouchMove)
+    }
+  }, [])
+
+  useFrame(({ viewport, pointer }, delta) => {
+    if (isMobile) {
+      ref.current?.setNextKinematicTranslation(
+        vec.set(
+          (touchPosition.x / window.innerWidth) * viewport.width -
+            viewport.width / 2,
+          -(touchPosition.y / window.innerHeight) * viewport.height +
+            viewport.height / 2,
+          0
+        )
       )
-    )
+    } else {
+      delta = Math.min(0.01, delta)
+      if (ref.current) {
+        ref.current?.setNextKinematicTranslation(
+          vec.set(
+            (pointer.x * viewport.width) / 2,
+            (pointer.y * viewport.height) / 2,
+            0
+          )
+        )
+      }
+    }
   })
+
   return (
     <RigidBody
       position={[0, 0, 0]}
@@ -133,18 +189,22 @@ const Repeller = ({ vec = new THREE.Vector3() }) => {
       colliders={false}
       ref={ref}
     >
-      <BallCollider args={[0.5]} />
+      <BallCollider args={[size]} />
     </RigidBody>
   )
 }
 
 const CollisionLightning = () => {
+  const { isMobile } = useDeviceDetect()
+
   const config = useControls({
+    debug: false,
     lighting: folder({
       emissive: '#ff4d00',
       text: 'BSMNT',
-      minForce: { value: 190, min: 100, max: 1000, step: 10 },
-      forceIntensity: { value: 2.6, min: 1, max: 3, step: 0.1 }
+      minForce: { value: isMobile ? 100 : 190, min: 100, max: 1000, step: 10 },
+      forceIntensity: { value: 2.6, min: 1, max: 3, step: 0.1 },
+      repellerSize: { value: 0.5, min: 0.1, max: 5, step: 0.1 }
     }),
     material: folder(
       {
@@ -175,19 +235,20 @@ const CollisionLightning = () => {
 
   return (
     <>
+      <ambientLight color={config.emissive} intensity={0.5} />
       <PerspectiveCamera makeDefault position={[0, 0, 18]} fov={20} />
       <Environment preset="night" />
-      <Physics gravity={[0, 0, 0]}>
+      <Physics gravity={[0, 0, 0]} debug={config.debug}>
         {LETTERS.map((letter, i) => (
-          <Glyph key={i} letter={letter} config={config} />
+          <Glyph key={i} letter={letter} config={config} isMobile={isMobile} />
         ))}
-        <Repeller />
+        <Repeller size={config.repellerSize} isMobile={isMobile} />
       </Physics>
       <mesh receiveShadow position={[0, 0, -6]}>
         <planeGeometry args={[50, 50]} />
         <MeshReflectorMaterial
-          resolution={1024}
-          mixStrength={30}
+          resolution={isMobile ? 512 : 1024}
+          mixStrength={isMobile ? 15 : 30}
           roughness={0.3}
           depthScale={1.2}
           minDepthThreshold={0.4}
