@@ -34,6 +34,8 @@ const flagVertexShader = /* glsl */ `
   uniform float offsetScale;
   uniform float totalFrames;
 
+  attribute vec2 uv1; 
+
   varying vec2 vDisplacementUv;
   varying vec3 displacement;
   varying vec2 vUv;
@@ -41,7 +43,7 @@ const flagVertexShader = /* glsl */ `
   
   void main() {
     vUv = vec2(uv.x, 1. - uv.y);
-    vDisplacementUv = vec2(uv1.x, 1. - (currentFrame / totalFrames));
+    vDisplacementUv = vec2(uv1.x, 1. - (currentFrame / totalFrames)); // Use uv1 here
     vec3 offset = texture2D(tDisplacement, vDisplacementUv).xzy;
     vNormal = texture2D(tNormals, vDisplacementUv).xyz;
     displacement = offset;

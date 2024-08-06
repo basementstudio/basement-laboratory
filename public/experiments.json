@@ -6,7 +6,16 @@
     "tags": [],
     "og": null,
     "number": 73,
-    "contributors": []
+    "contributors": [
+      {
+        "id": "U_kgDOBmISmA",
+        "url": "https://github.com/tomasferrerasdev",
+        "name": "Tomas Ferreras",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/107090584?u=1f8d01466c167b2dabce698c02cb136656ab731c&v=4",
+        "email": "hellotomasdev@gmail.com",
+        "company": null
+      }
+    ]
   },
   {
     "filename": "72.render-texture",
@@ -691,6 +700,14 @@
     "og": null,
     "number": 34,
     "contributors": [
+      {
+        "id": "U_kgDOBmISmA",
+        "url": "https://github.com/tomasferrerasdev",
+        "name": "Tomas Ferreras",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/107090584?u=1f8d01466c167b2dabce698c02cb136656ab731c&v=4",
+        "email": "hellotomasdev@gmail.com",
+        "company": null
+      },
       {
         "id": "MDQ6VXNlcjQzODk0MzQz",
         "url": "https://github.com/matiasperz",
