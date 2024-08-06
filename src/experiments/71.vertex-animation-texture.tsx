@@ -34,7 +34,7 @@ const flagVertexShader = /* glsl */ `
   uniform float offsetScale;
   uniform float totalFrames;
 
-  attribute vec2 uv1; 
+  attribute vec2 uv1; //added attribute for displacement texture
 
   varying vec2 vDisplacementUv;
   varying vec3 displacement;
