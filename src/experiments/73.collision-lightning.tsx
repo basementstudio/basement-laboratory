@@ -228,8 +228,8 @@ const CollisionLightning = () => {
     )
   })
 
-  const WORD = config.text
-  const LETTERS = WORD.split('')
+  const WORD = useMemo(() => config.text, [config.text])
+  const LETTERS = useMemo(() => WORD.split(''), [WORD])
 
   return (
     <>
