@@ -13,7 +13,7 @@ import {
 } from '@react-three/rapier'
 import { folder, useControls } from 'leva'
 import { gsap } from 'lib/gsap/index'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 
 import { R3FSuspenseLayout } from '~/components/layout/r3f-suspense-layout'
@@ -133,17 +133,19 @@ const Repeller = ({
   isMobile: boolean | undefined
 }) => {
   const ref = useRef<any>()
-  const vec = new THREE.Vector3()
-  const [touchPosition, setTouchPosition] = useState({ x: 0, y: 0 })
+  const vecRefs = useRef({
+    cursorPos: new THREE.Vector3(),
+    touchPos: new THREE.Vector2()
+  })
 
   const handleTouchStart = useCallback((event: TouchEvent) => {
     const touch = event.touches[0]
-    setTouchPosition({ x: touch.clientX, y: touch.clientY })
+    vecRefs.current.touchPos.set(touch.clientX, touch.clientY)
   }, [])
 
   const handleTouchMove = useCallback((event: TouchEvent) => {
     const touch = event.touches[0]
-    setTouchPosition({ x: touch.clientX, y: touch.clientY })
+    vecRefs.current.touchPos.set(touch.clientX, touch.clientY)
   }, [])
 
   useEffect(() => {
@@ -157,12 +159,15 @@ const Repeller = ({
   }, [handleTouchStart, handleTouchMove])
 
   useFrame(({ viewport, pointer }) => {
+    const cursorPos = vecRefs.current.cursorPos
+    const touchPos = vecRefs.current.touchPos
+
     if (isMobile) {
       ref.current?.setNextKinematicTranslation(
-        vec.set(
-          (touchPosition.x / window.innerWidth) * viewport.width -
+        cursorPos.set(
+          (touchPos.x / window.innerWidth) * viewport.width -
             viewport.width / 2,
-          -(touchPosition.y / window.innerHeight) * viewport.height +
+          -(touchPos.y / window.innerHeight) * viewport.height +
             viewport.height / 2,
           0
         )
@@ -170,7 +175,7 @@ const Repeller = ({
     } else {
       if (ref.current) {
         ref.current?.setNextKinematicTranslation(
-          vec.set(
+          cursorPos.set(
             (pointer.x * viewport.width) / 2,
             (pointer.y * viewport.height) / 2,
             0
