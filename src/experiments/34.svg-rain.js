@@ -163,9 +163,7 @@ const Constraints = ({ tightenWallsBy }) => {
         includeInvisible
       >
         <mesh visible={false}>
-          <boxBufferGeometry
-            args={[FLOOR_SIZE, FLOOR_SIZE, constraintsThinkness]}
-          />
+          <boxGeometry args={[FLOOR_SIZE, FLOOR_SIZE, constraintsThinkness]} />
           <meshBasicMaterial color="red" />
         </mesh>
       </RigidBody>
@@ -183,9 +181,7 @@ const Constraints = ({ tightenWallsBy }) => {
         includeInvisible
       >
         <mesh visible={false}>
-          <boxBufferGeometry
-            args={[constraintsThinkness, FLOOR_SIZE, FLOOR_SIZE]}
-          />
+          <boxGeometry args={[constraintsThinkness, FLOOR_SIZE, FLOOR_SIZE]} />
           <meshBasicMaterial color="red" />
         </mesh>
       </RigidBody>
@@ -203,9 +199,7 @@ const Constraints = ({ tightenWallsBy }) => {
         includeInvisible
       >
         <mesh visible={false}>
-          <boxBufferGeometry
-            args={[constraintsThinkness, FLOOR_SIZE, FLOOR_SIZE]}
-          />
+          <boxGeometry args={[constraintsThinkness, FLOOR_SIZE, FLOOR_SIZE]} />
           <meshBasicMaterial color="red" />
         </mesh>
       </RigidBody>
