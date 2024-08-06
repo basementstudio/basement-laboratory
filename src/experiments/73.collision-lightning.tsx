@@ -13,7 +13,7 @@ import {
 } from '@react-three/rapier'
 import { folder, useControls } from 'leva'
 import { gsap } from 'lib/gsap/index'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 import { R3FSuspenseLayout } from '~/components/layout/r3f-suspense-layout'
@@ -136,15 +136,15 @@ const Repeller = ({
   const vec = new THREE.Vector3()
   const [touchPosition, setTouchPosition] = useState({ x: 0, y: 0 })
 
-  const handleTouchStart = (event: TouchEvent) => {
+  const handleTouchStart = useCallback((event: TouchEvent) => {
     const touch = event.touches[0]
     setTouchPosition({ x: touch.clientX, y: touch.clientY })
-  }
+  }, [])
 
-  const handleTouchMove = (event: TouchEvent) => {
+  const handleTouchMove = useCallback((event: TouchEvent) => {
     const touch = event.touches[0]
     setTouchPosition({ x: touch.clientX, y: touch.clientY })
-  }
+  }, [])
 
   useEffect(() => {
     window.addEventListener('touchstart', handleTouchStart)
@@ -154,7 +154,7 @@ const Repeller = ({
       window.removeEventListener('touchstart', handleTouchStart)
       window.removeEventListener('touchmove', handleTouchMove)
     }
-  }, [])
+  }, [handleTouchStart, handleTouchMove])
 
   useFrame(({ viewport, pointer }) => {
     if (isMobile) {
