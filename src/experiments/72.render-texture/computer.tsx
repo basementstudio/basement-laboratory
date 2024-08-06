@@ -18,7 +18,7 @@ interface MonitorNodes extends GLTF {
 }
 
 export const Computer = () => {
-  const { nodes } = useGLTF('/models/monitor.glb') as MonitorNodes
+  const { nodes } = useGLTF('/models/monitor.glb') as unknown as MonitorNodes
 
   const [isOn, setIsOn] = useState(true)
   const [hovered, setHovered] = useState(false)
