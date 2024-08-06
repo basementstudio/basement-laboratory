@@ -43,7 +43,7 @@ const flagVertexShader = /* glsl */ `
   
   void main() {
     vUv = vec2(uv.x, 1. - uv.y);
-    vDisplacementUv = vec2(uv1.x, 1. - (currentFrame / totalFrames)); // Use uv1 here
+    vDisplacementUv = vec2(uv1.x, 1. - (currentFrame / totalFrames));
     vec3 offset = texture2D(tDisplacement, vDisplacementUv).xzy;
     vNormal = texture2D(tNormals, vDisplacementUv).xyz;
     displacement = offset;
