@@ -49,11 +49,12 @@ interface GlyphProps {
   isMobile: boolean | undefined
 }
 
+const r = THREE.MathUtils.randFloatSpread
+
 const Glyph = ({ letter, config, isMobile }: GlyphProps) => {
-  const r = THREE.MathUtils.randFloatSpread
   const api = useRef<any>(null)
-  const pos = useMemo(() => new THREE.Vector3(r(10), r(10), r(10)), [r])
-  const rot = useMemo(() => new THREE.Euler(r(10), r(10), r(10)), [r])
+  const pos = useMemo(() => new THREE.Vector3(r(10), r(10), r(10)), [])
+  const rot = useMemo(() => new THREE.Euler(r(10), r(10), r(10)), [])
 
   useFrame((_state) => {
     if (api.current) {
