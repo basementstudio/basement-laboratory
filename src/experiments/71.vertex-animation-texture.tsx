@@ -24,33 +24,30 @@ import { R3FSuspenseLayout } from '~/components/layout/r3f-suspense-layout'
 const TOTAL_FRAMES = 214
 
 const flagVertexShader = /* glsl */ `
+const float PI = 3.1415926535897932384626433832795;
 
-  const float PI = 3.1415926535897932384626433832795;
+uniform sampler2D tDisplacement;
+uniform sampler2D tNormals;
+uniform float vertexCount;
+uniform float currentFrame;
+uniform float offsetScale;
+uniform float totalFrames;
 
-  uniform sampler2D tDisplacement;
-  uniform sampler2D tNormals;
-  uniform float vertexCount;
-  uniform float currentFrame;
-  uniform float offsetScale;
-  uniform float totalFrames;
+varying vec2 vDisplacementUv;
+varying vec3 displacement;
+varying vec2 vUv;
+varying vec3 vNormal;
 
-  attribute vec2 uv1; //added attribute for displacement texture
-
-  varying vec2 vDisplacementUv;
-  varying vec3 displacement;
-  varying vec2 vUv;
-  varying vec3 vNormal;
-  
-  void main() {
-    vUv = vec2(uv.x, 1. - uv.y);
-    vDisplacementUv = vec2(uv1.x, 1. - (currentFrame / totalFrames));
-    vec3 offset = texture2D(tDisplacement, vDisplacementUv).xzy;
-    vNormal = texture2D(tNormals, vDisplacementUv).xyz;
-    displacement = offset;
-    offset *= offsetScale;
-    vec3 newPosition = position + offset;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-  }
+void main() {
+  vUv = vec2(uv.x, 1. - uv.y);
+  vDisplacementUv = vec2(uv1.x, 1. - (currentFrame / totalFrames));
+  vec3 offset = texture2D(tDisplacement, vDisplacementUv).xzy;
+  vNormal = texture2D(tNormals, vDisplacementUv).xyz;
+  displacement = offset;
+  offset *= offsetScale;
+  vec3 newPosition = position + offset;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+}
 `
 
 const flagFragmentShader = /* glsl */ `
