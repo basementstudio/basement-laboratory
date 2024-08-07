@@ -270,6 +270,6 @@ CollisionLightning.Layout = R3FSuspenseLayout
 
 CollisionLightning.Title = 'Collision lightning'
 CollisionLightning.Description =
-  'Animate lighning based on collision between objects'
+  'Lightning animations triggered by collisions between objects.'
 
 export default CollisionLightning
