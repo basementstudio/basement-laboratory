@@ -55,9 +55,20 @@ function ParticlesEmitter() {
       mousePosition.current = { x: e.clientX, y: e.clientY }
     }
 
-    window.addEventListener('mousemove', updateMousePosition)
+    const updateTouchPosition = (e: TouchEvent) => {
+      mousePosition.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY
+      }
+    }
 
-    return () => window.removeEventListener('mousemove', updateMousePosition)
+    window.addEventListener('mousemove', updateMousePosition)
+    window.addEventListener('touchmove', updateTouchPosition)
+
+    return () => {
+      window.removeEventListener('mousemove', updateMousePosition)
+      window.removeEventListener('touchmove', updateTouchPosition)
+    }
   }, [])
 
   const color = useMemo(
