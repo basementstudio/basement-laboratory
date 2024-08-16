@@ -139,8 +139,8 @@ const fragment = /*glsl*/ `
 
      
    
-      float noise = 0.4 * (cnoise(vPosition * 20.0) + 1.2) + uProgress - vPosition.y * 0.02;
-      //float noise = 0.5 * (cnoise(vPosition) + 1.0) + uProgress - vPosition.y * 0.08;
+      
+      float noise = 0.5 * (cnoise(vPosition) + 1.0) + uProgress - vPosition.y * 0.08;
       float step = smoothstep(0.1, 0.09,noise);
       vec3 animateColor = a + b * cos(2.0 * 3.1415 * (c * diff + d + uTime / 3.0));
       
