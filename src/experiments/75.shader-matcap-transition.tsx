@@ -225,7 +225,7 @@ const Experience = () => {
   )
 }
 
-const ShaderTransform = () => {
+const ShaderMatcapTransition = () => {
   return (
     <>
       <ScrollControls pages={2} damping={0.1}>
@@ -238,10 +238,10 @@ const ShaderTransform = () => {
   )
 }
 
-ShaderTransform.Layout = R3FSuspenseLayout
+ShaderMatcapTransition.Layout = R3FSuspenseLayout
 
-ShaderTransform.Title = 'Shader transform'
-ShaderTransform.Description =
+ShaderMatcapTransition.Title = 'Transition between matcap texture and shader'
+ShaderMatcapTransition.Description =
   'Animate transition between matcap texture and shader based on scroll'
 
-export default ShaderTransform
+export default ShaderMatcapTransition

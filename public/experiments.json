@@ -1,8 +1,8 @@
 [
   {
-    "filename": "75.shader-transform.tsx",
-    "title": "Shader transform.",
-    "href": "/experiments/75.shader-transform.tsx",
+    "filename": "75.shader-matcap-transition.tsx",
+    "title": "Shader matcap transition.",
+    "href": "/experiments/75.shader-matcap-transition.tsx",
     "tags": [],
     "og": null,
     "number": 74,
