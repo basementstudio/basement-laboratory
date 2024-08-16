@@ -48,7 +48,8 @@ function ParticlesEmitter() {
     emissionRadius,
     maxParticles,
     earthGravity,
-    cursorGravity
+    cursorGravity,
+    blur
   } = useControls({
     creationRate: { value: 1, min: 0.1, max: 100, step: 0.1 },
     size: { value: 4, min: 1, max: 10, step: 1 },
@@ -57,7 +58,8 @@ function ParticlesEmitter() {
     emissionRadius: { value: 1, min: 1, max: 10, step: 0.1 },
     maxParticles: { value: 60, min: 10, max: 10000, step: 10 },
     earthGravity: { value: 0.1, min: 0, max: 1, step: 0.01 },
-    cursorGravity: { value: 0.1, min: -1, max: 1, step: 0.01 }
+    cursorGravity: { value: 0.1, min: -1, max: 1, step: 0.01 },
+    blur: { value: false }
   })
 
   const configRef = useStateToRef({
@@ -174,7 +176,8 @@ function ParticlesEmitter() {
       style={{
         width: '0px',
         height: '0px',
-        transform: 'translate3d(0, 0, 0)'
+        transform: 'translate3d(0, 0, 0)',
+        filter: blur ? 'blur(3px)' : 'none'
       }}
     />
   )
