@@ -1,6 +1,5 @@
 import {
   Edges,
-  Environment,
   Grid,
   PerspectiveCamera,
   ScrollControls,
@@ -10,16 +9,16 @@ import {
 import { useFrame } from '@react-three/fiber'
 import { EffectComposer, Noise } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 
 import { R3FSuspenseLayout } from '~/components/layout/r3f-suspense-layout'
 
 const vertex = /*glsl*/ `
       varying vec2 vUv;
-      varying vec3 vView;
       varying vec3 vNormal;
       varying vec3 vPosition;
+      varying vec3 vView;
   
       void main()
       {
@@ -163,27 +162,30 @@ interface ScrollControlsState {
 
 const Experience = () => {
   const matcap = useTexture('/matcaps/darkblue.png')
-  const pyramidGeometry = new THREE.CylinderGeometry(0, 4, 5, 4, 1)
+  const pyramidGeometry = useMemo(
+    () => new THREE.CylinderGeometry(0, 4, 5, 4, 1),
+    []
+  )
   const pyramidRef = useRef<THREE.Mesh>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera>(null)
   const data: ExtendedScrollControlsState =
     useScroll() as unknown as ExtendedScrollControlsState
 
-  const customMaterial = new THREE.ShaderMaterial({
-    side: THREE.DoubleSide,
-    uniforms: {
-      uTime: { value: 0 },
-      uLevel: { value: 0 },
-      uPlayhead: { value: 0 },
-      uDivisionColor: { value: 0 },
-      uMatcap: { value: matcap },
-      uProgress: { value: 0 }
-    },
-
-    transparent: true,
-    vertexShader: vertex,
-    fragmentShader: fragment
-  })
+  const customMaterial = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        side: THREE.DoubleSide,
+        uniforms: {
+          uTime: { value: 0 },
+          uMatcap: { value: matcap },
+          uProgress: { value: 0 }
+        },
+        transparent: true,
+        vertexShader: vertex,
+        fragmentShader: fragment
+      }),
+    [matcap]
+  )
 
   useFrame((_state, delta) => {
     customMaterial.uniforms.uProgress.value = -data.scroll.current
@@ -220,7 +222,6 @@ const Experience = () => {
         fadeStrength={1.0}
         infiniteGrid
       />
-      <Environment preset="sunset" />
     </>
   )
 }
