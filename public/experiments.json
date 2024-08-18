@@ -5,8 +5,26 @@
     "href": "/experiments/75.shader-matcap-transition.tsx",
     "tags": [],
     "og": null,
-    "number": 74,
+    "number": 75,
     "contributors": []
+  },
+  {
+    "filename": "74.particles-emitter.tsx",
+    "title": "Particles emitter.",
+    "href": "/experiments/74.particles-emitter.tsx",
+    "tags": [],
+    "og": null,
+    "number": 74,
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjY0NjU4ODg2",
+        "url": "https://github.com/valebearzotti",
+        "name": "Valentina",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/64658886?u=dcec890a5753299e945db5402e0f9673a2a83d97&v=4",
+        "email": "",
+        "company": "@basementstudio "
+      }
+    ]
   },
   {
     "filename": "73.collision-lightning.tsx",
