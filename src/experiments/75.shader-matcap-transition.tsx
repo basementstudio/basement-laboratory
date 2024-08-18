@@ -220,12 +220,13 @@ const Experience = () => {
         <Edges linewidth={2} scale={1} threshold={15} color="white" />
       </mesh>
       <Grid
-        position={[0, -0.01, 0]}
         args={[10.5, 10.5]}
-        cellSize={0.6}
         cellThickness={1.0}
         cellColor={'#727272'}
-        sectionSize={3.3}
+        scale={[0.6, 0.6, 0.6]}
+        position={[0, -0.01, 0]}
+        cellSize={1}
+        sectionSize={5}
         sectionThickness={1.5}
         sectionColor={'#8d8d8d'}
         fadeDistance={25}
