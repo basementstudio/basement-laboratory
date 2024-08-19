@@ -55,9 +55,9 @@ function ParticlesEmitter() {
     size: { value: 4, min: 1, max: 10, step: 1 },
     color: '#FF4D00',
     lifespan: { value: 40, min: 10, max: 100, step: 10 },
-    emissionRadius: { value: 1, min: 1, max: 10, step: 0.1 },
+    emissionRadius: { value: 1, min: 1, max: 100, step: 0.1 },
     maxParticles: { value: 60, min: 10, max: 10000, step: 10 },
-    earthGravity: { value: 0.1, min: 0, max: 1, step: 0.01 },
+    earthGravity: { value: 0.1, min: -0.2, max: 0.2, step: 0.01 },
     cursorGravity: { value: 0.1, min: -1, max: 1, step: 0.01 },
     blur: { value: false }
   })
@@ -112,7 +112,7 @@ function ParticlesEmitter() {
         const distance = Math.sqrt(dx * dx + dy * dy)
 
         // cursor gravity
-        const cursorGravity = configRef.current.cursorGravity
+        const cursorGravity = configRef.current.cursorGravity * 0.2
         p.speedX += (dx / distance) * cursorGravity
         p.speedY += (dy / distance) * cursorGravity
 
@@ -142,7 +142,7 @@ function ParticlesEmitter() {
 
         for (let i = 0; i < particlesToCreate; i++) {
           const angle = Math.random() * Math.PI * 2
-          const radius = configRef.current.emissionRadius
+          const radius = Math.random() * configRef.current.emissionRadius
 
           particles.current.push({
             x: mousePosition.current.x + Math.cos(angle) * radius,
