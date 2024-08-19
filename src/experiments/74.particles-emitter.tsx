@@ -1,8 +1,66 @@
-import { useControls } from 'leva'
+import { buttonGroup, useControls } from 'leva'
 import type { MutableRefObject } from 'react'
 import React, { useEffect, useRef } from 'react'
 
 import { HTMLLayout } from '~/components/layout/html-layout'
+
+const presets = [
+  {
+    creationRate: 20,
+    size: 4,
+    color: '#FF4D00',
+    lifespan: 100,
+    emissionRadius: 100,
+    maxParticles: 2000,
+    earthGravity: 0,
+    cursorGravity: -1,
+    blur: false
+  },
+  {
+    creationRate: 14,
+    size: 3,
+    color: '#FF4D00',
+    lifespan: 70,
+    emissionRadius: 4,
+    maxParticles: 2000,
+    earthGravity: 0.6,
+    cursorGravity: 0.1,
+    blur: false
+  },
+  {
+    creationRate: 70,
+    size: 6,
+    color: '#FF4D00',
+    lifespan: 10,
+    emissionRadius: 60,
+    maxParticles: 4000,
+    earthGravity: 0,
+    cursorGravity: 1,
+    blur: true
+  },
+  {
+    creationRate: 100,
+    size: 1,
+    color: '#FF4D00',
+    lifespan: 60,
+    emissionRadius: 30,
+    maxParticles: 10000,
+    earthGravity: 0,
+    cursorGravity: 0,
+    blur: false
+  },
+  {
+    creationRate: 100,
+    size: 8,
+    color: '#FF4D00',
+    lifespan: 100,
+    emissionRadius: 100,
+    maxParticles: 1000,
+    earthGravity: 0,
+    cursorGravity: -1,
+    blur: false
+  }
+]
 
 export function useStateToRef<T = unknown>(initial: T): MutableRefObject<T> {
   const ref = useRef<T>(initial)
@@ -40,17 +98,7 @@ function ParticlesEmitter() {
   const animationRef = useRef<number>()
 
   /* Controls */
-  const {
-    creationRate,
-    size,
-    color,
-    lifespan,
-    emissionRadius,
-    maxParticles,
-    earthGravity,
-    cursorGravity,
-    blur
-  } = useControls({
+  const [values, set] = useControls(() => ({
     creationRate: { value: 1, min: 0.1, max: 100, step: 0.1 },
     size: { value: 4, min: 1, max: 10, step: 1 },
     color: '#FF4D00',
@@ -59,19 +107,20 @@ function ParticlesEmitter() {
     maxParticles: { value: 60, min: 10, max: 10000, step: 10 },
     earthGravity: { value: 0.1, min: -1, max: 1, step: 0.01 },
     cursorGravity: { value: 0.1, min: -1, max: 1, step: 0.01 },
-    blur: { value: false }
-  })
+    blur: { value: false },
+    preset: buttonGroup({
+      label: '',
+      opts: {
+        Atomic: () => set(presets[0]),
+        Asteroid: () => set(presets[1]),
+        Supernova: () => set(presets[2]),
+        Trail: () => set(presets[3]),
+        Pulse: () => set(presets[4])
+      }
+    })
+  }))
 
-  const configRef = useStateToRef({
-    creationRate,
-    size,
-    color,
-    lifespan,
-    emissionRadius,
-    maxParticles,
-    earthGravity,
-    cursorGravity
-  })
+  const configRef = useStateToRef(values)
 
   /* Mouse Position */
   useEffect(() => {
@@ -177,7 +226,7 @@ function ParticlesEmitter() {
         width: '0px',
         height: '0px',
         transform: 'translate3d(0, 0, 0)',
-        filter: blur ? 'blur(3px) contrast(5)' : 'none'
+        filter: values.blur ? 'blur(3px) contrast(5)' : 'none'
       }}
     />
   )
