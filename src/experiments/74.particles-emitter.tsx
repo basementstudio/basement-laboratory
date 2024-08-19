@@ -177,7 +177,7 @@ function ParticlesEmitter() {
         width: '0px',
         height: '0px',
         transform: 'translate3d(0, 0, 0)',
-        filter: blur ? 'blur(3px)' : 'none'
+        filter: blur ? 'blur(3px) contrast(5)' : 'none'
       }}
     />
   )
