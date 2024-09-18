@@ -1,5 +1,4 @@
 import {
-  Environment,
   Grid,
   OrbitControls,
   PerspectiveCamera,
