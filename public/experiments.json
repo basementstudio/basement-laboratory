@@ -1,12 +1,30 @@
 [
   {
+    "filename": "76.butterfly-particle-sphere.tsx",
+    "title": "Butterfly particle sphere.",
+    "href": "/experiments/76.butterfly-particle-sphere.tsx",
+    "tags": [],
+    "og": null,
+    "number": 76,
+    "contributors": []
+  },
+  {
     "filename": "75.shader-matcap-transition.tsx",
     "title": "Shader matcap transition.",
     "href": "/experiments/75.shader-matcap-transition.tsx",
     "tags": [],
     "og": null,
     "number": 75,
-    "contributors": []
+    "contributors": [
+      {
+        "id": "U_kgDOBmISmA",
+        "url": "https://github.com/tomasferrerasdev",
+        "name": "Tomas Ferreras",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/107090584?u=1f8d01466c167b2dabce698c02cb136656ab731c&v=4",
+        "email": "hellotomasdev@gmail.com",
+        "company": "@basementstudio"
+      }
+    ]
   },
   {
     "filename": "74.particles-emitter.tsx",
@@ -84,7 +102,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -128,7 +146,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -146,7 +164,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -164,7 +182,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -182,7 +200,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -200,7 +218,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -218,7 +236,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -236,7 +254,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -254,7 +272,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -272,7 +290,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -308,7 +326,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -326,7 +344,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -353,7 +371,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -371,7 +389,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -389,7 +407,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -425,7 +443,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -479,7 +497,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -497,7 +515,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -515,7 +533,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -533,7 +551,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -551,7 +569,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -569,7 +587,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -587,7 +605,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -605,7 +623,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -623,7 +641,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -641,7 +659,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -659,7 +677,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -677,7 +695,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -695,7 +713,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -713,7 +731,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -757,7 +775,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -775,7 +793,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -793,7 +811,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -811,7 +829,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -829,7 +847,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -847,7 +865,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -865,7 +883,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -883,7 +901,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -901,7 +919,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -919,7 +937,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "U_kgDOBlLnQQ",
@@ -945,7 +963,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "U_kgDOBlLnQQ",
@@ -971,7 +989,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "U_kgDOBlLnQQ",
@@ -1015,7 +1033,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1033,7 +1051,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1051,7 +1069,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "U_kgDOBlLnQQ",
@@ -1085,7 +1103,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "U_kgDOBlLnQQ",
@@ -1111,7 +1129,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "U_kgDOBlLnQQ",
@@ -1137,7 +1155,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1163,7 +1181,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1181,7 +1199,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1199,7 +1217,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -1225,7 +1243,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -1251,7 +1269,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1269,7 +1287,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -1295,7 +1313,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1313,7 +1331,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1331,7 +1349,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1349,7 +1367,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       },
       {
         "id": "MDQ6VXNlcjMzOTgxNTY1",
@@ -1375,7 +1393,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1393,7 +1411,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1411,7 +1429,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1429,7 +1447,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   },
@@ -1447,7 +1465,7 @@
         "name": "Matias Perez",
         "avatarUrl": "https://avatars.githubusercontent.com/u/43894343?u=4e0ff0146f8e11ef5284a4327b273be92b8ddf8a&v=4",
         "email": "",
-        "company": "@basementstudio"
+        "company": "@joyco-studio"
       }
     ]
   }
