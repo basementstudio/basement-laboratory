@@ -263,9 +263,8 @@ const ButterflyParticleSphere = () => {
 
       <Effects />
 
-      <PerspectiveCamera makeDefault position={[0, 2, 4]} fov={40} />
+      <PerspectiveCamera makeDefault position={[0, 3, 6]} fov={50} />
       <ambientLight intensity={0.5} />
-      <Environment resolution={1920} preset="park" background />
       <OrbitControls />
       <Grid
         args={[10.5, 10.5]}
