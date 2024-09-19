@@ -82,14 +82,6 @@ const vertex = /*glsl*/ `
         );
     }
 
-    // New function to orient particles
-    mat3 lookAt(vec3 from, vec3 to, vec3 up) {
-        vec3 forward = normalize(to - from);
-        vec3 right = normalize(cross(forward, up));
-        vec3 newUp = cross(right, forward);
-        return mat3(right, newUp, -forward);
-    }
-
     void main() {
         float phi = 2.0 * 3.14159265359 * fract(sin(float(gl_VertexID)) * 43758.5453);
         float cosTheta = 1.0 - 2.0 * float(gl_VertexID) / float(${count});
@@ -110,13 +102,9 @@ const vertex = /*glsl*/ `
         mat3 randomRot = randomRotation(seed);
         particlePosition = randomRot * particlePosition;
 
-        // Orient particle tangent to the sphere
-        mat3 orientationMatrix = lookAt(vec3(0.0), particlePosition, vec3(0.0, 1.0, 0.0));
-        vec3 orientedPosition = particlePosition + orientationMatrix * vec3(0.0, 0.0, 0.0);
-
         vDistance = length(particlePosition) / uRadius;
 
-        vec4 modelPosition = modelMatrix * vec4(orientedPosition, 1.0);
+        vec4 modelPosition = modelMatrix * vec4(particlePosition, 1.0);
         vec4 viewPosition = viewMatrix * modelPosition;
         vec4 projectedPosition = projectionMatrix * viewPosition;
 
@@ -146,16 +134,7 @@ const fragment = /*glsl*/ `
         // Rotate texture coordinates 180 degrees
         vec2 rotatedCoords = vec2(1.0 - gl_PointCoord.x, 1.0 - gl_PointCoord.y);
         
-        // Apply water-like deformation
-        float waveStrength = 0.01;
-        float waveSpeed = 2.0;
-        vec2 wave = vec2(
-            sin(rotatedCoords.y * 10.0 + uTime * waveSpeed) * waveStrength,
-            sin(rotatedCoords.x * 10.0 + uTime * waveSpeed) * waveStrength
-        );
-        vec2 deformedCoords = rotatedCoords + wave;
-        
-        vec4 texColor = texture2D(uTexture, deformedCoords);
+        vec4 texColor = texture2D(uTexture, rotatedCoords);
         
         vec3 colorCenter = vec3(1.0, 0.6, 0.0); // Yellow
         vec3 colorOuter = vec3(1.0, 0.0, 0.0); // Orange
@@ -171,7 +150,7 @@ const fragment = /*glsl*/ `
         // Apply butterfly shape
         color = mix(vec3(0.0), color, strength);
         
-        // Fire-like flickering effect
+        // Fire-like flicker effect
         float noise = fract(sin(dot(rotatedCoords, vec2(12.9898, 78.233))) * 43758.5453);
         float flicker = noise * 0.2 + 0.8;
         float fireEffect = sin(uTime * 2.0 + vDistance * 3.0) * 0.1 + 0.9;
@@ -223,7 +202,6 @@ const ButterflyParticleSphere = () => {
       uTexture: {
         value: butterflyTexture
       }
-      // Add any other attributes here
     }),
     [butterflyTexture]
   )
@@ -263,7 +241,6 @@ const ButterflyParticleSphere = () => {
       <Effects />
 
       <PerspectiveCamera makeDefault position={[0, 3, 6]} fov={50} />
-      <ambientLight intensity={0.5} />
       <OrbitControls />
       <Grid
         args={[10.5, 10.5]}
