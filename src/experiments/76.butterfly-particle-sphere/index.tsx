@@ -6,23 +6,24 @@ import {
 } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { Bloom, EffectComposer } from '@react-three/postprocessing'
-import gsap from 'gsap'
 import { folder, useControls } from 'leva'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
+
+import FakeGlowMaterial from './fade-glow-material'
 
 const Effects = () => {
   const controls = useControls({
     bloom: folder({
       luminanceThreshold: {
-        value: 0,
+        value: 0.16,
         min: 0,
         max: 1
       },
       luminanceSmoothing: {
-        value: 0.7,
+        value: 1,
         min: 0,
         max: 1
       },
@@ -167,7 +168,6 @@ const fragment = /*glsl*/ `
 const PARTICLES_COUNT = 1000
 
 const ButterflyParticleSphere = () => {
-  const [animationFinished, setAnimationFinished] = useState(false)
   const pointsRef =
     useRef<
       THREE.Points<
@@ -175,6 +175,7 @@ const ButterflyParticleSphere = () => {
         THREE.Material | THREE.Material[]
       >
     >(null)
+  const glowMeshRef = useRef<THREE.Mesh>(null)
   const radius = 1
   const butterflyTexture = useTexture('/images/butterfly-shape.jpg')
 
@@ -246,28 +247,6 @@ const ButterflyParticleSphere = () => {
     [butterflyTexture]
   )
 
-  useEffect(() => {
-    const tl = gsap.timeline({ onComplete: () => setAnimationFinished(true) })
-
-    tl.fromTo(
-      uniforms.uRadius,
-      { value: 15 },
-      { value: 1, duration: 8, ease: 'back.inOut(1)' }
-    )
-      .fromTo(
-        uniforms.uParticleDispersion,
-        { value: 0.01 },
-        { value: 0.05, duration: 8, ease: 'back.inOut(1)' },
-        0
-      )
-      .fromTo(
-        uniforms.uParticleSize,
-        { value: 250 },
-        { value: 100, duration: 8, ease: 'back.inOut(1)' },
-        0
-      )
-  }, [uniforms.uParticleDispersion, uniforms.uParticleSize, uniforms.uRadius])
-
   useFrame((state) => {
     if (!pointsRef.current) return
 
@@ -277,21 +256,18 @@ const ButterflyParticleSphere = () => {
     // @ts-ignore
     pointsRef.current.material.uniforms.uTime.value = clock.elapsedTime
 
-    if (animationFinished) {
-      // @ts-ignore
-      pointsRef.current.material.uniforms.uRadius.value = uRadius
+    // @ts-ignore
+    pointsRef.current.material.uniforms.uRadius.value = uRadius
 
-      // @ts-ignore
-      pointsRef.current.material.uniforms.uParticlesCount.value =
-        uParticlesCount
+    // @ts-ignore
+    pointsRef.current.material.uniforms.uParticlesCount.value = uParticlesCount
 
-      // @ts-ignore
-      pointsRef.current.material.uniforms.uParticleSize.value = uParticleSize
+    // @ts-ignore
+    pointsRef.current.material.uniforms.uParticleSize.value = uParticleSize
 
-      //@ts-ignore
-      pointsRef.current.material.uniforms.uParticleDispersion.value =
-        uParticleDispersion
-    }
+    //@ts-ignore
+    pointsRef.current.material.uniforms.uParticleDispersion.value =
+      uParticleDispersion
   })
 
   return (
@@ -314,6 +290,16 @@ const ButterflyParticleSphere = () => {
           uniforms={uniforms}
         />
       </points>
+
+      <mesh ref={glowMeshRef}>
+        <sphereGeometry />
+        <FakeGlowMaterial
+          glowColor="#FF8200"
+          glowInternalRadius={0.1}
+          falloff={5}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
 
       <Effects />
 
