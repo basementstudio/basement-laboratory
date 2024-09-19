@@ -6,8 +6,9 @@ import {
 } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { Bloom, EffectComposer } from '@react-three/postprocessing'
+import gsap from 'gsap'
 import { folder, useControls } from 'leva'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
@@ -45,11 +46,12 @@ const Effects = () => {
   )
 }
 
-const count = 1000
-
 const vertex = /*glsl*/ `
     uniform float uTime;
     uniform float uRadius;
+    uniform float uParticlesCount;
+    uniform float uParticleSize;
+    uniform float uParticleDispersion;
 
     varying float vDistance;
     varying vec2 vUv;
@@ -84,11 +86,11 @@ const vertex = /*glsl*/ `
 
     void main() {
         float phi = 2.0 * 3.14159265359 * fract(sin(float(gl_VertexID)) * 43758.5453);
-        float cosTheta = 1.0 - 2.0 * float(gl_VertexID) / float(${count});
+        float cosTheta = 1.0 - 2.0 * float(gl_VertexID) / float(uParticlesCount);
         float sinTheta = sqrt(1.0 - cosTheta * cosTheta);
         
         // Slight deformation
-        float deformation = sin(phi * 5.0 + uTime * 2.0) * 0.05;
+        float deformation = sin(phi * 5.0 + uTime * 2.0) * uParticleDispersion;
         vec3 normalizedPosition = vec3(
             cos(phi) * sinTheta * (1.0 + deformation),
             sin(phi) * sinTheta * (1.0 + deformation),
@@ -112,7 +114,7 @@ const vertex = /*glsl*/ `
         
         vUv = uv;
 
-        float size = 100.0;
+        float size = uParticleSize;
         gl_PointSize = size;
         gl_PointSize *= (1.0 / - viewPosition.z);
     }
@@ -162,7 +164,10 @@ const fragment = /*glsl*/ `
     }
   `
 
+const PARTICLES_COUNT = 1000
+
 const ButterflyParticleSphere = () => {
+  const [animationFinished, setAnimationFinished] = useState(false)
   const pointsRef =
     useRef<
       THREE.Points<
@@ -174,9 +179,9 @@ const ButterflyParticleSphere = () => {
   const butterflyTexture = useTexture('/images/butterfly-shape.jpg')
 
   const particlesPosition = useMemo(() => {
-    const positions = new Float32Array(count * 3)
+    const positions = new Float32Array(PARTICLES_COUNT * 3)
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < PARTICLES_COUNT; i++) {
       const distance = Math.sqrt(Math.random()) * radius
       const theta = THREE.MathUtils.randFloatSpread(360)
       const phi = THREE.MathUtils.randFloatSpread(360)
@@ -191,6 +196,32 @@ const ButterflyParticleSphere = () => {
     return positions
   }, [])
 
+  const { uRadius, uParticlesCount, uParticleSize, uParticleDispersion } =
+    useControls({
+      shape: folder({
+        uRadius: {
+          value: radius,
+          min: 0.1,
+          max: 15
+        },
+        uParticlesCount: {
+          value: PARTICLES_COUNT,
+          min: 0,
+          max: PARTICLES_COUNT * 2
+        },
+        uParticleSize: {
+          value: 100,
+          min: 1,
+          max: 200
+        },
+        uParticleDispersion: {
+          value: 0.05,
+          min: 0.001,
+          max: 1
+        }
+      })
+    })
+
   const uniforms = useMemo(
     () => ({
       uTime: {
@@ -201,10 +232,41 @@ const ButterflyParticleSphere = () => {
       },
       uTexture: {
         value: butterflyTexture
+      },
+      uParticlesCount: {
+        value: PARTICLES_COUNT
+      },
+      uParticleSize: {
+        value: 100
+      },
+      uParticleDispersion: {
+        value: 0.05
       }
     }),
     [butterflyTexture]
   )
+
+  useEffect(() => {
+    const tl = gsap.timeline({ onComplete: () => setAnimationFinished(true) })
+
+    tl.fromTo(
+      uniforms.uRadius,
+      { value: 15 },
+      { value: 1, duration: 8, ease: 'back.inOut(1)' }
+    )
+      .fromTo(
+        uniforms.uParticleDispersion,
+        { value: 0.01 },
+        { value: 0.05, duration: 8, ease: 'back.inOut(1)' },
+        0
+      )
+      .fromTo(
+        uniforms.uParticleSize,
+        { value: 250 },
+        { value: 100, duration: 8, ease: 'back.inOut(1)' },
+        0
+      )
+  }, [uniforms.uParticleDispersion, uniforms.uParticleSize, uniforms.uRadius])
 
   useFrame((state) => {
     if (!pointsRef.current) return
@@ -214,6 +276,22 @@ const ButterflyParticleSphere = () => {
 
     // @ts-ignore
     pointsRef.current.material.uniforms.uTime.value = clock.elapsedTime
+
+    if (animationFinished) {
+      // @ts-ignore
+      pointsRef.current.material.uniforms.uRadius.value = uRadius
+
+      // @ts-ignore
+      pointsRef.current.material.uniforms.uParticlesCount.value =
+        uParticlesCount
+
+      // @ts-ignore
+      pointsRef.current.material.uniforms.uParticleSize.value = uParticleSize
+
+      //@ts-ignore
+      pointsRef.current.material.uniforms.uParticleDispersion.value =
+        uParticleDispersion
+    }
   })
 
   return (
@@ -234,7 +312,6 @@ const ButterflyParticleSphere = () => {
           fragmentShader={fragment}
           vertexShader={vertex}
           uniforms={uniforms}
-          //   transparent
         />
       </points>
 
