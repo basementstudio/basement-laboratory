@@ -1,19 +1,31 @@
 import {
   Image,
   MeshTransmissionMaterial,
-  OrthographicCamera
+  OrbitControls,
+  OrthographicCamera,
+  useGLTF
 } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useControls } from 'leva'
 import { easing } from 'maath'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
 import { R3FSuspenseLayout } from '~/components/layout/r3f-suspense-layout'
+
+type GLTFResult = GLTF & {
+  nodes: {
+    Cylinder: THREE.Mesh
+  }
+}
 
 const DistortionLens = () => {
   const circleRef = useRef<THREE.Mesh>(null)
   const gridImagesRef = useRef<THREE.Group>(null)
+  const { nodes } = useGLTF(
+    '/models/lens-transformed.glb'
+  ) as unknown as GLTFResult
 
   const size = useThree((state) => state.size)
   const aspect = size.width / size.height
@@ -25,8 +37,8 @@ const DistortionLens = () => {
 
   useFrame(({ pointer, viewport }) => {
     if (!circleRef.current) return
-    const x = (pointer.x * viewport.width) / 800
-    const y = (pointer.y * viewport.height) / 800
+    const x = (pointer.x * viewport.width) / 1000
+    const y = (pointer.y * viewport.height) / 1000
     easing.damp(circleRef.current.position, 'x', x, 0.05, 0.016)
     easing.damp(circleRef.current.position, 'y', y, 0.05, 0.016)
 
@@ -42,10 +54,10 @@ const DistortionLens = () => {
     samples: { value: 4, min: 1, max: 32, step: 1 },
     resolution: { value: 2048, min: 256, max: 2048, step: 256 },
     transmission: { value: 1, min: 0, max: 1 },
-    roughness: { value: 0.05, min: 0, max: 1, step: 0.01 },
-    thickness: { value: 2.53, min: 0, max: 10, step: 0.01 },
-    ior: { value: 1.13, min: 1, max: 5, step: 0.01 },
-    chromaticAberration: { value: 0.02, min: 0, max: 1 },
+    roughness: { value: 0.01, min: 0, max: 1, step: 0.01 },
+    thickness: { value: 1.5, min: 0, max: 10, step: 0.01 },
+    ior: { value: 1.2, min: 1, max: 5, step: 0.01 },
+    chromaticAberration: { value: 0.05, min: 0, max: 1 },
     anisotropy: { value: 0.54, min: 0, max: 1, step: 0.01 },
     anisotropicBlur: { value: 0, min: 0, max: 1, step: 0.01 },
     distortion: { value: 0.17, min: 0, max: 1, step: 0.01 },
@@ -70,6 +82,8 @@ const DistortionLens = () => {
         bottom={-1}
       />
 
+      <OrbitControls />
+
       <group ref={gridImagesRef} position={[0, 0, 0]}>
         {Array.from({ length: 8 }).map((_, rowIndex) =>
           Array.from({ length: 3 }).map((_, colIndex) => (
@@ -84,10 +98,17 @@ const DistortionLens = () => {
           ))
         )}
       </group>
-      <mesh ref={circleRef} position={[0, 0, 3]}>
-        <sphereGeometry args={[3, 32, 32]} />
-        <MeshTransmissionMaterial transmissionSampler {...config} />
-      </mesh>
+      <group scale={3}>
+        <mesh
+          ref={circleRef}
+          position={[0, 0, 0.5]}
+          geometry={nodes.Cylinder.geometry}
+          scale={[1, 0.402, 1]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <MeshTransmissionMaterial transmissionSampler {...config} />
+        </mesh>
+      </group>
     </>
   )
 }
