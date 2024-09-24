@@ -1,14 +1,13 @@
 import {
   Image,
   MeshTransmissionMaterial,
-  OrbitControls,
   OrthographicCamera,
   useGLTF
 } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useControls } from 'leva'
 import { easing } from 'maath'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import * as THREE from 'three'
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader'
 
@@ -30,15 +29,15 @@ const DistortionLens = () => {
   const size = useThree((state) => state.size)
   const aspect = size.width / size.height
 
-  useEffect(() => {
-    // hide cursor
-    document.body.style.cursor = 'none'
-  }, [])
+  //   useEffect(() => {
+  //     // hide cursor
+  //     document.body.style.cursor = 'none'
+  //   }, [])
 
   useFrame(({ pointer, viewport }) => {
     if (!circleRef.current) return
-    const x = (pointer.x * viewport.width) / 1000
-    const y = (pointer.y * viewport.height) / 1000
+    const x = (pointer.x * viewport.width) / 3000
+    const y = (pointer.y * viewport.height) / 3000
     easing.damp(circleRef.current.position, 'x', x, 0.05, 0.016)
     easing.damp(circleRef.current.position, 'y', y, 0.05, 0.016)
 
@@ -82,7 +81,7 @@ const DistortionLens = () => {
         bottom={-1}
       />
 
-      <OrbitControls />
+      {/* <OrbitControls /> */}
 
       <group ref={gridImagesRef} position={[0, 0, 0]}>
         {Array.from({ length: 8 }).map((_, rowIndex) =>
