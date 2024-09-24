@@ -1,12 +1,30 @@
 [
   {
+    "filename": "77.distortion-lens.tsx",
+    "title": "Distortion lens.",
+    "href": "/experiments/77.distortion-lens.tsx",
+    "tags": [],
+    "og": null,
+    "number": 77,
+    "contributors": []
+  },
+  {
     "filename": "76.butterfly-particle-sphere",
     "title": "Butterfly particle sphere.",
     "href": "/experiments/76.butterfly-particle-sphere",
     "tags": [],
     "og": null,
     "number": 76,
-    "contributors": []
+    "contributors": [
+      {
+        "id": "MDQ6VXNlcjMzOTgxNTY1",
+        "url": "https://github.com/ignmandagaran",
+        "name": "Nacho Mandagaran",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/33981565?u=5b4cef325c94a2c245acac5070dc8bd5b4d3b726&v=4",
+        "email": "",
+        "company": "@basementstudio"
+      }
+    ]
   },
   {
     "filename": "75.shader-matcap-transition.tsx",
@@ -38,7 +56,7 @@
         "id": "MDQ6VXNlcjY0NjU4ODg2",
         "url": "https://github.com/valebearzotti",
         "name": "Valentina",
-        "avatarUrl": "https://avatars.githubusercontent.com/u/64658886?u=dcec890a5753299e945db5402e0f9673a2a83d97&v=4",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/64658886?u=d1b6c2e61f4ceecf67679d78f69990ca9d33a408&v=4",
         "email": "",
         "company": "@basementstudio "
       }
