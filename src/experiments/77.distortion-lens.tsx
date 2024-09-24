@@ -29,7 +29,6 @@ const DistortionLens = () => {
     const y = (pointer.y * viewport.height) / 800
     easing.damp(circleRef.current.position, 'x', x, 0.05, 0.016)
     easing.damp(circleRef.current.position, 'y', y, 0.05, 0.016)
-    easing.damp(circleRef.current.position, 'z', 0, 0.05, 0.016)
 
     const grid = gridImagesRef.current
     if (!grid) return
@@ -85,7 +84,7 @@ const DistortionLens = () => {
           ))
         )}
       </group>
-      <mesh ref={circleRef} position={[0, 0, 0.1]}>
+      <mesh ref={circleRef} position={[0, 0, 3]}>
         <sphereGeometry args={[3, 32, 32]} />
         <MeshTransmissionMaterial transmissionSampler {...config} />
       </mesh>
