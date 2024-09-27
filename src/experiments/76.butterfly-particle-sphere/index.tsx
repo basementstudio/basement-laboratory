@@ -1,11 +1,11 @@
 import {
-  Grid,
+  Image,
   OrbitControls,
-  PerspectiveCamera,
+  OrthographicCamera,
   useTexture
 } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { Bloom, EffectComposer } from '@react-three/postprocessing'
+// import { Bloom, EffectComposer } from '@react-three/postprocessing'
 import { folder, useControls } from 'leva'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -14,38 +14,38 @@ import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 
 import FakeGlowMaterial from './fade-glow-material'
 
-const Effects = () => {
-  const controls = useControls({
-    bloom: folder({
-      luminanceThreshold: {
-        value: 0.16,
-        min: 0,
-        max: 1
-      },
-      luminanceSmoothing: {
-        value: 1,
-        min: 0,
-        max: 1
-      },
-      bloomIntensity: {
-        value: 13,
-        min: 5,
-        max: 30
-      }
-    })
-  })
+// const Effects = () => {
+//   const controls = useControls({
+//     bloom: folder({
+//       luminanceThreshold: {
+//         value: 0.16,
+//         min: 0,
+//         max: 1
+//       },
+//       luminanceSmoothing: {
+//         value: 1,
+//         min: 0,
+//         max: 1
+//       },
+//       bloomIntensity: {
+//         value: 13,
+//         min: 5,
+//         max: 30
+//       }
+//     })
+//   })
 
-  return (
-    <EffectComposer multisampling={0} stencilBuffer={true}>
-      <Bloom
-        luminanceThreshold={controls.luminanceThreshold}
-        luminanceSmoothing={controls.luminanceSmoothing}
-        intensity={controls.bloomIntensity}
-        height={300}
-      />
-    </EffectComposer>
-  )
-}
+//   return (
+//     <EffectComposer multisampling={0} stencilBuffer={true}>
+//       <Bloom
+//         luminanceThreshold={controls.luminanceThreshold}
+//         luminanceSmoothing={controls.luminanceSmoothing}
+//         intensity={controls.bloomIntensity}
+//         height={300}
+//       />
+//     </EffectComposer>
+//   )
+// }
 
 const vertex = /*glsl*/ `
     uniform float uTime;
@@ -168,6 +168,36 @@ const fragment = /*glsl*/ `
   `
 
 const PARTICLES_COUNT = 1500
+
+const UITextures = () => {
+  const groupRef = useRef<THREE.Group>(null)
+
+  useFrame((state) => {
+    if (!groupRef.current) return
+    // @ts-ignore
+    groupRef.current.scale.set(
+      state.viewport.width * 0.52,
+      state.viewport.height * 1.04,
+      1
+    )
+  })
+
+  return (
+    <group ref={groupRef}>
+      <Image url="/images/outlier-bg.png" position={[0, 0, -1]}>
+        <planeGeometry args={[1.92, 1.08]} />
+      </Image>
+      <Image
+        zoom={0.9}
+        url="/images/outlier-ui.png"
+        position={[0, 0, 1]}
+        transparent
+      >
+        <planeGeometry args={[1.92, 1.08]} />
+      </Image>
+    </group>
+  )
+}
 
 const ButterflyParticleSphere = () => {
   const [animationFinished, setAnimationFinished] = useState(true)
@@ -332,6 +362,8 @@ const ButterflyParticleSphere = () => {
 
   return (
     <>
+      <UITextures />
+
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -368,24 +400,10 @@ const ButterflyParticleSphere = () => {
         />
       </mesh>
 
-      <Effects />
+      {/* <Effects /> */}
 
-      <PerspectiveCamera makeDefault position={[0, 3, 6]} fov={50} />
+      <OrthographicCamera makeDefault position={[0, 0, 5]} zoom={250} />
       <OrbitControls />
-      <Grid
-        args={[10.5, 10.5]}
-        cellThickness={1.0}
-        cellColor={'#727272'}
-        scale={[0.6, 0.6, 0.6]}
-        position={[0, -1, 0]}
-        cellSize={1}
-        sectionSize={5}
-        sectionThickness={1.5}
-        sectionColor={'#8d8d8d'}
-        fadeDistance={25}
-        fadeStrength={1.0}
-        infiniteGridz
-      />
     </>
   )
 }
