@@ -53,6 +53,9 @@ const vertex = /*glsl*/ `
     uniform float uParticlesCount;
     uniform float uParticleSize;
     uniform float uParticleDispersion;
+    uniform vec2 uResolution;
+    
+    attribute float aSize;
 
     varying float vDistance;
     varying vec2 vUv;
@@ -115,8 +118,7 @@ const vertex = /*glsl*/ `
         
         vUv = uv;
 
-        float size = uParticleSize;
-        gl_PointSize = size;
+        gl_PointSize = aSize * uParticleSize * uResolution.y;
         gl_PointSize *= (1.0 / - viewPosition.z);
     }
 `
@@ -165,7 +167,7 @@ const fragment = /*glsl*/ `
     }
   `
 
-const PARTICLES_COUNT = 1000
+const PARTICLES_COUNT = 1500
 
 const ButterflyParticleSphere = () => {
   const [animationFinished, setAnimationFinished] = useState(true)
@@ -198,6 +200,14 @@ const ButterflyParticleSphere = () => {
     return positions
   }, [])
 
+  const sizesArray = useMemo(() => {
+    const sizes = new Float32Array(PARTICLES_COUNT)
+    for (let i = 0; i < PARTICLES_COUNT; i++) {
+      sizes[i] = Math.random()
+    }
+    return sizes
+  }, [])
+
   const { uRadius, uParticlesCount, uParticleSize, uParticleDispersion } =
     useControls({
       shape: folder({
@@ -212,9 +222,9 @@ const ButterflyParticleSphere = () => {
           max: PARTICLES_COUNT * 2
         },
         uParticleSize: {
-          value: 100,
-          min: 1,
-          max: 200
+          value: 0.1,
+          min: 0,
+          max: 1
         },
         uParticleDispersion: {
           value: 0.05,
@@ -239,10 +249,16 @@ const ButterflyParticleSphere = () => {
         value: PARTICLES_COUNT
       },
       uParticleSize: {
-        value: 100
+        value: 0.1
       },
       uParticleDispersion: {
         value: 0.05
+      },
+      uResolution: {
+        value: new THREE.Vector2(
+          window.innerWidth * window.devicePixelRatio,
+          window.innerHeight * window.devicePixelRatio
+        )
       }
     }),
     [butterflyTexture]
@@ -323,6 +339,12 @@ const ButterflyParticleSphere = () => {
             count={particlesPosition.length / 3}
             array={particlesPosition}
             itemSize={3}
+          />
+          <bufferAttribute
+            attach="attributes-aSize"
+            count={sizesArray.length}
+            array={sizesArray}
+            itemSize={1}
           />
         </bufferGeometry>
         <shaderMaterial
