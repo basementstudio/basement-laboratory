@@ -3,10 +3,13 @@ import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 
-import { getYPosition } from '~/hooks/get-y-position'
 import { useIsomorphicLayoutEffect } from '~/hooks/use-isomorphic-layout-effect'
 
-import { grassFragmentShader, grassVertexShader } from '../shaders'
+import {
+  getYPosition,
+  grassFragmentShader,
+  grassVertexShader
+} from '../shaders'
 
 export function GrassMesh() {
   const width = 20 * 1.5
