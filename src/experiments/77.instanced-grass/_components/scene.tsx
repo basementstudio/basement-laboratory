@@ -1,4 +1,4 @@
-import { OrbitControls, Stats } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import {
   Bloom,
   DepthOfField,
@@ -90,7 +90,6 @@ export default function Scene() {
 
   return (
     <group position={[0, 0, 0]}>
-      <Stats />
       <OrbitControls />
 
       <ambientLight intensity={0.5} />
