@@ -15,7 +15,7 @@ const config = {
     return config
   },
   images: {
-    domains: ['avatars.githubusercontent.com'],
+    domains: ['avatars.githubusercontent.com', 'picsum.photos'],
     formats: ['image/avif', 'image/webp']
   },
   experimental: { esmExternals: 'loose' },
