@@ -268,6 +268,16 @@ function Particles(): JSX.Element {
     displacement.texture.needsUpdate = true
   })
 
+  const randomUrl = useMemo(() => {
+    if (controls.texture === 'random') {
+      return `https://picsum.photos/128/128?grayscale&random=${
+        Math.floor(Math.random() * 100) + 1
+      }`
+    }
+
+    return ''
+  }, [controls.texture])
+
   // Texture loading effect
   useEffect(() => {
     if (!meshRef.current) return
@@ -293,13 +303,11 @@ function Particles(): JSX.Element {
     }
 
     if (controls.texture === 'random') {
-      const random = Math.floor(Math.random() * 100) + 1
-      const url = `https://picsum.photos/128/128?grayscale&random=${random}`
-      loadTexture(url)
+      loadTexture(randomUrl)
     } else {
       loadTexture(controls.texture)
     }
-  }, [controls.texture, material])
+  }, [controls.texture, material, randomUrl])
 
   // Add cleanup for displacement texture
   useEffect(() => {
