@@ -63,7 +63,7 @@ export default function Scene() {
         opacity: {
           value: 0,
           min: 0,
-          max: 1,
+          max: 2,
           step: 0.01
         }
       })

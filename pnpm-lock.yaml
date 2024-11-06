@@ -161,6 +161,9 @@ importers:
       three:
         specifier: ^0.159.0
         version: 0.159.0
+      three-stdlib:
+        specifier: ^2.34.0
+        version: 2.34.0(three@0.159.0)
       three.meshline:
         specifier: ^1.4.0
         version: 1.4.0
