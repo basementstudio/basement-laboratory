@@ -14,7 +14,6 @@ function GrassScene() {
       <PerspectiveCamera
         makeDefault
         position={[-8.544, -0.922, 9.638]}
-        // test pos {[-4, 40, 4]}
         fov={65}
       />
       <Suspense fallback={null}>

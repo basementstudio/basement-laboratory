@@ -55,7 +55,11 @@ export function GrassMesh({ planePosition }: { planePosition: THREE.Vector3 }) {
     }
 
     return {
-      attributeData: { offsets, scales, rotations },
+      attributeData: {
+        offsets: new Float32Array(offsets),
+        scales: new Float32Array(scales),
+        rotations: new Float32Array(rotations)
+      },
       baseGeometry: geo,
       floorGeometry: floor
     }
@@ -64,7 +68,6 @@ export function GrassMesh({ planePosition }: { planePosition: THREE.Vector3 }) {
   const planeOffset = new THREE.Vector3(8, 0, 0)
 
   useFrame((state) => {
-    // console.log(planePosition)
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = state.clock.elapsedTime * 2
       materialRef.current.uniforms.uPlanePosition.value = planePosition
@@ -91,15 +94,15 @@ export function GrassMesh({ planePosition }: { planePosition: THREE.Vector3 }) {
         >
           <instancedBufferAttribute
             attach="attributes-offset"
-            args={[new Float32Array(attributeData.offsets), 3]}
+            args={[attributeData.offsets, 3]}
           />
           <instancedBufferAttribute
             attach="attributes-scale"
-            args={[new Float32Array(attributeData.scales), 1]}
+            args={[attributeData.scales, 1]}
           />
           <instancedBufferAttribute
             attach="attributes-rotation"
-            args={[new Float32Array(attributeData.rotations), 1]}
+            args={[attributeData.rotations, 1]}
           />
         </instancedBufferGeometry>
         <rawShaderMaterial
@@ -120,7 +123,7 @@ export function GrassMesh({ planePosition }: { planePosition: THREE.Vector3 }) {
         />
       </mesh>
 
-      <mesh position={[0, 0, 0]} geometry={floorGeometry}>
+      <mesh geometry={floorGeometry}>
         <meshBasicMaterial color="#DDE381" />
       </mesh>
     </group>

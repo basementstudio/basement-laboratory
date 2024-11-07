@@ -5,7 +5,12 @@ import * as THREE from 'three'
 
 import { useIsomorphicLayoutEffect } from '~/hooks/use-isomorphic-layout-effect'
 
+// Add this outside the component
+const startPosition = new THREE.Vector3(20, 3.5, -26)
+
 const Plane = forwardRef<THREE.Group>((_, ref) => {
+  const groupRef = ref as React.MutableRefObject<THREE.Group>
+
   const plane = useGLTF('/models/plane.glb')
   const animations = useAnimations(plane.animations, plane.scene)
   const timeRef = useRef(0)
@@ -25,27 +30,27 @@ const Plane = forwardRef<THREE.Group>((_, ref) => {
 
   //@ts-ignore
   useFrame((state, delta) => {
-    if (!ref) return
+    if (!groupRef) return
     //@ts-ignore
-    const planePos = ref.current.position
+    const planePos = groupRef.current.position
     if (planePos) {
       timeRef.current += delta
 
       const angle = -Math.PI * 0.25
       const forward = -timeRef.current * 13
-      const startPos = new THREE.Vector3(20, 3.5, -26)
 
+      // Use the constant instead of creating new Vector3
       const newX =
         20 + Math.cos(angle) * forward + Math.sin(timeRef.current) * 1.2
       const newZ = -25 + Math.sin(angle) * forward
 
-      const distanceFromCamera = new THREE.Vector3(
+      const distanceTravelled = new THREE.Vector3(
         newX,
         planePos.y,
         newZ
-      ).distanceTo(startPos)
+      ).distanceTo(startPosition)
 
-      if (distanceFromCamera > 70) {
+      if (distanceTravelled > 70) {
         timeRef.current = 0
         planePos.x = 20
         planePos.z = -26
