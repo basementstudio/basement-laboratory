@@ -23,7 +23,8 @@ uniform mat4 projectionMatrix;
 uniform float uTime;
 uniform float uWindStrength;
 uniform float uWindFrequency;
-
+uniform vec3 uPlanePosition;
+uniform vec3 uPlaneOffset;
 varying vec2 vUv;
 varying float vWindStrength;
 
@@ -109,7 +110,14 @@ float cnoise(vec3 P) {
 
 vec3 calculateWind(vec3 pos, float time) {
   float bendFactor = pow(uv.y, 2.0);
-  
+
+  vec3 adjustedPlanePosition = uPlanePosition + uPlaneOffset;
+
+  float planeFactor = 1.0 - smoothstep(0.0, 10.0, length(pos - adjustedPlanePosition));
+  float planeDist = distance(pos.xz, adjustedPlanePosition.xz);
+
+  float windPlaneBlend = smoothstep(0.0, 10.0, planeDist);
+
   float timeOffset = cnoise(vec3(pos.xz * 0.1, uTime * 0.05)) * 5.0;
   float uniqueTime = uTime + timeOffset;
   
@@ -122,6 +130,8 @@ vec3 calculateWind(vec3 pos, float time) {
   float windStrength = (windWave * 0.5 + 0.5) * 
                       (posVariation * 0.5 + 0.5) * 
                       uWindStrength;
+
+  windStrength -= planeFactor * 1.5;
   
   float windAngle = cnoise(vec3(pos.xz * 0.1, uTime * 0.2)) * 3.14159;
   vec3 windDir = vec3(cos(windAngle), 0.0, sin(windAngle));
@@ -143,8 +153,12 @@ void main() {
   vec3 worldPos = transformed + offset;
   vec3 windEffect = calculateWind(worldPos, uTime);
   transformed += windEffect;
+
+  // Let there be life
+  // float planeFactor = 1.0 - smoothstep(0.0, 10.0, length(worldPos - uPlanePosition));
+  // transformed *= planeFactor;
   
-  vWindStrength = length(windEffect) * 2.0;
+  vWindStrength = length(windEffect) * 2.5;
   
   gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed + offset, 1.0);
 }
@@ -156,17 +170,22 @@ precision highp float;
 uniform sampler2D map;
 uniform sampler2D alphaMap;
 uniform float uTime;
-
+uniform vec3 uPlanePosition;
+uniform vec3 uPlaneOffset;
 varying vec2 vUv;
 varying float vWindStrength;
 
 void main() {
   vec4 diffuseColor = texture2D(map, vUv);
   float alpha = texture2D(alphaMap, vUv).r;
+  float planeFactor = 1.0 - smoothstep(0.0, 10.0, length(gl_FragCoord.xyz - uPlanePosition));
   
   if (alpha < 0.15) discard;
   
-  diffuseColor.rgb *= (1.0 + vWindStrength * 0.5);
+  diffuseColor.rgb /= (.8 + vWindStrength * 0.2);
+
+  // darken area under the plane
+  // alpha *= planeFactor;
   
   gl_FragColor = diffuseColor;
 }

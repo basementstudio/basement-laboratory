@@ -1,4 +1,5 @@
 import { OrbitControls } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
 import {
   Bloom,
   DepthOfField,
@@ -6,28 +7,39 @@ import {
   Noise
 } from '@react-three/postprocessing'
 import { folder, useControls } from 'leva'
+import { useRef } from 'react'
+import { Vector3 } from 'three'
 
 import { GrassMesh } from './grass'
 import Plane from './plane'
 
 export default function Scene() {
+  const planeRef = useRef<THREE.Group>(null)
+  const planePosition = useRef(new Vector3(0, 0, 0))
+
+  useFrame(() => {
+    if (planeRef.current) {
+      planePosition.current.copy(planeRef.current.position)
+    }
+  })
+
   const Effects = () => {
     const controls = useControls({
       bloom: folder({
         luminanceThreshold: {
-          value: 0.16,
+          value: 0.45,
           min: 0,
           max: 1,
           step: 0.01
         },
         luminanceSmoothing: {
-          value: 1,
+          value: 0.68,
           min: 0,
           max: 1,
           step: 0.01
         },
         bloomIntensity: {
-          value: 0.1,
+          value: 2.8,
           min: 0,
           max: 30,
           step: 0.01
@@ -96,8 +108,8 @@ export default function Scene() {
       <directionalLight position={[8.35, 9, 7]} intensity={8} />
       <directionalLight position={[0.18, 1.4, -12.7]} intensity={8} />
 
-      <GrassMesh />
-      <Plane />
+      <GrassMesh planePosition={planePosition.current} />
+      <Plane ref={planeRef} />
 
       <Effects />
     </group>

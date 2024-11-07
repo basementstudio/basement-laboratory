@@ -8,7 +8,7 @@ import { useIsomorphicLayoutEffect } from '~/hooks/use-isomorphic-layout-effect'
 
 import { grassFragmentShader, grassVertexShader } from '../shaders'
 
-export function GrassMesh() {
+export function GrassMesh({ planePosition }: { planePosition: THREE.Vector3 }) {
   const width = 20 * 1.5
   const instances = 50000 * 1.5
   const materialRef = useRef<THREE.RawShaderMaterial>(null)
@@ -61,9 +61,14 @@ export function GrassMesh() {
     }
   }, [width, instances])
 
+  const planeOffset = new THREE.Vector3(8, 0, 0)
+
   useFrame((state) => {
+    // console.log(planePosition)
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = state.clock.elapsedTime * 2
+      materialRef.current.uniforms.uPlanePosition.value = planePosition
+      materialRef.current.uniforms.uPlaneOffset.value = planeOffset
     }
   })
 
@@ -104,7 +109,9 @@ export function GrassMesh() {
             alphaMap: { value: bladeAlpha },
             uTime: { value: 0 },
             uWindStrength: { value: 1.0 },
-            uWindFrequency: { value: 2.0 }
+            uWindFrequency: { value: 2.0 },
+            uPlanePosition: { value: new THREE.Vector3() },
+            uPlaneOffset: { value: planeOffset }
           }}
           vertexShader={grassVertexShader}
           fragmentShader={grassFragmentShader}

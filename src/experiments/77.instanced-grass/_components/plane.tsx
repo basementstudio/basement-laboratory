@@ -1,13 +1,12 @@
 import { useAnimations, useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
+import { forwardRef, useRef } from 'react'
 import * as THREE from 'three'
 
 import { useIsomorphicLayoutEffect } from '~/hooks/use-isomorphic-layout-effect'
 
-export default function Plane() {
+const Plane = forwardRef<THREE.Group>((_, ref) => {
   const plane = useGLTF('/models/plane.glb')
-  const planeRef = useRef<THREE.Group>(null)
   const animations = useAnimations(plane.animations, plane.scene)
   const timeRef = useRef(0)
 
@@ -25,12 +24,14 @@ export default function Plane() {
   }, [animations])
 
   useFrame((state, delta) => {
-    const planePos = planeRef.current?.position
+    if (!ref) return
+    //@ts-ignore
+    const planePos = ref.current.position
     if (planePos) {
       timeRef.current += delta
 
       const angle = -Math.PI * 0.25
-      const forward = -timeRef.current * 8
+      const forward = -timeRef.current * 16
       const newX =
         20 + Math.cos(angle) * forward + Math.sin(timeRef.current) * 1.2
       const newZ = -25 + Math.sin(angle) * forward
@@ -55,7 +56,7 @@ export default function Plane() {
   return (
     <>
       <primitive
-        ref={planeRef}
+        ref={ref}
         scale={0.5}
         position={[20, 3.5, -26]}
         rotation={[0, -Math.PI * 0.25, 0]}
@@ -63,4 +64,6 @@ export default function Plane() {
       />
     </>
   )
-}
+})
+
+export default Plane
