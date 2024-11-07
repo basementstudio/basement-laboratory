@@ -132,15 +132,14 @@ vec3 calculateWind(vec3 pos, float time) {
 void main() {
   vUv = uv;
   
-  // Scale the blade
   vec3 transformed = position * vec3(1.0, scale, 1.0);
   
-  // Optional: Apply rotation
+  // Blade's rotation
   float c = cos(rotation);
   float s = sin(rotation);
   transformed.xz = mat2(c, -s, s, c) * transformed.xz;
   
-  // Apply wind effect
+  // Wind effect
   vec3 worldPos = transformed + offset;
   vec3 windEffect = calculateWind(worldPos, uTime);
   transformed += windEffect;

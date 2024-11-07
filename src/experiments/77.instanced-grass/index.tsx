@@ -1,6 +1,6 @@
 'use client'
 
-import { Environment } from '@react-three/drei'
+import { Environment, PerspectiveCamera } from '@react-three/drei'
 import { Suspense } from 'react'
 
 import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
@@ -11,6 +11,12 @@ function GrassScene() {
   return (
     <>
       <Environment files="/textures/grass/illus_sky.hdr" background />
+      <PerspectiveCamera
+        makeDefault
+        position={[-8.544, -0.922, 9.638]}
+        // test pos {[-4, 40, 4]}
+        fov={65}
+      />
       <Suspense fallback={null}>
         <Scene />
       </Suspense>

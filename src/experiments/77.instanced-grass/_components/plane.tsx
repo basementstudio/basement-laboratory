@@ -1,11 +1,15 @@
 import { useAnimations, useGLTF } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import { useRef } from 'react'
 import * as THREE from 'three'
 
 import { useIsomorphicLayoutEffect } from '~/hooks/use-isomorphic-layout-effect'
 
 export default function Plane() {
   const plane = useGLTF('/models/plane.glb')
+  const planeRef = useRef<THREE.Group>(null)
   const animations = useAnimations(plane.animations, plane.scene)
+  const timeRef = useRef(0)
 
   useIsomorphicLayoutEffect(() => {
     const bodyAction = animations.actions['avio_body.001Action']
@@ -20,11 +24,40 @@ export default function Plane() {
     }
   }, [animations])
 
+  useFrame((state, delta) => {
+    const planePos = planeRef.current?.position
+    if (planePos) {
+      timeRef.current += delta
+
+      const angle = -Math.PI * 0.25
+      const forward = -timeRef.current * 8
+      const newX =
+        20 + Math.cos(angle) * forward + Math.sin(timeRef.current) * 1.2
+      const newZ = -25 + Math.sin(angle) * forward
+
+      const distanceFromCamera = new THREE.Vector3(
+        newX,
+        planePos.y,
+        newZ
+      ).distanceTo(state.camera.position)
+
+      if (distanceFromCamera > 55) {
+        timeRef.current = 0
+        planePos.x = 20
+        planePos.z = -26
+      } else {
+        planePos.x = newX
+        planePos.z = newZ
+      }
+    }
+  })
+
   return (
     <>
       <primitive
+        ref={planeRef}
         scale={0.5}
-        position={[-6, 4, -3]}
+        position={[20, 3.5, -26]}
         rotation={[0, -Math.PI * 0.25, 0]}
         object={plane.scene}
       />

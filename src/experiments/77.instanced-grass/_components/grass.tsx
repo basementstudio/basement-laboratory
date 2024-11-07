@@ -1,15 +1,12 @@
 import { useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
+import SimplexNoise from 'simplex-noise'
 import * as THREE from 'three'
 
 import { useIsomorphicLayoutEffect } from '~/hooks/use-isomorphic-layout-effect'
 
-import {
-  getYPosition,
-  grassFragmentShader,
-  grassVertexShader
-} from '../shaders'
+import { grassFragmentShader, grassVertexShader } from '../shaders'
 
 export function GrassMesh() {
   const width = 20 * 1.5
@@ -25,14 +22,19 @@ export function GrassMesh() {
     const geo = new THREE.PlaneGeometry(0.12, 0.8, 1, 5)
     geo.translate(0, 0.4, 0)
 
-    const floor = new THREE.PlaneGeometry(width, width, 32, 32)
+    const floor = new THREE.PlaneGeometry(width, width, 24, 24)
     floor.rotateX(-Math.PI / 2)
+
+    const simplex = new SimplexNoise('seed123')
+    const noise2D = (x: number, z: number) => simplex.noise2D(x, z)
+    const noiseScale = 0.04
+    const heightScale = 3.0
 
     const positions = floor.attributes.position.array
     for (let i = 0; i < positions.length; i += 3) {
       const x = positions[i]
       const z = positions[i + 2]
-      positions[i + 1] = getYPosition(x, z)
+      positions[i + 1] = noise2D(x * noiseScale, z * noiseScale) * heightScale
     }
     floor.computeVertexNormals()
 
@@ -43,7 +45,7 @@ export function GrassMesh() {
     for (let i = 0; i < instances; i++) {
       const x = Math.random() * width - width / 2
       const z = Math.random() * width - width / 2
-      const y = getYPosition(x, z)
+      const y = noise2D(x * noiseScale, z * noiseScale) * heightScale
       offsets.push(x, y, z)
 
       const scale = 0.8 + Math.random() * 0.5 - 0.2
@@ -112,13 +114,8 @@ export function GrassMesh() {
       </mesh>
 
       <mesh position={[0, 0, 0]} geometry={floorGeometry}>
-        <meshBasicMaterial color="#899B27" />
+        <meshBasicMaterial color="#DDE381" />
       </mesh>
-
-      {/* <mesh position-y={0.8} scale={1.5}>
-        <meshBasicMaterial color="orange" />
-        <sphereGeometry args={[1, 32, 32]} />
-      </mesh> */}
     </group>
   )
 }
