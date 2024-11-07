@@ -23,6 +23,7 @@ const Plane = forwardRef<THREE.Group>((_, ref) => {
     }
   }, [animations])
 
+  //@ts-ignore
   useFrame((state, delta) => {
     if (!ref) return
     //@ts-ignore
@@ -31,7 +32,9 @@ const Plane = forwardRef<THREE.Group>((_, ref) => {
       timeRef.current += delta
 
       const angle = -Math.PI * 0.25
-      const forward = -timeRef.current * 16
+      const forward = -timeRef.current * 13
+      const startPos = new THREE.Vector3(20, 3.5, -26)
+
       const newX =
         20 + Math.cos(angle) * forward + Math.sin(timeRef.current) * 1.2
       const newZ = -25 + Math.sin(angle) * forward
@@ -40,9 +43,9 @@ const Plane = forwardRef<THREE.Group>((_, ref) => {
         newX,
         planePos.y,
         newZ
-      ).distanceTo(state.camera.position)
+      ).distanceTo(startPos)
 
-      if (distanceFromCamera > 55) {
+      if (distanceFromCamera > 70) {
         timeRef.current = 0
         planePos.x = 20
         planePos.z = -26
