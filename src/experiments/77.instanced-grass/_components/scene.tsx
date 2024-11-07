@@ -27,19 +27,19 @@ export default function Scene() {
     const controls = useControls({
       bloom: folder({
         luminanceThreshold: {
-          value: 0.45,
+          value: 0.41,
           min: 0,
           max: 1,
           step: 0.01
         },
         luminanceSmoothing: {
-          value: 0.68,
+          value: 1.0,
           min: 0,
           max: 1,
           step: 0.01
         },
         bloomIntensity: {
-          value: 2.8,
+          value: 1.99,
           min: 0,
           max: 30,
           step: 0.01
