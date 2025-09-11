@@ -1,12 +1,14 @@
 import {
-  Grid,
+  Image,
   OrbitControls,
-  PerspectiveCamera,
+  OrthographicCamera,
   useTexture
 } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { Bloom, EffectComposer } from '@react-three/postprocessing'
+import { gsap } from 'gsap'
+// import { Bloom, EffectComposer } from '@react-three/postprocessing'
 import { folder, useControls } from 'leva'
+import { throttle } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 
@@ -14,38 +16,38 @@ import { R3FCanvasLayout } from '~/components/layout/r3f-canvas-layout'
 
 import FakeGlowMaterial from './fade-glow-material'
 
-const Effects = () => {
-  const controls = useControls({
-    bloom: folder({
-      luminanceThreshold: {
-        value: 0.16,
-        min: 0,
-        max: 1
-      },
-      luminanceSmoothing: {
-        value: 1,
-        min: 0,
-        max: 1
-      },
-      bloomIntensity: {
-        value: 13,
-        min: 5,
-        max: 30
-      }
-    })
-  })
+// const Effects = () => {
+//   const controls = useControls({
+//     bloom: folder({
+//       luminanceThreshold: {
+//         value: 0.16,
+//         min: 0,
+//         max: 1
+//       },
+//       luminanceSmoothing: {
+//         value: 1,
+//         min: 0,
+//         max: 1
+//       },
+//       bloomIntensity: {
+//         value: 13,
+//         min: 5,
+//         max: 30
+//       }
+//     })
+//   })
 
-  return (
-    <EffectComposer multisampling={0} stencilBuffer={true}>
-      <Bloom
-        luminanceThreshold={controls.luminanceThreshold}
-        luminanceSmoothing={controls.luminanceSmoothing}
-        intensity={controls.bloomIntensity}
-        height={300}
-      />
-    </EffectComposer>
-  )
-}
+//   return (
+//     <EffectComposer multisampling={0} stencilBuffer={true}>
+//       <Bloom
+//         luminanceThreshold={controls.luminanceThreshold}
+//         luminanceSmoothing={controls.luminanceSmoothing}
+//         intensity={controls.bloomIntensity}
+//         height={300}
+//       />
+//     </EffectComposer>
+//   )
+// }
 
 const vertex = /*glsl*/ `
     uniform float uTime;
@@ -169,8 +171,38 @@ const fragment = /*glsl*/ `
 
 const PARTICLES_COUNT = 1500
 
+const UITextures = () => {
+  const groupRef = useRef<THREE.Group>(null)
+
+  useFrame((state) => {
+    if (!groupRef.current) return
+    // @ts-ignore
+    groupRef.current.scale.set(
+      state.viewport.width * 0.52,
+      state.viewport.height * 1.04,
+      1
+    )
+  })
+
+  return (
+    <group ref={groupRef}>
+      <Image url="/images/outlier-bg.png" position={[0, 0, -1]}>
+        <planeGeometry args={[1.92, 1.08]} />
+      </Image>
+      <Image
+        zoom={0.9}
+        url="/images/outlier-ui.png"
+        position={[0, 0, 1]}
+        transparent
+      >
+        <planeGeometry args={[1.92, 1.08]} />
+      </Image>
+    </group>
+  )
+}
+
 const ButterflyParticleSphere = () => {
-  const [animationFinished, setAnimationFinished] = useState(true)
+  const [animationFinished, setAnimationFinished] = useState(false)
   const pointsRef =
     useRef<
       THREE.Points<
@@ -227,7 +259,7 @@ const ButterflyParticleSphere = () => {
           max: 1
         },
         uParticleDispersion: {
-          value: 0.05,
+          value: 0.07,
           min: 0.001,
           max: 1
         }
@@ -240,7 +272,7 @@ const ButterflyParticleSphere = () => {
         value: 0.0
       },
       uRadius: {
-        value: radius
+        value: radius * (window.innerWidth / 1920)
       },
       uTexture: {
         value: butterflyTexture
@@ -252,7 +284,7 @@ const ButterflyParticleSphere = () => {
         value: 0.1
       },
       uParticleDispersion: {
-        value: 0.05
+        value: 0.07
       },
       uResolution: {
         value: new THREE.Vector2(
@@ -265,32 +297,36 @@ const ButterflyParticleSphere = () => {
   )
 
   useEffect(() => {
-    setAnimationFinished(true)
-    // const tl = gsap.timeline({ onComplete: () => setAnimationFinished(true) })
+    if (!pointsRef.current) return
+    // setAnimationFinished(true)
+    const tl = gsap.timeline({ onComplete: () => setAnimationFinished(true) })
 
-    // tl.fromTo(
-    //   uniforms.uRadius,
-    //   { value: 0 },
-    //   { value: 1, duration: 8, ease: 'back.inOut(1)' }
-    // )
-    //   .fromTo(
-    //     uniforms.uParticleDispersion,
-    //     { value: 0.01 },
-    //     { value: 0.05, duration: 8, ease: 'back.inOut(1)' },
-    //     0
-    //   )
-    //   .fromTo(
-    //     uniforms.uParticleSize,
-    //     { value: 1 },
-    //     { value: 100, duration: 8, ease: 'back.inOut(1)' },
-    //     0
-    //   )
-    //   .fromTo(
-    //     uniforms.uParticlesCount,
-    //     { value: PARTICLES_COUNT / 2 },
-    //     { value: PARTICLES_COUNT, duration: 8, ease: 'back.inOut(1)' },
-    //     0
-    //   )
+    const _radius = radius * (window.innerWidth / 1920)
+
+    tl.fromTo(
+      uniforms.uRadius,
+      { value: _radius * 1.8 },
+      { value: _radius, duration: 5, ease: 'back.inOut(1.7)' },
+      0
+    )
+      .fromTo(
+        uniforms.uParticleDispersion,
+        { value: 0.7 },
+        { value: 0.07, duration: 7, ease: 'back.inOut(2.5)' },
+        0
+      )
+      .fromTo(
+        uniforms.uParticleSize,
+        { value: 0.01 },
+        { value: 0.1, duration: 7, ease: 'back.inOut(2.5)' },
+        0
+      )
+      .fromTo(
+        uniforms.uParticlesCount,
+        { value: PARTICLES_COUNT / 2 },
+        { value: PARTICLES_COUNT, duration: 5, ease: 'back.inOut(2.5)' },
+        0
+      )
   }, [
     uniforms.uParticleDispersion,
     uniforms.uParticleSize,
@@ -302,10 +338,17 @@ const ButterflyParticleSphere = () => {
     if (!pointsRef.current || !glowMeshRef.current) return
 
     const { clock } = state
-    pointsRef.current.rotation.y += 0.01
+    pointsRef.current.geometry.attributes.position.needsUpdate = true
+    pointsRef.current.geometry.attributes.aSize.needsUpdate = true
 
-    // @ts-ignore
-    pointsRef.current.material.uniforms.uTime.value = clock.elapsedTime
+    const screenWidthSizeRatio = window.innerWidth / 1920
+
+    throttle(() => {
+      if (!pointsRef.current) return
+      pointsRef.current.rotation.y += 0.007
+      // @ts-ignore
+      pointsRef.current.material.uniforms.uTime.value = clock.elapsedTime
+    }, 1000 / 60)()
 
     glowMeshRef.current.scale.set(
       uniforms.uRadius.value,
@@ -313,25 +356,32 @@ const ButterflyParticleSphere = () => {
       uniforms.uRadius.value
     )
 
-    if (animationFinished) {
-      // @ts-ignore
-      uniforms.uRadius.value = uRadius
+    if (!animationFinished) return
 
-      // @ts-ignore
-      pointsRef.current.material.uniforms.uParticlesCount.value =
-        uParticlesCount
+    // @ts-ignore
+    pointsRef.current.material.uniforms.uResolution.value.set(
+      window.innerWidth * window.devicePixelRatio,
+      window.innerHeight * window.devicePixelRatio
+    )
 
-      // @ts-ignore
-      pointsRef.current.material.uniforms.uParticleSize.value = uParticleSize
+    // @ts-ignore
+    uniforms.uRadius.value = uRadius * screenWidthSizeRatio
 
-      //@ts-ignore
-      pointsRef.current.material.uniforms.uParticleDispersion.value =
-        uParticleDispersion
-    }
+    // @ts-ignore
+    pointsRef.current.material.uniforms.uParticlesCount.value = uParticlesCount
+
+    // @ts-ignore
+    pointsRef.current.material.uniforms.uParticleSize.value = uParticleSize
+
+    //@ts-ignore
+    pointsRef.current.material.uniforms.uParticleDispersion.value =
+      uParticleDispersion
   })
 
   return (
     <>
+      <UITextures />
+
       <points ref={pointsRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -368,24 +418,10 @@ const ButterflyParticleSphere = () => {
         />
       </mesh>
 
-      <Effects />
+      {/* <Effects /> */}
 
-      <PerspectiveCamera makeDefault position={[0, 3, 6]} fov={50} />
+      <OrthographicCamera makeDefault position={[0, 0, 5]} zoom={250} />
       <OrbitControls />
-      <Grid
-        args={[10.5, 10.5]}
-        cellThickness={1.0}
-        cellColor={'#727272'}
-        scale={[0.6, 0.6, 0.6]}
-        position={[0, -1, 0]}
-        cellSize={1}
-        sectionSize={5}
-        sectionThickness={1.5}
-        sectionColor={'#8d8d8d'}
-        fadeDistance={25}
-        fadeStrength={1.0}
-        infiniteGridz
-      />
     </>
   )
 }
